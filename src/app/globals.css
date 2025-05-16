@@ -160,9 +160,11 @@
 
 @utility container {
   padding-inline: 2rem;
+  margin-inline: auto;
   max-width: 100%;
 
-  @screen xl {
+  /* responsive cap: ≥ 1536 px (the 2xl breakpoint) */
+  @variant 2xl {
     max-width: 1400px;
   }
 }
