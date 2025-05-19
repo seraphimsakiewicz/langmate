@@ -9,16 +9,16 @@ import { MobileNav } from "./mobile-nav"
 export function Header() {
     return (
         <header className="sticky top-0 w-full border-b">
-            <div className="h-14 container flex items-center">
+            <div className="h-16 container flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-2">
+                    <h1 className="text-xl font-bold">Lang<span className="font-normal">mate</span></h1>
+                </Link>
+
                 {/* desktop nav */}
                 <MainNav />
                 {/* mobile */}
                 <MobileNav />
 
-                {/* Desktop & mobile */}
-                <h1 className="flex items-center justify-end flex-1">
-                    <Link href="/">some social media icons</Link>
-                </h1>
             </div>
         </header>
     );
