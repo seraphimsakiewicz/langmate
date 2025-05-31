@@ -9,6 +9,8 @@ const port = 3000;
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
+const matches = [];
+
 app.prepare().then(() => {
   const httpServer = createServer(handler);
 
@@ -16,10 +18,32 @@ app.prepare().then(() => {
 
   io.on("connection", (socket) => {
     // ...
-    socket.on("hello", (data) => {
-      console.log("catching hello on server");
-      console.log("throwing hello on server");
-      socket.broadcast.emit("hello", data);
+    socket.on("find-match", (data) => {
+      console.log("matches", matches);
+      const foundMatch = matches.find(
+        (match) =>
+          match.nativeLanguage === data.targetLanguage &&
+          match.targetLanguage === data.nativeLanguage
+      );
+      if (foundMatch) {
+        const combinedMatch = [
+          {
+            id: socket.id,
+            ...data,
+          },
+          foundMatch,
+        ];
+        socket.emit("match-found", combinedMatch);
+        io.to(foundMatch.id).emit("match-found", combinedMatch);
+        matches.splice(matches.indexOf(foundMatch), 1);
+      } else {
+        matches.push({
+          id: socket.id,
+          nativeLanguage: data.nativeLanguage,
+          targetLanguage: data.targetLanguage,
+        });
+      }
+      console.log("matches", matches);
     });
   });
 

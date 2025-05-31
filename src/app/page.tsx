@@ -32,25 +32,27 @@ export default function Home() {
       setTransport("N/A");
     }
 
-    function onHello(data: any) {
-      console.log("caught hello", data);
+    function matchFound(data: any) {
+      // console.log("match found", data);
+      const match = data.find((match: any) => match.id !== socket.id);
+      window.alert(`You've been matched with socket.id: ${match.id}`)
     }
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("hello", onHello);
+    socket.on("match-found", matchFound);
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("hello", onHello);
+      socket.off("match-found", matchFound);
     };
   }, []);
 
   const handleMatchMe = () => {
     // window.alert(`Match me: ${nativeLanguage} ${targetLanguage}`);
-    console.log("throwing hello on client")
-    socket.emit("hello", {
+    console.log("looking for match on socket.id", socket.id)
+    socket.emit("find-match", {
       nativeLanguage,
       targetLanguage
     });
