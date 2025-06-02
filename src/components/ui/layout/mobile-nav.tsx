@@ -18,12 +18,14 @@ export const MobileNav = () => {
                 <SheetTrigger>
                     <AlignJustify /></SheetTrigger>
                 <SheetContent side="left">
-                    <Link href="/"><Apple className="text-red-500" /></Link>
-                    <nav className="flex flex-col gap-3 lg:gap-4 mt-4">
+                    <Link href="/" className="flex items-center gap-2">
+                        <h1 className="text-xl font-bold">Lang<span className="font-normal">mate</span></h1>
+                    </Link>
+                    {/* <nav className="flex flex-col gap-3 lg:gap-4 mt-4">
                         <Link href="/project">Project</Link>
                         <Link href="/about">About</Link>
                         <Link href="/contact">Contact</Link>
-                    </nav>
+                    </nav> */}
                 </SheetContent>
             </Sheet>
         </div>

@@ -2,8 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardHeader } from "@/components/ui/card";
 import { Select, SelectValue, SelectTrigger, SelectItem, SelectContent } from "@/components/ui/select";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "./socket";
+import { toast } from "sonner";
 
 export default function Home() {
   const [nativeLanguage, setNativeLanguage] = useState("");
@@ -35,7 +36,13 @@ export default function Home() {
     function matchFound(data: any) {
       // console.log("match found", data);
       const match = data.find((match: any) => match.id !== socket.id);
-      window.alert(`You've been matched with socket.id: ${match.id}`)
+      toast.success(`You've been matched with socket.id: ${match.id}`, {
+        description: "You can now start chatting with your langmate",
+        action: {
+          label: "Join session",
+          onClick: () => console.log("joining session... with socket.id", match.id),
+        }
+      })
     }
 
     socket.on("connect", onConnect);

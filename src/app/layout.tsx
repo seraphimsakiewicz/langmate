@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/ui/layout/header";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
+import { Toaster } from "@/components/ui/sonner"
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +34,7 @@ export default function RootLayout({
         <Header />
         {children}
         <TailwindIndicator />
+        <Toaster position="bottom-center" richColors duration={10000} />
       </body>
     </html>
   );
