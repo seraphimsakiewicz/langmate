@@ -5,8 +5,10 @@ import { Select, SelectValue, SelectTrigger, SelectItem, SelectContent } from "@
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   const [nativeLanguage, setNativeLanguage] = useState("");
   const [targetLanguage, setTargetLanguage] = useState("");
 
@@ -35,12 +37,30 @@ export default function Home() {
 
     function matchFound(data: any) {
       // console.log("match found", data);
-      const match = data.find((match: any) => match.id !== socket.id);
+      const match = data.find((
+        match: { id: string, nativeLanguage: string, targetLanguage: string }
+      ) => match.id !== socket.id);
+
+      // get session id from data
+      const sessionId = data[2].sessionId;
+      // remove session id from data
+      data.splice(2, 1);
+      const currentTime = new Date();
+      // start time is 2 minutes in the future of current time
+      const startTime = new Date(currentTime.getTime() + 1000 * 60 * 0.5);
+      data.push({
+        startTime: startTime.toString(),
+      })
+      localStorage.setItem(sessionId, JSON.stringify(
+        data
+      ));
+
       toast.success(`You've been matched with socket.id: ${match.id}`, {
         description: "You can now start chatting with your langmate",
+        dismissible: false,
         action: {
-          label: "Join session",
-          onClick: () => console.log("joining session... with socket.id", match.id),
+          label: "Join session starting in 2 minutes",
+          onClick: () => router.push(`/session/${sessionId}`),
         }
       })
     }

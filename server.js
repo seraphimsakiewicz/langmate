@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -32,6 +33,9 @@ app.prepare().then(() => {
             ...data,
           },
           foundMatch,
+          {
+            sessionId: uuidv4(),
+          }
         ];
         socket.emit("match-found", combinedMatch);
         io.to(foundMatch.id).emit("match-found", combinedMatch);
