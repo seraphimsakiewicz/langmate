@@ -35,6 +35,7 @@ app.prepare().then(() => {
           foundMatch,
           {
             sessionId: uuidv4(),
+            startTime: new Date(new Date().getTime() + 1000 * 60 * 0.5).toString(),
           }
         ];
         socket.emit("match-found", combinedMatch);

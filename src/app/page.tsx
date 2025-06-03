@@ -6,14 +6,15 @@ import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Language, SessionData, UserData, FindMatchData } from "@/types";
 
 export default function Home() {
   const router = useRouter();
-  const [nativeLanguage, setNativeLanguage] = useState("");
-  const [targetLanguage, setTargetLanguage] = useState("");
+  const [nativeLanguage, setNativeLanguage] = useState<Language>("en");
+  const [targetLanguage, setTargetLanguage] = useState<Language>("es");
 
-  const [isConnected, setIsConnected] = useState(false);
-  const [transport, setTransport] = useState("N/A");
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [transport, setTransport] = useState<string>("N/A");
 
   useEffect(() => {
     if (socket.connected) {
@@ -35,22 +36,17 @@ export default function Home() {
       setTransport("N/A");
     }
 
-    function matchFound(data: any) {
-      // console.log("match found", data);
-      const match = data.find((
-        match: { id: string, nativeLanguage: string, targetLanguage: string }
-      ) => match.id !== socket.id);
+    function matchFound(data: SessionData) {
+      // Get only the user data (first two items)
+      const users = [data[0], data[1]];
+      const match = users.find((user: UserData) => user.id !== socket.id) as UserData | undefined;
 
+      if (!match) {
+        toast.error("No match found");
+        return;
+      }
       // get session id from data
       const sessionId = data[2].sessionId;
-      // remove session id from data
-      data.splice(2, 1);
-      const currentTime = new Date();
-      // start time is 2 minutes in the future of current time
-      const startTime = new Date(currentTime.getTime() + 1000 * 60 * 0.5);
-      data.push({
-        startTime: startTime.toString(),
-      })
       localStorage.setItem(sessionId, JSON.stringify(
         data
       ));
@@ -59,7 +55,7 @@ export default function Home() {
         description: "You can now start chatting with your langmate",
         dismissible: false,
         action: {
-          label: "Join session starting in 2 minutes",
+          label: "Join session starting in 30 seconds!!!",
           onClick: () => router.push(`/session/${sessionId}`),
         }
       })
@@ -79,10 +75,12 @@ export default function Home() {
   const handleMatchMe = () => {
     // window.alert(`Match me: ${nativeLanguage} ${targetLanguage}`);
     console.log("looking for match on socket.id", socket.id)
-    socket.emit("find-match", {
+
+    const findMatchData: FindMatchData = {
       nativeLanguage,
       targetLanguage
-    });
+    }
+    socket.emit("find-match", findMatchData);
   }
 
   return (
@@ -100,7 +98,7 @@ export default function Home() {
               Select your language and find a langmate to practice with.
             </p>
             <div className="flex flex-col gap-2 mt-4">
-              <Select onValueChange={setNativeLanguage}>
+              <Select onValueChange={(value) => setNativeLanguage(value as Language)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your native language" />
                 </SelectTrigger>
@@ -109,7 +107,7 @@ export default function Home() {
                   <SelectItem value="es">Spanish</SelectItem>
                 </SelectContent>
               </Select>
-              <Select onValueChange={setTargetLanguage}>
+              <Select onValueChange={(value) => setTargetLanguage(value as Language)}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select your target language" />
                 </SelectTrigger>
@@ -118,7 +116,9 @@ export default function Home() {
                   <SelectItem value="es">Spanish</SelectItem>
                 </SelectContent>
               </Select>
-              <Button onClick={handleMatchMe} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage}>Match me</Button>
+              <Button onClick={handleMatchMe} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage}>
+                Match me
+              </Button>
             </div>
           </CardTitle>
         </CardHeader>

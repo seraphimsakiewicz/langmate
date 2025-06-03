@@ -2,18 +2,25 @@
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { Language, SessionData } from "@/types";
+
+type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
+type PageParams = {
+    sessionId: string;
+}
 
 export default function SessionPage() {
-    const { sessionId } = useParams();
-    const [timeLeft, setTimeLeft] = useState("");
-    const [timeTillSwitch, setTimeTillSwitch] = useState("");
-    const [startTime, setStartTime] = useState(0);
-    const [currentLanguage, setCurrentLanguage] = useState("en");
-    const [sessionPhase, setSessionPhase] = useState("LOADING"); // LOADING, WAITING, FIRST_LANG, SECOND_LANG, DONE
+    const { sessionId } = useParams<PageParams>();
+    const [timeLeft, setTimeLeft] = useState<string>("");
+    const [timeTillSwitch, setTimeTillSwitch] = useState<string>("");
+    const [startTime, setStartTime] = useState<number>(0);
+    const [currentLanguage, setCurrentLanguage] = useState<Language>("en");
+    // LOADING, WAITING, FIRST_LANG, SECOND_LANG, DONE
+    const [sessionPhase, setSessionPhase] = useState<SessionPhase>("LOADING");
 
     useEffect(() => {
         // This ONLY runs on the client after component mounts
-        const data = JSON.parse(localStorage.getItem(sessionId as string) || "{}");
+        const data: Partial<SessionData> = JSON.parse(localStorage.getItem(sessionId as string) || "{}");
         if (data[2]?.startTime) {
             setStartTime(new Date(data[2].startTime).getTime());
             setSessionPhase("WAITING");
@@ -26,8 +33,8 @@ export default function SessionPage() {
         const timer = setInterval(function () {
             // Get current date and time
             const now = new Date().getTime();
-            const switchTime = startTime + (1 * 60 * 1000);
-            const sessionEndTime = startTime + (2 * 60 * 1000);
+            const switchTime = startTime + (0.5 * 60 * 1000);
+            const sessionEndTime = startTime + (1 * 60 * 1000);
 
             if (now < startTime) {
                 setSessionPhase("WAITING");
