@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import { DailyProvider } from "@daily-co/daily-react";
 import { Language, SessionData } from "@/types";
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
@@ -17,6 +18,8 @@ export default function SessionPage() {
     const [currentLanguage, setCurrentLanguage] = useState<Language>("en");
     // LOADING, WAITING, FIRST_LANG, SECOND_LANG, DONE
     const [sessionPhase, setSessionPhase] = useState<SessionPhase>("LOADING");
+
+    const roomUrl = `https://englishchats.daily.co/langmate-demo`;
 
     useEffect(() => {
         // This ONLY runs on the client after component mounts
@@ -111,9 +114,9 @@ export default function SessionPage() {
 
 
     return (
-        <div>
+        <DailyProvider url={roomUrl}>
             <div>SessionPage {sessionId}</div>
             {renderDisplay()}
-        </div>
+        </DailyProvider>
     )
 }
