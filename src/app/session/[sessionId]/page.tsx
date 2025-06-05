@@ -1,8 +1,8 @@
 "use client"
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { DailyProvider } from "@daily-co/daily-react";
+import DailyIframe from "@daily-co/daily-js";
 import { Language, SessionData } from "@/types";
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
@@ -19,6 +19,10 @@ export default function SessionPage() {
     // LOADING, WAITING, FIRST_LANG, SECOND_LANG, DONE
     const [sessionPhase, setSessionPhase] = useState<SessionPhase>("LOADING");
 
+    // Create a ref for the Daily iframe container
+    const callFrameRef = useRef<HTMLDivElement>(null);
+    const dailyRef = useRef<any>(null);
+    const isCreatingRef = useRef<boolean>(false);
     const roomUrl = `https://englishchats.daily.co/langmate-demo`;
 
     useEffect(() => {
@@ -81,6 +85,52 @@ export default function SessionPage() {
         return () => clearInterval(timer);
     }, [startTime]);
 
+    useEffect(() => {
+        // Prevent creating multiple instances
+        if (isCreatingRef.current || dailyRef.current) {
+            return;
+        }
+
+        // Create Daily iframe when component mounts
+        if (callFrameRef.current) {
+            isCreatingRef.current = true;
+
+            try {
+                dailyRef.current = DailyIframe.createFrame(callFrameRef.current, {
+                    iframeStyle: {
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                        border: 'none',
+                        borderRadius: '8px'
+                    },
+                    showLeaveButton: true,
+                    showFullscreenButton: true,
+                });
+
+                // Join the room
+                dailyRef.current.join({ url: roomUrl });
+            } catch (error) {
+                console.error('Error creating Daily iframe:', error);
+            } finally {
+                isCreatingRef.current = false;
+            }
+        }
+
+        // Cleanup on unmount
+        return () => {
+            if (dailyRef.current) {
+                try {
+                    dailyRef.current.destroy();
+                } catch (error) {
+                    console.error('Error destroying Daily iframe:', error);
+                }
+                dailyRef.current = null;
+            }
+            isCreatingRef.current = false;
+        };
+    }, []); // Empty dependency array - only run once
+
     const renderDisplay = () => {
         switch (sessionPhase) {
             case "LOADING":
@@ -111,12 +161,14 @@ export default function SessionPage() {
         }
     }
 
-
-
     return (
-        <DailyProvider url={roomUrl}>
+        <div>
             <div>SessionPage {sessionId}</div>
             {renderDisplay()}
-        </DailyProvider>
+            {/* Daily Prebuilt Video Interface */}
+            <div className="w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
+                <div ref={callFrameRef} style={{ width: '100%', height: '100%' }} />
+            </div>
+        </div>
     )
 }
