@@ -162,12 +162,18 @@ export default function SessionPage() {
     }
 
     return (
-        <div>
-            <div>SessionPage {sessionId}</div>
-            {renderDisplay()}
-            {/* Daily Prebuilt Video Interface */}
-            <div className="w-full h-96 bg-gray-100 rounded-lg overflow-hidden">
+        <div className="fixed inset-0 bg-gray-900">
+            {/* Fullscreen Daily Video Interface - Background Layer */}
+            <div className="absolute inset-0 w-full h-full">
                 <div ref={callFrameRef} style={{ width: '100%', height: '100%' }} />
+            </div>
+
+            {/* Session Information Overlay - Top Layer */}
+            <div className="absolute top-4 left-4 z-10 bg-black bg-opacity-80 text-white p-3 rounded-lg max-w-sm">
+                <div className="text-sm font-medium mb-1">Session: {sessionId}</div>
+                <div className="text-sm">
+                    {renderDisplay()}
+                </div>
             </div>
         </div>
     )
