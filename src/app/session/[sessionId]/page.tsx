@@ -163,18 +163,51 @@ export default function SessionPage() {
 
     return (
         <div className="fixed inset-0 bg-gray-900">
-            {/* Fullscreen Daily Video Interface - Background Layer */}
-            <div className="absolute inset-0 w-full h-full">
-                <div ref={callFrameRef} style={{ width: '100%', height: '100%' }} />
+            {/* Top Navigation Header */}
+            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 bg-gray-800 bg-opacity-90">
+                {/* Left: User Profile Card */}
+                <div className="flex items-center space-x-3 bg-white rounded-lg px-4 py-2">
+                    <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+                    <div>
+                        <div className="font-semibold text-gray-900">Partner Name</div>
+                        <div className="text-sm text-gray-600">Language Partner</div>
+                    </div>
+                </div>
+
+                {/* Center: Langmate Branding */}
+                <h1 className="text-2xl font-bold text-white">Langmate</h1>
+
+                {/* Right: Timer and Controls */}
+                <div className="flex items-center space-x-4">
+                    <div className="bg-white rounded-lg px-4 py-2">
+                        <div className="text-sm text-gray-600">Status info here</div>
+                    </div>
+                    <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                        Leave
+                    </button>
+                </div>
             </div>
 
-            {/* Session Information Overlay - Top Layer */}
-            <div className="absolute top-4 left-4 z-10 bg-black bg-opacity-80 text-white p-3 rounded-lg max-w-sm">
-                <div className="text-sm font-medium mb-1">Session: {sessionId}</div>
-                <div className="text-sm">
-                    {renderDisplay()}
-                </div>
+            {/* Video Area */}
+            <div className="absolute inset-0 w-full h-full"> {/* Add padding-top to account for header */}
+                <div ref={callFrameRef} className="w-full h-full" />
             </div>
         </div>
     )
+    // return (
+    //     <div className="fixed inset-0 bg-gray-900">
+    //         {/* Fullscreen Daily Video Interface - Background Layer */}
+    //         <div className="absolute inset-0 w-full h-full">
+    //             <div ref={callFrameRef} style={{ width: '100%', height: '100%' }} />
+    //         </div>
+
+    //         {/* Session Information Overlay - Top Layer */}
+    //         <div className="absolute top-4 left-4 z-10 bg-black bg-opacity-80 text-white p-3 rounded-lg max-w-sm">
+    //             <div className="text-sm font-medium mb-1">Session: {sessionId}</div>
+    //             <div className="text-sm">
+    //                 {renderDisplay()}
+    //             </div>
+    //         </div>
+    //     </div>
+    // )
 }
