@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import DailyIframe from "@daily-co/daily-js";
 import { Language, SessionData } from "@/types";
+import { useRouter } from "next/navigation";
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
 type PageParams = {
@@ -12,6 +13,7 @@ type PageParams = {
 
 export default function SessionPage() {
     const { sessionId } = useParams<PageParams>();
+    const router = useRouter();
     const [timeLeft, setTimeLeft] = useState<string>("");
     const [timeTillSwitch, setTimeTillSwitch] = useState<string>("");
     const [startTime, setStartTime] = useState<number>(0);
@@ -138,7 +140,7 @@ export default function SessionPage() {
             case "WAITING":
                 return (
                     <div>
-                        <p>Session starts in: {timeLeft}</p>
+                        <p>Starting in: {timeLeft}</p>
                     </div>
                 )
             case "FIRST_LANG":
@@ -180,14 +182,24 @@ export default function SessionPage() {
                 {/* Right: Timer and Controls */}
                 <div className="flex items-center space-x-4">
                     <div className="bg-white rounded-lg px-4 py-2">
-                        <div className="text-sm text-gray-600">Status info here</div>
+                        <div className="text-sm text-gray-600">
+                            {/* TODO: fix the UI, to make it look better with the 2 timers. */}
+                            {renderDisplay()}
+                        </div>
                     </div>
-                    <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg">
+                    <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg" onClick={() => {
+                        if (dailyRef.current) {
+                            dailyRef.current.destroy();
+                            localStorage.removeItem(sessionId as string);
+                            router.push("/");
+                        }
+                    }}>
                         Leave
                     </button>
                 </div>
             </div>
 
+            {/* TODO: fix the UI once a call has started with 2 people, as its getting cut off. */}
             {/* Video Area */}
             <div className="absolute inset-0 w-full h-full"> {/* Add padding-top to account for header */}
                 <div ref={callFrameRef} className="w-full h-full" />

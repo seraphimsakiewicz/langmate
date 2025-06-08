@@ -15,6 +15,7 @@ export default function Home() {
 
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
+  const [isLookingForMatch, setIsLookingForMatch] = useState<boolean>(false);
 
   useEffect(() => {
     if (socket.connected) {
@@ -59,6 +60,7 @@ export default function Home() {
           onClick: () => router.push(`/session/${sessionId}`),
         }
       })
+      setIsLookingForMatch(false);
     }
 
     socket.on("connect", onConnect);
@@ -73,9 +75,7 @@ export default function Home() {
   }, []);
 
   const handleMatchMe = () => {
-    // window.alert(`Match me: ${nativeLanguage} ${targetLanguage}`);
-    console.log("looking for match on socket.id", socket.id)
-
+    setIsLookingForMatch(true);
     const findMatchData: FindMatchData = {
       nativeLanguage,
       targetLanguage
@@ -116,8 +116,8 @@ export default function Home() {
                   <SelectItem value="es">Spanish</SelectItem>
                 </SelectContent>
               </Select>
-              <Button onClick={handleMatchMe} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage}>
-                Match me
+              <Button onClick={handleMatchMe} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage || isLookingForMatch}>
+                {isLookingForMatch ? "Looking for match..." : "Match me"}
               </Button>
             </div>
           </CardTitle>
