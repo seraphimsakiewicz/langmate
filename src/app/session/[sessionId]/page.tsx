@@ -1,10 +1,11 @@
 "use client"
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import DailyIframe from "@daily-co/daily-js";
+// import DailyIframe from "@daily-co/daily-js";
 import { Language, SessionData } from "@/types";
 import { useRouter } from "next/navigation";
+import { DailyProvider, useCallFrame, useDaily } from '@daily-co/daily-react';
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
 type PageParams = {
@@ -22,9 +23,19 @@ export default function SessionPage() {
     const [sessionPhase, setSessionPhase] = useState<SessionPhase>("LOADING");
 
     // Create a ref for the Daily iframe container
-    const callFrameRef = useRef<HTMLDivElement>(null);
-    const dailyRef = useRef<any>(null);
-    const isCreatingRef = useRef<boolean>(false);
+    const callContainerRef = useRef(null);
+
+    const daily = useDaily();
+
+    // Create the Daily call frame (Prebuilt UI) and attach it to our div:
+    const call = useCallFrame({
+        parentElRef: callContainerRef,
+        options: {
+            showLeaveButton: false,            // hide Daily's default leave button
+            iframeStyle: { width: '100%', height: '100%' }  // make iframe fill its container
+        }
+    });
+
     const roomUrl = `https://englishchats.daily.co/langmate-demo`;
 
     useEffect(() => {
@@ -88,50 +99,11 @@ export default function SessionPage() {
     }, [startTime]);
 
     useEffect(() => {
-        // Prevent creating multiple instances
-        if (isCreatingRef.current || dailyRef.current) {
-            return;
+        if (call && roomUrl) {
+            call.join({ url: roomUrl });
         }
+    }, [call, roomUrl]);
 
-        // Create Daily iframe when component mounts
-        if (callFrameRef.current) {
-            isCreatingRef.current = true;
-
-            try {
-                dailyRef.current = DailyIframe.createFrame(callFrameRef.current, {
-                    iframeStyle: {
-                        position: 'relative',
-                        width: '100%',
-                        height: '100%',
-                        border: 'none',
-                        borderRadius: '8px'
-                    },
-                    showLeaveButton: true,
-                    showFullscreenButton: true,
-                });
-
-                // Join the room
-                dailyRef.current.join({ url: roomUrl });
-            } catch (error) {
-                console.error('Error creating Daily iframe:', error);
-            } finally {
-                isCreatingRef.current = false;
-            }
-        }
-
-        // Cleanup on unmount
-        return () => {
-            if (dailyRef.current) {
-                try {
-                    dailyRef.current.destroy();
-                } catch (error) {
-                    console.error('Error destroying Daily iframe:', error);
-                }
-                dailyRef.current = null;
-            }
-            isCreatingRef.current = false;
-        };
-    }, []); // Empty dependency array - only run once
 
     const renderDisplay = () => {
         switch (sessionPhase) {
@@ -164,9 +136,9 @@ export default function SessionPage() {
     }
 
     return (
-        <div className="fixed inset-0 bg-gray-900">
+        <div className="fixed inset-0 flex flex-col bg-gray-900">
             {/* Top Navigation Header */}
-            <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4 bg-gray-800 bg-opacity-90">
+            <div className="h-20 flex items-center justify-between p-4 bg-gray-800 bg-opacity-90">
                 {/* Left: User Profile Card */}
                 <div className="flex items-center space-x-3 bg-white rounded-lg px-4 py-2">
                     <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
@@ -187,39 +159,18 @@ export default function SessionPage() {
                             {renderDisplay()}
                         </div>
                     </div>
-                    <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg" onClick={() => {
-                        if (dailyRef.current) {
-                            dailyRef.current.destroy();
-                            localStorage.removeItem(sessionId as string);
-                            router.push("/");
-                        }
+                    <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg" onClick={async () => {
+                        localStorage.removeItem(sessionId as string);
+                        router.push("/");
                     }}>
                         Leave
                     </button>
                 </div>
             </div>
 
-            {/* TODO: fix the UI once a call has started with 2 people, as its getting cut off. */}
-            {/* Video Area */}
-            <div className="absolute inset-0 w-full h-full"> {/* Add padding-top to account for header */}
-                <div ref={callFrameRef} className="w-full h-full" />
-            </div>
+            <DailyProvider callObject={call}>
+                <div ref={callContainerRef} className="w-full h-full" />
+            </DailyProvider>
         </div>
     )
-    // return (
-    //     <div className="fixed inset-0 bg-gray-900">
-    //         {/* Fullscreen Daily Video Interface - Background Layer */}
-    //         <div className="absolute inset-0 w-full h-full">
-    //             <div ref={callFrameRef} style={{ width: '100%', height: '100%' }} />
-    //         </div>
-
-    //         {/* Session Information Overlay - Top Layer */}
-    //         <div className="absolute top-4 left-4 z-10 bg-black bg-opacity-80 text-white p-3 rounded-lg max-w-sm">
-    //             <div className="text-sm font-medium mb-1">Session: {sessionId}</div>
-    //             <div className="text-sm">
-    //                 {renderDisplay()}
-    //             </div>
-    //         </div>
-    //     </div>
-    // )
 }
