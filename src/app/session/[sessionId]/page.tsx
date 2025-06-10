@@ -1,11 +1,10 @@
 "use client"
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-// import DailyIframe from "@daily-co/daily-js";
 import { Language, SessionData } from "@/types";
 import { useRouter } from "next/navigation";
-import { DailyProvider, useCallFrame, useDaily } from '@daily-co/daily-react';
+import { DailyProvider, useCallFrame } from '@daily-co/daily-react';
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
 type PageParams = {
@@ -23,9 +22,9 @@ export default function SessionPage() {
     const [sessionPhase, setSessionPhase] = useState<SessionPhase>("LOADING");
 
     // Create a ref for the Daily iframe container
-    const callContainerRef = useRef(null);
 
-    const daily = useDaily();
+    // null! is a non-null assertion operator, it tells the compiler that the value is not null.
+    const callContainerRef = useRef<HTMLDivElement>(null!);
 
     // Create the Daily call frame (Prebuilt UI) and attach it to our div:
     const call = useCallFrame({
