@@ -16,6 +16,8 @@ export default function Home() {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [transport, setTransport] = useState<string>("N/A");
   const [isLookingForMatch, setIsLookingForMatch] = useState<boolean>(false);
+  const [isMatched, setIsMatched] = useState<boolean>(false);
+  const [sessionId, setSessionId] = useState<string>('');
 
   useEffect(() => {
     if (socket.connected) {
@@ -47,7 +49,9 @@ export default function Home() {
         return;
       }
       // get session id from data
-      const sessionId = data[2].sessionId;
+      const { sessionId } = data[2];
+      setSessionId(sessionId);
+      setIsMatched(true);
       localStorage.setItem(sessionId, JSON.stringify(
         data
       ));
@@ -81,6 +85,12 @@ export default function Home() {
       targetLanguage
     }
     socket.emit("find-match", findMatchData);
+  }
+
+  function handleConnect() {
+    if (isMatched) {
+      router.push(`/session/${sessionId}`)
+    }
   }
 
   return (
@@ -119,6 +129,10 @@ export default function Home() {
               <Button onClick={handleMatchMe} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage || isLookingForMatch}>
                 {isLookingForMatch ? "Looking for match..." : "Match me"}
               </Button>
+              {isMatched &&
+                <Button onClick={handleConnect} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage || isLookingForMatch}>
+                  Join Session
+                </Button>}
             </div>
           </CardTitle>
         </CardHeader>
