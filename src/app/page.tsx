@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Language, SessionData, UserData, FindMatchData } from "@/types";
+import { Language, SessionData, SessionInfo, UserData, FindMatchData } from "@/types";
 
 export default function Home() {
   const router = useRouter();
@@ -39,9 +39,10 @@ export default function Home() {
       setTransport("N/A");
     }
 
-    function matchFound(data: SessionData) {
+    async function matchFound(data: SessionData) {
       // Get only the user data (first two items)
       const users = [data[0], data[1]];
+      const sessionInfo = data[2] as SessionInfo | undefined;
       const match = users.find((user: UserData) => user.id !== socket.id) as UserData | undefined;
 
       if (!match) {
@@ -49,7 +50,7 @@ export default function Home() {
         return;
       }
       // get session id from data
-      const { sessionId } = data[2];
+      const { sessionId } = sessionInfo as SessionInfo;
       setSessionId(sessionId);
       setIsMatched(true);
       localStorage.setItem(sessionId, JSON.stringify(

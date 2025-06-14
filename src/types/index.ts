@@ -9,9 +9,10 @@ export type UserData = {
   id: string;
 } & FindMatchData;
 
-type SessionInfo = {
+export type SessionInfo = {
   startTime: string;
   sessionId: string;
+  roomUrl: string;
 };
 
 export interface SessionData extends Array<UserData | SessionInfo> {

@@ -20,6 +20,7 @@ export default function SessionPage() {
     const [currentLanguage, setCurrentLanguage] = useState<Language>("en");
     // LOADING, WAITING, FIRST_LANG, SECOND_LANG, DONE
     const [sessionPhase, setSessionPhase] = useState<SessionPhase>("LOADING");
+    const [roomUrl, setRoomUrl] = useState<string>("");
 
     // Create a ref for the Daily iframe container
 
@@ -35,14 +36,14 @@ export default function SessionPage() {
         }
     });
 
-    const roomUrl = `https://englishchats.daily.co/langmate-demo`;
-
     useEffect(() => {
         // This ONLY runs on the client after component mounts
         const data: Partial<SessionData> = JSON.parse(localStorage.getItem(sessionId as string) || "{}");
+        console.log("data", data);
         if (data[2]?.startTime) {
             setStartTime(new Date(data[2].startTime).getTime());
             setSessionPhase("WAITING");
+            setRoomUrl(data[2].roomUrl);
         }
     }, [sessionId]);
 
