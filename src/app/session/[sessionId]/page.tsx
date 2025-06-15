@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Language, SessionData } from "@/types";
 import { useRouter } from "next/navigation";
 import { DailyProvider, useCallFrame } from '@daily-co/daily-react';
+import { Confetti, type ConfettiRef } from "@/components/magicui/confetti";
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
 type PageParams = {
@@ -26,6 +27,8 @@ export default function SessionPage() {
 
     // null! is a non-null assertion operator, it tells the compiler that the value is not null.
     const callContainerRef = useRef<HTMLDivElement>(null!);
+    const confettiRef = useRef<ConfettiRef>(null);
+
 
     // Create the Daily call frame (Prebuilt UI) and attach it to our div:
     const call = useCallFrame({
@@ -56,8 +59,8 @@ export default function SessionPage() {
         const timer = setInterval(function () {
             // Get current date and time
             const now = new Date().getTime();
-            const switchTime = startTime + (0.5 * 60 * 1000);
-            const sessionEndTime = startTime + (1 * 60 * 1000);
+            const switchTime = startTime + (0.10 * 60 * 1000);
+            const sessionEndTime = startTime + (0.20 * 60 * 1000);
 
             if (now < startTime) {
                 setSessionPhase("WAITING");
@@ -94,6 +97,9 @@ export default function SessionPage() {
             } else {
                 setSessionPhase("DONE");
                 setTimeLeft("0m 0s");
+                const audio = new Audio("/sounds/session-end.mp3")
+                audio.play();
+                // confettiRef.current?.fire();
                 clearInterval(timer);
             }
 
@@ -171,7 +177,20 @@ export default function SessionPage() {
                 </div>
             </div>
 
+
+
             <DailyProvider callObject={call}>
+                <Confetti
+                    ref={confettiRef}
+                    className="absolute top-20 left-1/2 right-1/2 bottom-0 pointer-events-none z-50"
+                    manualstart={false}  // Explicitly set to auto-fire on mount
+                    options={{
+                        particleCount: 500,
+                        origin: { x: .75, y: 0.2 }
+                    }}
+                // manualstart={true}
+                // activates the confetti on mount of page, to test it.
+                />
                 <div ref={callContainerRef} className="w-full h-full" />
             </DailyProvider>
         </div>

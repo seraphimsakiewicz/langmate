@@ -27,7 +27,7 @@ const createRoom = async (sessionInfo) => {
     body: JSON.stringify({
       properties: {
         // expires 2 minutes after the session starts
-        exp: Math.floor(new Date(startTime).getTime() / 1000) + 90,
+        exp: Math.floor(new Date(startTime).getTime() / 1000) + 60,
       },
     }),
   });
@@ -58,7 +58,7 @@ app.prepare().then(() => {
         const sessionInfo = {
           sessionId: uuidv4(),
           startTime: new Date(
-            new Date().getTime() + 1000 * 60 * 0.5
+            new Date().getTime() + 1000 * 60 * 0.10
           ).toString(),
         };
 

@@ -57,14 +57,6 @@ export default function Home() {
         data
       ));
 
-      toast.success(`You've been matched with socket.id: ${match.id}`, {
-        description: "You can now start chatting with your langmate",
-        dismissible: false,
-        action: {
-          label: "Join session starting in 30 seconds!!!",
-          onClick: () => router.push(`/session/${sessionId}`),
-        }
-      })
       setIsLookingForMatch(false);
     }
 
@@ -93,6 +85,7 @@ export default function Home() {
       router.push(`/session/${sessionId}`)
     }
   }
+
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
