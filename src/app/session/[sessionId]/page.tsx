@@ -47,6 +47,9 @@ export default function SessionPage() {
         }
     }, [sessionId]);
 
+    // TODO: add harp sound after session ends should be 3-4 seconds long.
+    // Figure out how to kick out the user after the session ends, without the UI showing though.
+
     useEffect(() => {
 
         if (startTime === 0) return;
