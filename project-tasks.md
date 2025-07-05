@@ -1,0 +1,1 @@
+ok how about this they can schedule a session every 10 minutes, but sessins are either 20,40,or 60 minutes. so no matter what theyll always have a 10 min break to take.
