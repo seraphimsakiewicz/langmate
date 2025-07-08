@@ -33,7 +33,7 @@
 
 **UI to build**:
 - `/onboarding` page with 2-step form
-- Language dropdowns (start with EN/ES)
+- Language dropdowns (start with most common languages for now)
 - Nice welcome message
 
 ---
@@ -43,15 +43,15 @@
 
 **What we need**:
 - [ ] Replace instant matching with time slots
-- [ ] Show next 6 hours of available times
+- [ ] Let users schedule up to 1 year in advance from current date.
 - [ ] Let users pick 20/40/60 min sessions
 - [ ] Simple booking confirmation
 
 **UI to build**:
-- `/schedule` page with time grid
+- `/schedule` page with time grid, similar to focusmate.
 - Time slot buttons (10:00, 10:10, 10:20...)
 - Duration selector (20/40/60 min buttons)
-- Booking confirmation popup
+- Require click to select a timeslot and then click to book, similar to focusmate.
 
 ---
 
@@ -61,7 +61,7 @@
 **What we need**:
 - [ ] Landing page after login
 - [ ] Show upcoming sessions
-- [ ] Quick "Schedule Session" button
+- [ ] Quick "Schedule Session" button that opens a modal, like focusmate.
 - [ ] Simple navigation menu
 
 **UI to build**:
@@ -218,7 +218,7 @@
 2. Set their native and target languages
 3. Schedule a language exchange session
 4. Get matched with someone who speaks their target language
-5. Have a video call with automatic language switching
+5. Have a video call with automatic language switch timers
 6. See their upcoming sessions
 
 **That's it!** Everything else is post-MVP.
