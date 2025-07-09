@@ -8,7 +8,9 @@ const { Server } = require("socket.io");
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  connectionStateRecovery: {}
+});
 
 app.get("/", (req, res) => {
   res.sendFile(join(__dirname, "index.html"));
@@ -25,7 +27,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("chat message", (msg) => {
+    console.log(msg);
     io.emit("chat message", msg);
+  });
+
+  socket.on("hello", (arg1, arg2, arg3) => {
+    console.log(arg1); // 1
+    console.log(arg2); // '2'
+    console.log(arg3); // { 3: '4', 5: <Buffer 06> }
   });
 });
 
