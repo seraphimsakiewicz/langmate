@@ -5,9 +5,10 @@ const express = require("express");
 const { createServer } = require("node:http");
 const app = express();
 const server = createServer(app);
+const { join } = require("node:path");
 
 app.get("/", (req, res) => {
-  res.send("<h1>Hello World</h1>");
+  res.sendFile(join(__dirname, "index.html"));
 });
 
 server.listen(8080, () => {
