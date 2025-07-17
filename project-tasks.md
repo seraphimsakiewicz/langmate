@@ -6,9 +6,9 @@
 **Priority**: Critical | **Estimate**: 2 hours
 
 **Tasks**:
-- [ ] Create new Supabase project
+- [x] Create new Supabase project
 - [ ] Set up environment variables in Next.js
-- [ ] Install `@supabase/supabase-js` package
+- [x] Install `@supabase/supabase-js` package
 - [ ] Create supabase client utility file
 - [ ] Test connection with basic query
 
