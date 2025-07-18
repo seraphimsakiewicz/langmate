@@ -19,57 +19,57 @@ export default function Home() {
   const [isMatched, setIsMatched] = useState<boolean>(false);
   const [sessionId, setSessionId] = useState<string>('');
 
-  useEffect(() => {
-    if (socket.connected) {
-      onConnect();
-    }
-
-    function onConnect() {
-      setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
-
-      socket.io.engine.on("upgrade", (transport) => {
-        setTransport(transport.name);
-      });
-
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-      setTransport("N/A");
-    }
-
-    async function matchFound(data: SessionData) {
-      // Get only the user data (first two items)
-      const users = [data[0], data[1]];
-      const sessionInfo = data[2] as SessionInfo | undefined;
-      const match = users.find((user: UserData) => user.id !== socket.id) as UserData | undefined;
-
-      if (!match) {
-        toast.error("No match found");
-        return;
+  /*   useEffect(() => {
+      if (socket.connected) {
+        onConnect();
       }
-      // get session id from data
-      const { sessionId } = sessionInfo as SessionInfo;
-      setSessionId(sessionId);
-      setIsMatched(true);
-      localStorage.setItem(sessionId, JSON.stringify(
-        data
-      ));
-
-      setIsLookingForMatch(false);
-    }
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("match-found", matchFound);
-
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
-      socket.off("match-found", matchFound);
-    };
-  }, []);
+  
+      function onConnect() {
+        setIsConnected(true);
+        setTransport(socket.io.engine.transport.name);
+  
+        socket.io.engine.on("upgrade", (transport) => {
+          setTransport(transport.name);
+        });
+  
+      }
+  
+      function onDisconnect() {
+        setIsConnected(false);
+        setTransport("N/A");
+      }
+  
+      async function matchFound(data: SessionData) {
+        // Get only the user data (first two items)
+        const users = [data[0], data[1]];
+        const sessionInfo = data[2] as SessionInfo | undefined;
+        const match = users.find((user: UserData) => user.id !== socket.id) as UserData | undefined;
+  
+        if (!match) {
+          toast.error("No match found");
+          return;
+        }
+        // get session id from data
+        const { sessionId } = sessionInfo as SessionInfo;
+        setSessionId(sessionId);
+        setIsMatched(true);
+        localStorage.setItem(sessionId, JSON.stringify(
+          data
+        ));
+  
+        setIsLookingForMatch(false);
+      }
+  
+      socket.on("connect", onConnect);
+      socket.on("disconnect", onDisconnect);
+      socket.on("match-found", matchFound);
+  
+      return () => {
+        socket.off("connect", onConnect);
+        socket.off("disconnect", onDisconnect);
+        socket.off("match-found", matchFound);
+      };
+    }, []); */
 
   const handleMatchMe = () => {
     setIsLookingForMatch(true);
@@ -89,7 +89,8 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="flex flex-col gap-2">
+      Welcome to Langmate
+      {/*       <div className="flex flex-col gap-2">
         <p>Connected: {isConnected ? "✅" : "❌"}</p>
         <p>Transport: {transport}</p>
       </div>
@@ -130,7 +131,7 @@ export default function Home() {
             </div>
           </CardTitle>
         </CardHeader>
-      </Card>
+      </Card> */}
     </main>
   )
 }

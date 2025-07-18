@@ -10,10 +10,10 @@ export const MainNav = () => {
                 <Link href="/contact">Contact</Link>
             </nav> */}
             {/* Desktop & mobile */}
-            {/* <div className="flex items-center justify-end flex-1 gap-4">
+            <div className="flex items-center justify-end flex-1 gap-4">
                 <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">Login</Link>
-                <Link href="/signup" className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">Signup</Link>
-            </div> */}
+                <Link href="/sign-up" className="rounded-md bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800">Signup</Link>
+            </div>
         </div>
     )
 }
