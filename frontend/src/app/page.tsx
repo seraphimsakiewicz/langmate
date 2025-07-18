@@ -77,7 +77,7 @@ export default function Home() {
       nativeLanguage,
       targetLanguage
     }
-    socket.emit("find-match", findMatchData);
+    // socket.emit("find-match", findMatchData);
   }
 
   function handleConnect() {
