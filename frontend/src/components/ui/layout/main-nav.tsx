@@ -1,14 +1,18 @@
 "use client";
 
-import { Apple } from "lucide-react";
+import { Apple, SubscriptIcon } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { useState, useEffect, Fragment } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { Button } from "../button";
 
 export const MainNav = () => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const supabase = createClient();
+  const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -20,7 +24,14 @@ export const MainNav = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [pathName]);
+
+  const logOut = async () => {
+    await supabase.auth.signOut();
+    setLoggedIn(false);
+    // navigate to home
+    router.push("/");
+  };
 
   return (
     <div className="hidden md:flex">
@@ -32,12 +43,12 @@ export const MainNav = () => {
       {/* Desktop & mobile */}
       <div className="flex items-center justify-end flex-1 gap-4">
         {loggedIn ? (
-          <Link
-            href="/auth/signout"
-            className="text-sm font-medium text-gray-600 hover:text-gray-900"
+          <Button
+            onClick={logOut}
+            // className="text-sm font-medium text-gray-600 hover:text-gray-900"
           >
             Sign Out
-          </Link>
+          </Button>
         ) : (
           <Fragment>
             <Link
