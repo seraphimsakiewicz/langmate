@@ -1,77 +1,78 @@
-'use client'
-import { useCallback, useEffect, useState } from 'react'
-import { createClient } from '@/utils/supabase/client'
-import { type User } from '@supabase/supabase-js'
+"use client";
+import { useCallback, useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import Avatar from "./avatar";
+import { type User } from "@supabase/supabase-js";
 
 // ...
 
 export default function AccountForm({ user }: { user: User | null }) {
-  const supabase = createClient()
-  const [loading, setLoading] = useState(true)
-  const [fullname, setFullname] = useState<string | null>(null)
-  const [username, setUsername] = useState<string | null>(null)
-  const [website, setWebsite] = useState<string | null>(null)
-  const [avatar_url, setAvatarUrl] = useState<string | null>(null)
+  const supabase = createClient();
+  const [loading, setLoading] = useState(true);
+  const [fullname, setFullname] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [website, setWebsite] = useState<string | null>(null);
+  const [avatar_url, setAvatarUrl] = useState<string | null>(null);
 
   const getProfile = useCallback(async () => {
     try {
-      setLoading(true)
+      setLoading(true);
 
       const { data, error, status } = await supabase
-        .from('profiles')
+        .from("profiles")
         .select(`full_name, username, website, avatar_url`)
-        .eq('id', user?.id)
-        .single()
+        .eq("id", user?.id)
+        .single();
 
       if (error && status !== 406) {
-        console.log(error)
-        throw error
+        console.log(error);
+        throw error;
       }
 
       if (data) {
-        setFullname(data.full_name)
-        setUsername(data.username)
-        setWebsite(data.website)
-        setAvatarUrl(data.avatar_url)
+        setFullname(data.full_name);
+        setUsername(data.username);
+        setWebsite(data.website);
+        setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
-      alert('Error loading user data!')
+      alert("Error loading user data!");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }, [user, supabase])
+  }, [user, supabase]);
 
   useEffect(() => {
-    getProfile()
-  }, [user, getProfile])
+    getProfile();
+  }, [user, getProfile]);
 
   async function updateProfile({
     username,
     website,
     avatar_url,
   }: {
-    username: string | null
-    fullname: string | null
-    website: string | null
-    avatar_url: string | null
+    username: string | null;
+    fullname: string | null;
+    website: string | null;
+    avatar_url: string | null;
   }) {
     try {
-      setLoading(true)
+      setLoading(true);
 
-      const { error } = await supabase.from('profiles').upsert({
+      const { error } = await supabase.from("profiles").upsert({
         id: user?.id as string,
         full_name: fullname,
         username,
         website,
         avatar_url,
         updated_at: new Date().toISOString(),
-      })
-      if (error) throw error
-      alert('Profile updated!')
+      });
+      if (error) throw error;
+      alert("Profile updated!");
     } catch (error) {
-      alert('Error updating the data!')
+      alert("Error updating the data!");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -80,32 +81,54 @@ export default function AccountForm({ user }: { user: User | null }) {
       <div className="w-full max-w-md">
         <div className="bg-card border border-border rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-foreground">Account Settings</h1>
-            <p className="text-muted-foreground mt-2">Manage your profile information</p>
+            <h1 className="text-2xl font-bold text-foreground">
+              Account Settings
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              Manage your profile information
+            </p>
+          </div>
+
+          <div className="flex justify-center mb-8">
+            <Avatar
+              uid={user?.id ?? null}
+              url={avatar_url}
+              size={120}
+              onUpload={(url) => {
+                setAvatarUrl(url);
+                updateProfile({ fullname, username, website, avatar_url: url });
+              }}
+            />
           </div>
 
           <div className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-foreground"
+              >
                 Email
               </label>
-              <input 
-                id="email" 
-                type="text" 
-                value={user?.email || ''} 
-                disabled 
+              <input
+                id="email"
+                type="text"
+                value={user?.email || ""}
+                disabled
                 className="w-full px-3 py-2 border border-border rounded-md bg-muted text-muted-foreground cursor-not-allowed"
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="fullName" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="fullName"
+                className="text-sm font-medium text-foreground"
+              >
                 Full Name
               </label>
               <input
                 id="fullName"
                 type="text"
-                value={fullname || ''}
+                value={fullname || ""}
                 onChange={(e) => setFullname(e.target.value)}
                 className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                 placeholder="Enter your full name"
@@ -113,13 +136,16 @@ export default function AccountForm({ user }: { user: User | null }) {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="username" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="username"
+                className="text-sm font-medium text-foreground"
+              >
                 Username
               </label>
               <input
                 id="username"
                 type="text"
-                value={username || ''}
+                value={username || ""}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                 placeholder="Choose a username"
@@ -127,13 +153,16 @@ export default function AccountForm({ user }: { user: User | null }) {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="website" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="website"
+                className="text-sm font-medium text-foreground"
+              >
                 Website
               </label>
               <input
                 id="website"
                 type="url"
-                value={website || ''}
+                value={website || ""}
                 onChange={(e) => setWebsite(e.target.value)}
                 className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                 placeholder="https://your-website.com"
@@ -143,15 +172,17 @@ export default function AccountForm({ user }: { user: User | null }) {
 
           <div className="mt-8 space-y-4">
             <button
-              onClick={() => updateProfile({ fullname, username, website, avatar_url })}
+              onClick={() =>
+                updateProfile({ fullname, username, website, avatar_url })
+              }
               disabled={loading}
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-md font-medium transition-colors"
             >
-              {loading ? 'Updating...' : 'Update Profile'}
+              {loading ? "Updating..." : "Update Profile"}
             </button>
 
             <form action="/auth/signout" method="post" className="w-full">
-              <button 
+              <button
                 type="submit"
                 className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 px-4 py-2 rounded-md font-medium transition-colors"
               >
@@ -162,5 +193,5 @@ export default function AccountForm({ user }: { user: User | null }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
