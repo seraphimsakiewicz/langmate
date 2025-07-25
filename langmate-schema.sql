@@ -2,7 +2,7 @@
 -- Database: PostgreSQL
 -- Generated at: 2025-07-22T16:21:11.129Z
 
-CREATE TABLE "users" (
+CREATE TABLE "profiles" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "email" varchar(255) UNIQUE NOT NULL,
   "username" varchar(50) UNIQUE NOT NULL,
@@ -147,28 +147,28 @@ COMMENT ON TABLE "user_snoozes" IS 'Temporarily hide users. Check constraint: us
 
 COMMENT ON COLUMN "user_snoozes"."reason" IS 'not_compatible, break_needed, temporary_hide, other';
 
-ALTER TABLE "user_languages" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "user_languages" ADD FOREIGN KEY ("user_id") REFERENCES "profiles" ("id");
 
 ALTER TABLE "user_languages" ADD FOREIGN KEY ("language_id") REFERENCES "languages" ("id");
 
-ALTER TABLE "sessions" ADD FOREIGN KEY ("participant_one_id") REFERENCES "users" ("id");
+ALTER TABLE "sessions" ADD FOREIGN KEY ("participant_one_id") REFERENCES "profiles" ("id");
 
-ALTER TABLE "sessions" ADD FOREIGN KEY ("participant_two_id") REFERENCES "users" ("id");
+ALTER TABLE "sessions" ADD FOREIGN KEY ("participant_two_id") REFERENCES "profiles" ("id");
 
 ALTER TABLE "sessions" ADD FOREIGN KEY ("language_one_id") REFERENCES "languages" ("id");
 
 ALTER TABLE "sessions" ADD FOREIGN KEY ("language_two_id") REFERENCES "languages" ("id");
 
-ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "profiles" ("id");
 
-ALTER TABLE "user_favorites" ADD FOREIGN KEY ("favorited_user_id") REFERENCES "users" ("id");
+ALTER TABLE "user_favorites" ADD FOREIGN KEY ("favorited_user_id") REFERENCES "profiles" ("id");
 
-ALTER TABLE "user_reports" ADD FOREIGN KEY ("reporter_id") REFERENCES "users" ("id");
+ALTER TABLE "user_reports" ADD FOREIGN KEY ("reporter_id") REFERENCES "profiles" ("id");
 
-ALTER TABLE "user_reports" ADD FOREIGN KEY ("reported_user_id") REFERENCES "users" ("id");
+ALTER TABLE "user_reports" ADD FOREIGN KEY ("reported_user_id") REFERENCES "profiles" ("id");
 
 ALTER TABLE "user_reports" ADD FOREIGN KEY ("session_id") REFERENCES "sessions" ("id");
 
-ALTER TABLE "user_snoozes" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "user_snoozes" ADD FOREIGN KEY ("user_id") REFERENCES "profiles" ("id");
 
-ALTER TABLE "user_snoozes" ADD FOREIGN KEY ("snoozed_user_id") REFERENCES "users" ("id");
+ALTER TABLE "user_snoozes" ADD FOREIGN KEY ("snoozed_user_id") REFERENCES "profiles" ("id");
