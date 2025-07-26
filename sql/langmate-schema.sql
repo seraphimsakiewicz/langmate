@@ -3,7 +3,7 @@
 -- Generated at: 2025-07-22T16:21:11.129Z
 
 CREATE TABLE "profiles" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "id" uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   "email" varchar(255) UNIQUE NOT NULL,
   "username" varchar(50) UNIQUE NOT NULL,
   "full_name" varchar(100),

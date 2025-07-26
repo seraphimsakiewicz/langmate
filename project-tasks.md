@@ -17,9 +17,9 @@
 - [x] All tables defined: users, languages, user_languages, sessions, user_favorites, user_reports, user_snoozes
 
 ### 🔲 **Setup Tasks:**
-- [ ] Apply schema to Supabase database
-- [ ] Seed languages table with common languages (en, es, fr, de, pt, etc.)
-- [ ] Set up RLS policies for all tables // what is this?
+- [x] Apply schema to Supabase database
+- [ ] Seed languages table with common languages (en, es)
+- [ ] Set up RLS policies for all tables
 - [ ] Create database functions for matchmaking queries
 
 ---
