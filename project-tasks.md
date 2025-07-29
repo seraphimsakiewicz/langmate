@@ -87,7 +87,10 @@
 - [ ] **Home page session launcher:**
   - [ ] Create "Start Session" modal/component
   - [ ] Language selection for this session (from user's languages)
-  - [ ] Duration selection (20/40/60 minutes)
+  - [ ] Duration selection (25/50 minutes, moving to a simpler timeslot & durations options since
+    makes sense to offer less options to the user to concentrate users to book in only 4 available
+    session slots an hour instead of 6, but maybe this will even change to only start of hour and
+    middle of the hour even...)
   - [ ] "Finding match..." loading state
 - [ ] **Matchmaking flow:**
   - [ ] Connect to websocket for real-time matching

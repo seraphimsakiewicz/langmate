@@ -1,6 +1,6 @@
 # Scheduled-Based Matching Flows
 
-All sessions are scheduled for specific time slots (e.g., 2:00 PM, 2:10 PM, 2:20 PM, etc.)
+All sessions are scheduled for specific time slots (e.g., 2:00 PM, 2:15 PM, 2:30 PM, 2:45 PM, etc.)
 
 ## Scenario 1: Happy Path - Successful Match
 
@@ -88,25 +88,6 @@ INSERT INTO match_requests (user_id, native_language_id, learning_language_id, p
                            availability_start, availability_end, preferred_duration_minutes)
 VALUES ('user-a', 'english', 'spanish', 'intermediate', 
         '2025-07-27 16:00:00', '2025-07-27 16:00:00', 60);
-```
-
-## Scenario 5: Multiple Time Slots
-
-**What happens:** User A wants to be available for multiple time slots to increase match chances
-
-**Step 1:** Create multiple match requests
-```sql
-INSERT INTO match_requests (user_id, native_language_id, learning_language_id, proficiency_level, availability_start, availability_end, preferred_duration_minutes)
-VALUES 
-('user-a', 'english', 'spanish', 'intermediate', '2025-07-27 15:00:00', '2025-07-27 15:00:00', 60),
-('user-a', 'english', 'spanish', 'intermediate', '2025-07-27 15:10:00', '2025-07-27 15:10:00', 60),
-('user-a', 'english', 'spanish', 'intermediate', '2025-07-27 15:20:00', '2025-07-27 15:20:00', 60);
-```
-
-**Step 2:** When User A gets matched for 3:00 PM, cancel other requests
-```sql
-UPDATE match_requests SET status='cancelled' 
-WHERE user_id='user-a' AND status='waiting' AND id != 'matched-req-id';
 ```
 
 ## Key Points:
