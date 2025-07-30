@@ -63,9 +63,9 @@
 ### ✅ **Completed:**
 - [x] Basic websocket server (ws-server/server.js)
 - [x] Simple in-memory matchmaking logic
-- [x] Daily.co integration for video rooms
 
 ### 🔲 **Integration Tasks:**
+- [] Daily.co to Agora integration for video rooms
 - [ ] **Re-enable frontend socket connection:**
   - [ ] Uncomment and fix socket.js integration
   - [ ] Connect frontend to ws-server
@@ -105,11 +105,11 @@
 
 ### ✅ **Completed:**
 - [x] Split timer functionality (hardcoded en/es)
-- [x] Daily.co video integration
 - [x] Session state management
 - [x] Session end sound
 
 ### 🔲 **Dynamic Features:**
+- [] Daily to Agora video integration
 - [ ] **Dynamic language display:**
   - [ ] Show actual session languages (not hardcoded)
   - [ ] Display language names from database
