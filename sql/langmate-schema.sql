@@ -12,6 +12,7 @@ CREATE TABLE "profiles" (
   "bio" text,
   "created_at" timestamptz DEFAULT (now()),
   "updated_at" timestamptz DEFAULT (now())
+  -- frozen_until, set default null, otherwise timestamp
 );
 
 CREATE TABLE "languages" (
@@ -22,6 +23,7 @@ CREATE TABLE "languages" (
   "created_at" timestamptz DEFAULT (now())
 );
 
+-- 
 CREATE TABLE "user_languages" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "user_id" uuid NOT NULL,

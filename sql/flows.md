@@ -16,6 +16,8 @@ INSERT INTO match_requests (user_id, native_language_id, learning_language_id, p
 VALUES ('user-b', 'spanish', 'english', 'intermediate', '2025-07-27 15:00:00', '2025-07-27 15:00:00', 60);
 ```
 
+
+<!-- do this with a trigger -->
 **Step 3:** Matching algorithm auto-creates session
 ```sql
 -- Mark both requests as matched
