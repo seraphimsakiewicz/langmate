@@ -1,176 +1,140 @@
--- SQL dump generated using DBML (dbml.dbdiagram.io)
--- Database: PostgreSQL
--- Generated at: 2025-07-22T16:21:11.129Z
-
+-- Simplified Langmate MVP Schema
+-- Focus: 1-on-1 matching, 25 min sessions (12.5 min each language)
+-- Core user profiles
 CREATE TABLE "profiles" (
   "id" uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   "email" varchar(255) UNIQUE NOT NULL,
-  "username" varchar(50) UNIQUE NOT NULL,
-  "full_name" varchar(100),
+  "first_name" varchar(50),
+  "last_name" varchar(50),
   "avatar_url" text,
   "timezone" varchar(50),
   "bio" text,
   "created_at" timestamptz DEFAULT (now()),
   "updated_at" timestamptz DEFAULT (now())
-  -- frozen_until, set default null, otherwise timestamp
 );
 
+-- Language reference table (keep for scalability)
 CREATE TABLE "languages" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "code" varchar(10) UNIQUE NOT NULL,
+  -- e.g., en, es, fr
   "name" varchar(100) NOT NULL,
-  "native_name" varchar(100),
-  "created_at" timestamptz DEFAULT (now())
+  -- e.g., English, Spanish
+  "created_at" timestamptz DEFAULT (now()),
+  "updated" timestamptz DEFAULT (now())
 );
 
--- 
+-- User language skills (simplified)
 CREATE TABLE "user_languages" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "user_id" uuid NOT NULL,
-  "language_id" uuid NOT NULL,
-  "proficiency_level" varchar(20),
+  "user_id" uuid NOT NULL REFERENCES "profiles" ("id") ON DELETE CASCADE,
+  "language_id" uuid NOT NULL REFERENCES "languages" ("id"),
+  "proficiency_level" varchar(20) NOT NULL,
+  -- native, fluent, conversational, beginner
   "is_native" boolean DEFAULT false,
-  "created_at" timestamptz DEFAULT (now())
+  "created_at" timestamptz DEFAULT (now()),
+  "updated" timestamptz DEFAULT (now()),
+  UNIQUE("user_id", "language_id")
 );
 
+-- Simplified match requests (removed availability windows for MVP)
+CREATE TABLE "match_requests" (
+  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+  "user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "native_language_id" uuid NOT NULL REFERENCES "languages" ("id"),
+  "learning_language_id" uuid NOT NULL REFERENCES "languages" ("id"),
+  "requested_start_time" timestamptz NOT NULL,
+  -- When they want to start
+  "duration" integer NOT NULL DEFAULT 25,
+  -- status expires if its still searching at requested_start_time.
+  "status" varchar(20) DEFAULT 'searching',
+  -- searching, matched, expired, cancelled
+  "session_id" uuid,
+  -- Links to session when matched
+  "priority" integer DEFAULT 0,
+  "created_at" timestamptz DEFAULT (now()),
+  "updated_at" timestamptz DEFAULT (now()),
+  "matched_at" timestamptz
+);
+
+-- Sessions table (simplified for 25 min sessions)
 CREATE TABLE "sessions" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "participant_one_id" uuid NOT NULL,
-  "participant_two_id" uuid,
-  "language_one_id" uuid NOT NULL,
-  "language_two_id" uuid NOT NULL,
-  "duration_minutes" integer NOT NULL DEFAULT 60,
-  "start_time" timestamptz,
-  "end_time" timestamptz,
-  "status" varchar(20) DEFAULT 'waiting_for_participants',
+  "participant_one_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "participant_two_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "language_one_id" uuid NOT NULL REFERENCES "languages" ("id"),
+  -- P1's native language
+  "language_two_id" uuid NOT NULL REFERENCES "languages" ("id"),
+  -- P2's native language
+  "start_time" timestamptz NOT NULL,
+  "duration" integer DEFAULT 25,
+  "status" varchar(20) DEFAULT 'scheduled',
+  -- scheduled, active, completed, cancelled
   "room_url" text,
+  "cancelled_by_user_id" uuid,
+  -- Track who cancelled
+  "cancellation_time" timestamptz,
   "created_at" timestamptz DEFAULT (now()),
   "updated_at" timestamptz DEFAULT (now())
 );
 
-CREATE TABLE "user_favorites" (
+-- Session attendance tracking (for no-show detection)
+CREATE TABLE "session_attendance" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "user_id" uuid NOT NULL,
-  "favorited_user_id" uuid NOT NULL,
-  "created_at" timestamptz DEFAULT (now())
+  "session_id" uuid NOT NULL REFERENCES "sessions" ("id") ON DELETE CASCADE,
+  "user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "joined_at" timestamptz,
+  "no_show" boolean DEFAULT false,
+  "left_at" timestamptz,
+  -- this will be an updatable field, everytime someone leaves a session we update this to keep track that people are leaving AFTER the session ends.
+  "created_at" timestamptz DEFAULT (now()),
+  "updated_at" timestamptz DEFAULT (now()),
+  UNIQUE("session_id", "user_id") -- means one user can only one attendance record per session, prevents duplicates.
 );
 
+-- Keep reports for safety
 CREATE TABLE "user_reports" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "reporter_id" uuid NOT NULL,
-  "reported_user_id" uuid NOT NULL,
-  "session_id" uuid,
-  "reason" varchar(50) NOT NULL,
+  "reporter_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "reported_user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "session_id" uuid REFERENCES "sessions" ("id"),
+  "reason" varchar(20) NOT NULL,
+  -- fake, offensive, misconduct, other
   "description" text,
   "status" varchar(20) DEFAULT 'pending',
-  "created_at" timestamptz DEFAULT (now())
+  -- pending, reviewed, resolved
+  "created_at" timestamptz DEFAULT (now()),
+  "updated_at" timestamptz DEFAULT (now()),
+  CHECK (reporter_id != reported_user_id) -- just checks on creation to make sure reported_user_id does not equal reporter_id
 );
 
-CREATE TABLE "user_snoozes" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "user_id" uuid NOT NULL,
-  "snoozed_user_id" uuid NOT NULL,
-  "expires_at" timestamptz NOT NULL,
-  "reason" varchar(50),
-  "created_at" timestamptz DEFAULT (now())
-);
+-- for later... snoozes, favorites.
 
+-- Indexes for performance
 CREATE INDEX "idx_user_languages_user_id" ON "user_languages" ("user_id");
 
 CREATE INDEX "idx_user_languages_language_id" ON "user_languages" ("language_id");
 
-CREATE INDEX "idx_user_languages_native" ON "user_languages" ("is_native");
+CREATE INDEX "idx_match_requests_status" ON "match_requests" ("status");
 
-CREATE UNIQUE INDEX ON "user_languages" ("user_id", "language_id");
+CREATE INDEX "idx_match_requests_user" ON "match_requests" ("user_id");
+
+CREATE INDEX "idx_match_requests_languages" ON "match_requests" ("native_language_id", "learning_language_id");
+
+CREATE INDEX "idx_match_requests_start_time" ON "match_requests" ("requested_start_time");
 
 CREATE INDEX "idx_sessions_status" ON "sessions" ("status");
 
-CREATE INDEX "idx_sessions_start_time" ON "sessions" ("start_time");
+CREATE INDEX "idx_sessions_scheduled_start" ON "sessions" ("start_time");
 
-CREATE INDEX "idx_sessions_language_one_id" ON "sessions" ("language_one_id");
+CREATE INDEX "idx_sessions_participants" ON "sessions" ("participant_one_id", "participant_two_id");
 
-CREATE INDEX "idx_sessions_language_two_id" ON "sessions" ("language_two_id");
+CREATE INDEX "idx_session_attendance_session" ON "session_attendance" ("session_id");
 
-CREATE INDEX "idx_sessions_participant_one_id" ON "sessions" ("participant_one_id");
-
-CREATE INDEX "idx_sessions_participant_two_id" ON "sessions" ("participant_two_id");
-
-CREATE INDEX "idx_sessions_created_at" ON "sessions" ("created_at");
-
-CREATE UNIQUE INDEX ON "user_favorites" ("user_id", "favorited_user_id");
-
-CREATE INDEX "idx_user_favorites_user_id" ON "user_favorites" ("user_id");
-
-CREATE INDEX "idx_user_reports_reporter_id" ON "user_reports" ("reporter_id");
-
-CREATE INDEX "idx_user_reports_reported_user_id" ON "user_reports" ("reported_user_id");
+CREATE INDEX "idx_session_attendance_user" ON "session_attendance" ("user_id");
 
 CREATE INDEX "idx_user_reports_status" ON "user_reports" ("status");
 
-CREATE INDEX "idx_user_snoozes_expires" ON "user_snoozes" ("expires_at");
-
-CREATE UNIQUE INDEX ON "user_snoozes" ("user_id", "snoozed_user_id");
-
-CREATE INDEX "idx_user_snoozes_user_id" ON "user_snoozes" ("user_id");
-
-COMMENT ON COLUMN "languages"."code" IS 'e.g., en, es, fr';
-
-COMMENT ON COLUMN "languages"."name" IS 'e.g., English, Spanish, French';
-
-COMMENT ON COLUMN "languages"."native_name" IS 'e.g., English, Español, Français';
-
-COMMENT ON COLUMN "user_languages"."proficiency_level" IS 'native, fluent, conversational, beginner';
-
-COMMENT ON COLUMN "sessions"."language_one_id" IS 'First language in exchange';
-
-COMMENT ON COLUMN "sessions"."language_two_id" IS 'Second language in exchange';
-
-COMMENT ON COLUMN "sessions"."duration_minutes" IS 'Total session duration (e.g., 20, 40, 60 minutes)';
-
-COMMENT ON COLUMN "sessions"."start_time" IS 'Set when both participants join, null during matching';
-
-COMMENT ON COLUMN "sessions"."end_time" IS 'Calculated based on session duration';
-
-COMMENT ON COLUMN "sessions"."status" IS 'waiting_for_participants, active, completed, cancelled, no_show';
-
-COMMENT ON COLUMN "sessions"."room_url" IS 'For video call integration';
-
-COMMENT ON TABLE "user_favorites" IS 'Users can favorite other users. Check constraint: user_id != favorited_user_id';
-
-COMMENT ON TABLE "user_reports" IS 'Users can report other users. Check constraint: reporter_id != reported_user_id';
-
-COMMENT ON COLUMN "user_reports"."session_id" IS 'Optional reference to the session where incident occurred';
-
-COMMENT ON COLUMN "user_reports"."reason" IS 'inappropriate_behavior, no_show, disruptive, spam, harassment, other';
-
-COMMENT ON COLUMN "user_reports"."status" IS 'pending, reviewed, resolved, dismissed';
-
-COMMENT ON TABLE "user_snoozes" IS 'Temporarily hide users. Check constraint: user_id != snoozed_user_id';
-
-COMMENT ON COLUMN "user_snoozes"."reason" IS 'not_compatible, break_needed, temporary_hide, other';
-
-ALTER TABLE "user_languages" ADD FOREIGN KEY ("user_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "user_languages" ADD FOREIGN KEY ("language_id") REFERENCES "languages" ("id");
-
-ALTER TABLE "sessions" ADD FOREIGN KEY ("participant_one_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "sessions" ADD FOREIGN KEY ("participant_two_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "sessions" ADD FOREIGN KEY ("language_one_id") REFERENCES "languages" ("id");
-
-ALTER TABLE "sessions" ADD FOREIGN KEY ("language_two_id") REFERENCES "languages" ("id");
-
-ALTER TABLE "user_favorites" ADD FOREIGN KEY ("user_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "user_favorites" ADD FOREIGN KEY ("favorited_user_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "user_reports" ADD FOREIGN KEY ("reporter_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "user_reports" ADD FOREIGN KEY ("reported_user_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "user_reports" ADD FOREIGN KEY ("session_id") REFERENCES "sessions" ("id");
-
-ALTER TABLE "user_snoozes" ADD FOREIGN KEY ("user_id") REFERENCES "profiles" ("id");
-
-ALTER TABLE "user_snoozes" ADD FOREIGN KEY ("snoozed_user_id") REFERENCES "profiles" ("id");
+INSERT INTO languages (code, name) VALUES 
+('en', 'English'),
+('es', 'Spanish');
