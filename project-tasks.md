@@ -18,10 +18,10 @@
 
 ### 🔲 **Setup Tasks:**
 - [x] Apply schema to Supabase database
-- [ ] Seed languages table with common languages (en, es)
+- [x] Seed languages table with common languages (en, es)
 - [x] Define RLS policies
 - [ ] Execute RLS policies for all tables
-- [ ] Create database functions for matchmaking queries
+- [ ] Create triggers / database functions for matchmaking queries
 
 ---
 
