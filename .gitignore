@@ -3,6 +3,8 @@
 frontend/node_modules
 frontend/.next
 ws-server/node_modules
+testing_supabase/node_modules
+testing_supabase/.next
 # dependencies
 /node_modules
 /.pnp
