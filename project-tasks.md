@@ -14,7 +14,8 @@
 ### ✅ **Completed:**
 - [x] DBML schema design (`dmbl-schema.sql`)
 - [x] PostgreSQL schema conversion (`langmate-schema.sql`)
-- [x] All tables defined: users, languages, user_languages, sessions, user_favorites, user_reports, user_snoozes
+- [x] All tables defined: users, languages, user_languages, sessions, user_favorites, user_reports,
+  user_snoozes
 
 ### 🔲 **Setup Tasks:**
 - [x] Apply schema to Supabase database
