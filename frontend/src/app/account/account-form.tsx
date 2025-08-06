@@ -19,7 +19,7 @@ export default function AccountForm({ user }: { user: User | null }) {
 
       const { data, error, status } = await supabase
         .from('profiles')
-        .select(`full_name, username, website, avatar_url`)
+        .select(`first_name, last_name, email`)
         .eq('id', user?.id)
         .single()
 
@@ -29,10 +29,9 @@ export default function AccountForm({ user }: { user: User | null }) {
       }
 
       if (data) {
-        setFullname(data.full_name)
-        setUsername(data.username)
-        setWebsite(data.website)
-        setAvatarUrl(data.avatar_url)
+        setFullname(data.first_name)
+        setUsername(data.last_name)
+        setWebsite(data.email)
       }
     } catch (error) {
       alert('Error loading user data!')
