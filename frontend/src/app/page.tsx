@@ -7,6 +7,7 @@ import { socket } from "./socket";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Language, SessionData, SessionInfo, UserData, FindMatchData } from "@/types";
+import Calendar from "@/components/ui/calendar";
 
 export default function Home() {
   const router = useRouter();
@@ -89,7 +90,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
-      Welcome to Langmate
+       <Calendar />
       {/*       <div className="flex flex-col gap-2">
         <p>Connected: {isConnected ? "✅" : "❌"}</p>
         <p>Transport: {transport}</p>
