@@ -5,6 +5,7 @@ import { Calendar, momentLocalizer, Views, View } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
+
 const localizer = momentLocalizer(moment);
 const ACCENT = "rgb(14,187,253)";
 
