@@ -32,7 +32,7 @@ const pad = (n: number) => n.toString().padStart(2, "0");
 const fmtAMPM = (h: number, m: number) => {
   const ap = h < 12 ? "AM" : "PM";
   const h12 = h % 12 === 0 ? 12 : h % 12;
-  return `${h12}:${pad(m)} ${ap}`;
+  return `${h12}${ap}`;
 };
 
 function toISODateLocal(d: Date) {
