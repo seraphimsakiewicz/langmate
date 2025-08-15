@@ -5,7 +5,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { useState, useEffect, Fragment } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Button } from "../button";
+import { Button } from "@/components/ui/button";
 
 export const MainNav = () => {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);

@@ -1,13 +1,25 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card, CardTitle, CardHeader } from "@/components/ui/card";
-import { Select, SelectValue, SelectTrigger, SelectItem, SelectContent } from "@/components/ui/select";
+import {
+  Select,
+  SelectValue,
+  SelectTrigger,
+  SelectItem,
+  SelectContent,
+} from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Language, SessionData, SessionInfo, UserData, FindMatchData } from "@/types";
-import Calendar from "@/components/ui/calendar";
+import {
+  Language,
+  SessionData,
+  SessionInfo,
+  UserData,
+  FindMatchData,
+} from "@/types";
+import { Calendar } from "@/components/calendar/Calendar";
 
 export default function Home() {
   const router = useRouter();
@@ -18,7 +30,7 @@ export default function Home() {
   const [transport, setTransport] = useState<string>("N/A");
   const [isLookingForMatch, setIsLookingForMatch] = useState<boolean>(false);
   const [isMatched, setIsMatched] = useState<boolean>(false);
-  const [sessionId, setSessionId] = useState<string>('');
+  const [sessionId, setSessionId] = useState<string>("");
 
   /*   useEffect(() => {
       if (socket.connected) {
@@ -76,21 +88,21 @@ export default function Home() {
     setIsLookingForMatch(true);
     const findMatchData: FindMatchData = {
       nativeLanguage,
-      targetLanguage
-    }
+      targetLanguage,
+    };
     // socket.emit("find-match", findMatchData);
-  }
+  };
 
   function handleConnect() {
     if (isMatched) {
-      router.push(`/session/${sessionId}`)
+      router.push(`/session/${sessionId}`);
     }
   }
 
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100">
-       <Calendar />
+    // className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100"
+    <main>
+      <Calendar />
       {/*       <div className="flex flex-col gap-2">
         <p>Connected: {isConnected ? "✅" : "❌"}</p>
         <p>Transport: {transport}</p>
@@ -134,5 +146,5 @@ export default function Home() {
         </CardHeader>
       </Card> */}
     </main>
-  )
+  );
 }
