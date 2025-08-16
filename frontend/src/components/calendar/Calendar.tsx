@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { CalendarSidebar } from './CalendarSidebar';
-import { CalendarHeader } from './CalendarHeader';
-import { TimeGrid } from './TimeGrid';
-import { BookingModal } from './BookingModal';
-import { Session, DayColumn } from '@/types/calendar';
-import { dummySessions } from '@/data/sessionsData';
+import { useState } from "react";
+import { CalendarSidebar } from "./CalendarSidebar";
+import { CalendarHeader } from "./CalendarHeader";
+import { TimeGrid } from "./TimeGrid";
+import { BookingModal } from "./BookingModal";
+import { Session, DayColumn } from "@/types/calendar";
+import { dummySessions } from "@/data/sessionsData";
 
 export const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -22,10 +22,12 @@ export const Calendar = () => {
     for (let i = 0; i < 7; i++) {
       const currentDay = new Date(startOfWeek);
       currentDay.setDate(startOfWeek.getDate() + i);
-      
+
       weekDays.push({
-        date: currentDay.toISOString().split('T')[0],
-        dayName: currentDay.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+        date: currentDay.toISOString().split("T")[0],
+        dayName: currentDay
+          .toLocaleDateString("en-US", { weekday: "short" })
+          .toUpperCase(),
         dayNumber: currentDay.getDate(),
         isToday: currentDay.toDateString() === new Date().toDateString(),
       });
@@ -47,39 +49,46 @@ export const Calendar = () => {
     setCurrentDate(newDate);
   };
 
-  const handleSessionBook = (newSession: Omit<Session, 'id'>) => {
+  const handleSessionBook = (newSession: Omit<Session, "id">) => {
     const session: Session = {
       ...newSession,
       id: `session-${Date.now()}`,
     };
-    setSessions(prev => [...prev, session]);
+    setSessions((prev) => [...prev, session]);
   };
 
-  const handleSessionUpdate = (sessionId: string, updates: Partial<Session>) => {
-    setSessions(prev => prev.map(session => 
-      session.id === sessionId ? { ...session, ...updates } : session
-    ));
+  const handleSessionUpdate = (
+    sessionId: string,
+    updates: Partial<Session>
+  ) => {
+    setSessions((prev) =>
+      prev.map((session) =>
+        session.id === sessionId ? { ...session, ...updates } : session
+      )
+    );
   };
 
   // Find ongoing session for sidebar
-  const ongoingSession = sessions.find(session => session.status === 'ongoing');
+  const ongoingSession = sessions.find(
+    (session) => session.status === "ongoing"
+  );
 
   return (
     <div className="flex h-screen bg-background">
-      <CalendarSidebar 
+      <CalendarSidebar
         onBookSession={() => setShowBookingModal(true)}
         ongoingSession={ongoingSession}
       />
-      
+
       <div className="flex-1 flex flex-col">
-        <CalendarHeader 
+        <CalendarHeader
           currentDate={currentDate}
           onPrevWeek={handlePrevWeek}
           onNextWeek={handleNextWeek}
           weekDays={weekDays}
         />
-        
-        <TimeGrid 
+
+        <TimeGrid
           weekDays={weekDays}
           sessions={sessions}
           onSessionBook={handleSessionBook}
