@@ -64,32 +64,6 @@ export const CalendarSidebar = ({ onBookSession, ongoingSession }: CalendarSideb
         </div>
       )}
 
-      {/* My Task section */}
-      <div className="px-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
-          MY TASK
-          <div className="w-4 h-4 bg-muted rounded-full flex items-center justify-center">
-            <span className="text-xs">6</span>
-          </div>
-        </div>
-        
-        <div className="flex gap-1">
-          <Button 
-            size="sm" 
-            variant="secondary" 
-            className="flex-1 text-xs bg-secondary/50 hover:bg-secondary"
-          >
-            Prefer Favorites
-          </Button>
-          <Button 
-            size="sm" 
-            variant="ghost" 
-            className="flex-1 text-xs text-muted-foreground"
-          >
-            Anyone
-          </Button>
-        </div>
-      </div>
     </div>
   );
 };

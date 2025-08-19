@@ -4,13 +4,14 @@ import { SessionBlock } from './SessionBlock';
 import { BookingModal } from './BookingModal';
 
 interface TimeGridProps {
-  weekDays: DayColumn[];
+  daysToShow: DayColumn[];
   sessions: Session[];
   onSessionBook: (session: Omit<Session, 'id'>) => void;
   onSessionUpdate: (sessionId: string, updates: Partial<Session>) => void;
+  viewMode: 'day' | 'week';
 }
 
-export const TimeGrid = ({ weekDays, sessions, onSessionBook, onSessionUpdate }: TimeGridProps) => {
+export const TimeGrid = ({ daysToShow, sessions, onSessionBook, onSessionUpdate, viewMode }: TimeGridProps) => {
   const [hoveredSlot, setHoveredSlot] = useState<{ day: string; hour: number; minute: number } | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<{ day: string; hour: number; minute: number } | null>(null);
@@ -101,9 +102,9 @@ export const TimeGrid = ({ weekDays, sessions, onSessionBook, onSessionUpdate }:
         className="flex-1 overflow-y-auto"
         style={{ height: 'calc(100vh - 200px)' }}
       >
-        <div className="grid grid-cols-8 min-h-full">
+        <div className={`${daysToShow.length === 1 ? 'flex' : 'grid grid-cols-8'} min-h-full`}>
           {/* Time column */}
-          <div className="border-r border-calendar-border bg-calendar-sidebar">
+          <div className="border-r border-calendar-border bg-calendar-sidebar pl-5 pt-1">
             {timeSlots.map((slot, index) => {
               const isHourStart = slot.minute === 0;
               const isHalfHour = slot.minute === 30;
@@ -123,10 +124,10 @@ export const TimeGrid = ({ weekDays, sessions, onSessionBook, onSessionUpdate }:
                   style={{ height: '68px' }}
                 >
                   {isHourStart && (
-                    <span className="absolute -top-2 right-3">{getHourLabel(slot.hour)}</span>
+                    <span className="absolute -top-2 right-1">{getHourLabel(slot.hour)}</span>
                   )}
                   {isHalfHour && (
-                    <span className="absolute -top-2 right-3 text-xs text-calendar-time-text/70">30</span>
+                    <span className="absolute -top-2 right-1 text-xs text-calendar-time-text/70">30</span>
                   )}
                 </div>
               );
@@ -134,8 +135,8 @@ export const TimeGrid = ({ weekDays, sessions, onSessionBook, onSessionUpdate }:
           </div>
 
           {/* Day columns */}
-          {weekDays.map((day) => (
-            <div key={day.date} className="border-r border-calendar-border relative">
+          {daysToShow.map((day) => (
+            <div key={day.date} className={`border-r border-calendar-border relative ${daysToShow.length === 1 ? 'flex-1' : ''}`}>
               {timeSlots.map((slot, slotIndex) => {
                 const sessionsInSlot = getSessionsForSlot(day.date, slot.hour, slot.minute);
                 const isHovered = hoveredSlot?.day === day.date && 
@@ -185,7 +186,7 @@ export const TimeGrid = ({ weekDays, sessions, onSessionBook, onSessionUpdate }:
         isOpen={showBookingModal}
         onClose={() => setShowBookingModal(false)}
         onBook={onSessionBook}
-        weekDays={weekDays}
+        weekDays={daysToShow}
       />
     </>
   );
