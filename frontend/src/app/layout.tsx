@@ -3,14 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
-import { Toaster } from "@/components/ui/sonner"
+import { Providers } from "./providers"; // ← add this
 
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
@@ -23,18 +18,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable}`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Header />
-        {children}
+        <Providers>{children}</Providers>
         <TailwindIndicator />
-        <Toaster position="bottom-center" richColors duration={10000} />
       </body>
     </html>
   );
