@@ -1,9 +1,18 @@
-import { ChevronLeft, ChevronRight, HelpCircle, CalendarIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { DayColumn } from '@/types/calendar';
-import { useState } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
+  CalendarIcon,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { DayColumn } from "@/types/calendar";
+import { useState } from "react";
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -11,29 +20,29 @@ interface CalendarHeaderProps {
   onNextPeriod: () => void;
   onDateSelect: (date: Date) => void;
   daysToShow: DayColumn[];
-  viewMode: 'day' | 'week';
-  onViewModeChange: (mode: 'day' | 'week') => void;
+  viewMode: "day" | "week";
+  onViewModeChange: (mode: "day" | "week") => void;
 }
 
-export const CalendarHeader = ({ 
-  currentDate, 
-  onPrevPeriod, 
-  onNextPeriod, 
+export const CalendarHeader = ({
+  currentDate,
+  onPrevPeriod,
+  onNextPeriod,
   onDateSelect,
   daysToShow,
   viewMode,
-  onViewModeChange
+  onViewModeChange,
 }: CalendarHeaderProps) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  
-  const monthYear = currentDate.toLocaleDateString('en-US', { 
-    month: 'long', 
-    year: 'numeric' 
+
+  const monthYear = currentDate.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
   });
 
   // Check if current period contains today
   const today = new Date();
-  const isCurrentPeriod = daysToShow.some(day => day.isToday);
+  const isCurrentPeriod = daysToShow.some((day) => day.isToday);
 
   const handleTodayClick = () => {
     onDateSelect(today);
@@ -46,23 +55,32 @@ export const CalendarHeader = ({
     }
   };
 
+  // Calculate grid template columns to match TimeGrid
+  const getGridCols = () => {
+    const timeColWidth = "80px"; // Fixed width for time column
+    const dayColsFr = `repeat(${daysToShow.length}, 1fr)`; // Equal fractions for day columns
+    return `${timeColWidth} ${dayColsFr}`;
+  };
+
   return (
-    <div className="bg-white border-b border-calendar-border">
+    <div className="border-b border-calendar-border">
       {/* Top header with month/year and controls */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-4">
-          {!isCurrentPeriod && (
-            <Button variant="outline" size="sm" onClick={handleTodayClick}>
-              Today
-            </Button>
-          )}
+          <Button variant="outline" size="sm" onClick={handleTodayClick}>
+            Today
+          </Button>
+
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="sm" onClick={onPrevPeriod}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
               <PopoverTrigger asChild>
-                <Button variant="ghost" className="text-xl font-semibold hover:bg-accent">
+                <Button
+                  variant="ghost"
+                  className="text-xl font-semibold hover:bg-accent"
+                >
                   {monthYear}
                   <CalendarIcon className="ml-2 h-4 w-4" />
                 </Button>
@@ -82,19 +100,19 @@ export const CalendarHeader = ({
             </Button>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
-          <Button 
-            size="sm" 
-            variant={viewMode === 'day' ? 'default' : 'ghost'}
-            onClick={() => onViewModeChange('day')}
+          <Button
+            size="sm"
+            variant={viewMode === "day" ? "default" : "ghost"}
+            onClick={() => onViewModeChange("day")}
           >
             Day
           </Button>
-          <Button 
-            size="sm" 
-            variant={viewMode === 'week' ? 'default' : 'ghost'}
-            onClick={() => onViewModeChange('week')}
+          <Button
+            size="sm"
+            variant={viewMode === "week" ? "default" : "ghost"}
+            onClick={() => onViewModeChange("week")}
           >
             Week
           </Button>
@@ -107,25 +125,6 @@ export const CalendarHeader = ({
           </Button>
           <div className="w-8 h-8 bg-calendar-primary rounded-full"></div>
         </div>
-      </div>
-
-      {/* Days header */}
-      <div className={`grid ${daysToShow.length === 1 ? 'grid-cols-1' : 'grid-cols-8'} border-t border-calendar-border`}>
-        <div className="p-3"></div> {/* Empty cell for time column */}
-        {daysToShow.map((day) => (
-          <div key={day.date} className="p-3 text-left">
-            <div className="text-xs font-medium text-calendar-time-text uppercase mb-1">
-              {day.dayName}
-            </div>
-            <div className={`text-2xl font-bold ${
-              day.isToday 
-                ? 'text-calendar-primary bg-calendar-primary/10 w-10 h-10 rounded-full flex items-center justify-center' 
-                : 'text-foreground'
-            }`}>
-              {day.dayNumber}
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   );

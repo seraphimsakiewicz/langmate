@@ -1,21 +1,39 @@
-import { useState, useRef, useEffect } from 'react';
-import { Session, DayColumn } from '@/types/calendar';
-import { SessionBlock } from './SessionBlock';
-import { BookingModal } from './BookingModal';
+import { useState, useRef, useEffect } from "react";
+import { Session, DayColumn } from "@/types/calendar";
+import { SessionBlock } from "./SessionBlock";
+import { BookingModal } from "./BookingModal";
 
 interface TimeGridProps {
   daysToShow: DayColumn[];
   sessions: Session[];
-  onSessionBook: (session: Omit<Session, 'id'>) => void;
+  onSessionBook: (session: Omit<Session, "id">) => void;
   onSessionUpdate: (sessionId: string, updates: Partial<Session>) => void;
-  viewMode: 'day' | 'week';
+  viewMode: "day" | "week";
 }
 
-export const TimeGrid = ({ daysToShow, sessions, onSessionBook, onSessionUpdate, viewMode }: TimeGridProps) => {
-  const [hoveredSlot, setHoveredSlot] = useState<{ day: string; hour: number; minute: number } | null>(null);
+export const TimeGrid = ({
+  daysToShow,
+  sessions,
+  onSessionBook,
+  onSessionUpdate,
+  viewMode,
+}: TimeGridProps) => {
+  const [hoveredSlot, setHoveredSlot] = useState<{
+    day: string;
+    hour: number;
+    minute: number;
+  } | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<{ day: string; hour: number; minute: number } | null>(null);
-  const [pendingConfirmation, setPendingConfirmation] = useState<{ day: string; hour: number; minute: number } | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<{
+    day: string;
+    hour: number;
+    minute: number;
+  } | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<{
+    day: string;
+    hour: number;
+    minute: number;
+  } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Generate time slots from 12 AM to 11 PM
@@ -24,10 +42,10 @@ export const TimeGrid = ({ daysToShow, sessions, onSessionBook, onSessionUpdate,
     for (let minute = 0; minute < 60; minute += 30) {
       const time = new Date();
       time.setHours(hour, minute);
-      const formatted = time.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
+      const formatted = time.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
       });
       slots.push({ hour, minute, formatted });
     }
@@ -38,50 +56,57 @@ export const TimeGrid = ({ daysToShow, sessions, onSessionBook, onSessionUpdate,
   useEffect(() => {
     const now = new Date();
     const currentHour = now.getHours();
-    const slotIndex = timeSlots.findIndex(slot => slot.hour === currentHour);
+    const slotIndex = timeSlots.findIndex((slot) => slot.hour === currentHour);
     if (slotIndex !== -1 && scrollRef.current) {
-      const slotElement = scrollRef.current.children[slotIndex] as HTMLElement;
-      if (slotElement) {
-        scrollRef.current.scrollTop = slotElement.offsetTop - 100;
-      }
+      // Calculate the exact position based on slot height
+      const slotHeight = 68;
+      scrollRef.current.scrollTop = slotIndex * slotHeight - 100;
     }
   }, []);
 
   const getSessionsForSlot = (day: string, hour: number, minute: number) => {
-    return sessions.filter(session => {
+    return sessions.filter((session) => {
       if (session.date !== day) return false;
-      
-      const [startHour, startMinute] = session.startTime.split(':').map(Number);
-      const [endHour, endMinute] = session.endTime.split(':').map(Number);
-      
+
+      const [startHour, startMinute] = session.startTime.split(":").map(Number);
+      const [endHour, endMinute] = session.endTime.split(":").map(Number);
+
       const slotMinutes = hour * 60 + minute;
       const sessionStartMinutes = startHour * 60 + startMinute;
       const sessionEndMinutes = endHour * 60 + endMinute;
-      
-      return slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes;
+
+      return (
+        slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes
+      );
     });
   };
 
   const handleSlotClick = (day: string, hour: number, minute: number) => {
     const existingSessions = getSessionsForSlot(day, hour, minute);
     if (existingSessions.length > 0) return;
-    
-    if (pendingConfirmation?.day === day && 
-        pendingConfirmation?.hour === hour && 
-        pendingConfirmation?.minute === minute) {
+
+    if (
+      pendingConfirmation?.day === day &&
+      pendingConfirmation?.hour === hour &&
+      pendingConfirmation?.minute === minute
+    ) {
       // Confirm booking
-      const startTime = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-      const endTime = `${hour.toString().padStart(2, '0')}:${(minute + 25).toString().padStart(2, '0')}`;
-      
+      const startTime = `${hour.toString().padStart(2, "0")}:${minute
+        .toString()
+        .padStart(2, "0")}`;
+      const endTime = `${hour.toString().padStart(2, "0")}:${(minute + 25)
+        .toString()
+        .padStart(2, "0")}`;
+
       onSessionBook({
-        title: 'New Session',
+        title: "New Session",
         startTime,
         endTime,
         date: day,
-        participant: 'New Participant',
-        status: 'booked'
+        participant: "New Participant",
+        status: "booked",
       });
-      
+
       setPendingConfirmation(null);
     } else {
       // Set pending confirmation
@@ -90,95 +115,174 @@ export const TimeGrid = ({ daysToShow, sessions, onSessionBook, onSessionUpdate,
   };
 
   const isSlotPending = (day: string, hour: number, minute: number) => {
-    return pendingConfirmation?.day === day && 
-           pendingConfirmation?.hour === hour && 
-           pendingConfirmation?.minute === minute;
+    return (
+      pendingConfirmation?.day === day &&
+      pendingConfirmation?.hour === hour &&
+      pendingConfirmation?.minute === minute
+    );
+  };
+
+  // Calculate grid template columns
+  const getGridCols = () => {
+    const timeColWidth = "80px";
+    const dayColsFr = `repeat(${daysToShow.length}, 1fr)`;
+    return `${timeColWidth} ${dayColsFr}`;
   };
 
   return (
     <>
-      <div 
-        ref={scrollRef}
-        className="flex-1 overflow-y-auto"
-        style={{ height: 'calc(100vh - 200px)' }}
+      <div
+        className="flex-1 flex flex-col"
+        style={{ height: "calc(100vh - 200px)" }}
       >
-        <div className={`${daysToShow.length === 1 ? 'flex' : 'grid grid-cols-8'} min-h-full`}>
-          {/* Time column */}
-          <div className="border-r border-calendar-border bg-calendar-sidebar pl-5 pt-1">
-            {timeSlots.map((slot, index) => {
-              const isHourStart = slot.minute === 0;
-              const isHalfHour = slot.minute === 30;
-              
-              // Format hour for display (12A, 1A, 2A, etc.)
-              const getHourLabel = (hour: number) => {
-                if (hour === 0) return '12A';
-                if (hour === 12) return '12P';
-                if (hour < 12) return `${hour}A`;
-                return `${hour - 12}P`;
-              };
+        {/* STICKY HEADER ROW */}
+        <div className="w-full max-w-full sticky top-0 z-10 bg-background border-b border-calendar-border">
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: getGridCols(),
+              width: "100%",
+            }}
+          >
+            {/* Header time column */}
+            <div
+              className="border-r border-calendar-border bg-calendar-sidebar"
+              style={{ height: "80px" }}
+            ></div>
 
-              return (
-                <div 
-                  key={index}
-                  className="px-3 py-1 text-sm text-calendar-time-text flex font-medium relative"
-                  style={{ height: '68px' }}
-                >
-                  {isHourStart && (
-                    <span className="absolute -top-2 right-1">{getHourLabel(slot.hour)}</span>
-                  )}
-                  {isHalfHour && (
-                    <span className="absolute -top-2 right-1 text-xs text-calendar-time-text/70">30</span>
-                  )}
+            {/* Header day columns */}
+            {daysToShow.map((day) => (
+              <div
+                key={`header-${day.date}`}
+                className="p-3 text-left border-r border-calendar-border bg-background"
+                style={{ height: "80px" }}
+              >
+                <div className="text-xs font-medium text-calendar-time-text uppercase mb-1">
+                  {day.dayName}
                 </div>
-              );
-            })}
+                <div
+                  className={`text-2xl font-bold ${
+                    day.isToday
+                      ? "text-calendar-primary bg-calendar-primary/10 w-10 h-10 rounded-full flex items-center justify-center"
+                      : "text-foreground"
+                  }`}
+                >
+                  {day.dayNumber}
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Day columns */}
-          {daysToShow.map((day) => (
-            <div key={day.date} className={`border-r border-calendar-border relative ${daysToShow.length === 1 ? 'flex-1' : ''}`}>
-              {timeSlots.map((slot, slotIndex) => {
-                const sessionsInSlot = getSessionsForSlot(day.date, slot.hour, slot.minute);
-                const isHovered = hoveredSlot?.day === day.date && 
-                                hoveredSlot?.hour === slot.hour && 
-                                hoveredSlot?.minute === slot.minute;
-                const isPending = isSlotPending(day.date, slot.hour, slot.minute);
+        {/* SCROLLABLE TIME GRID */}
+        <div ref={scrollRef} className="flex-1 overflow-y-auto">
+          <div className="w-full max-w-full">
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: getGridCols(),
+                width: "100%",
+              }}
+            >
+              {/* TIME SLOTS ROWS */}
+              {timeSlots
+                .map((slot, index) => {
+                  const isHourStart = slot.minute === 0;
+                  const isHalfHour = slot.minute === 30;
 
-                return (
-                  <div
-                    key={slotIndex}
-                    className={`border-b border-calendar-border/50 relative cursor-pointer transition-colors ${
-                      isHovered && sessionsInSlot.length === 0 ? 'bg-calendar-hover/10' : ''
-                    } ${isPending ? 'bg-session-pending/20' : ''}`}
-                    style={{ height: '68px' }}
-                    onMouseEnter={() => setHoveredSlot({ day: day.date, hour: slot.hour, minute: slot.minute })}
-                    onMouseLeave={() => setHoveredSlot(null)}
-                    onClick={() => handleSlotClick(day.date, slot.hour, slot.minute)}
-                  >
-                    {sessionsInSlot.map((session) => (
-                      <SessionBlock 
-                        key={session.id} 
-                        session={session}
-                        onUpdate={(updates) => onSessionUpdate(session.id, updates)}
-                      />
-                    ))}
-                    
-                    {isHovered && sessionsInSlot.length === 0 && (
-                      <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-white flex items-center justify-center font-medium">
-                        {slot.formatted}
-                      </div>
-                    )}
-                    
-                    {isPending && (
-                      <div className="absolute inset-0 bg-session-pending/40 border border-session-pending rounded text-xs text-white flex items-center justify-center font-medium">
-                        Confirm?
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+                  const getHourLabel = (hour: number) => {
+                    if (hour === 0) return "12A";
+                    if (hour === 12) return "12P";
+                    if (hour < 12) return `${hour}A`;
+                    return `${hour - 12}P`;
+                  };
+
+                  return [
+                    // Time column for this slot
+                    <div
+                      key={`time-${index}`}
+                      className="border-r border-calendar-border bg-calendar-sidebar pl-5 pt-1 px-3 py-1 text-sm text-calendar-time-text flex font-medium relative"
+                      style={{ height: "68px" }}
+                    >
+                      {isHourStart && (
+                        <span className="absolute -top-1 right-1">
+                          {getHourLabel(slot.hour)}
+                        </span>
+                      )}
+                      {isHalfHour && (
+                        <span className="absolute -top-1 right-1 text-xs text-calendar-time-text/70">
+                          30
+                        </span>
+                      )}
+                    </div>,
+
+                    // Day columns for this slot
+                    ...daysToShow.map((day) => {
+                      const sessionsInSlot = getSessionsForSlot(
+                        day.date,
+                        slot.hour,
+                        slot.minute
+                      );
+                      const isHovered =
+                        hoveredSlot?.day === day.date &&
+                        hoveredSlot?.hour === slot.hour &&
+                        hoveredSlot?.minute === slot.minute;
+                      const isPending = isSlotPending(
+                        day.date,
+                        slot.hour,
+                        slot.minute
+                      );
+
+                      return (
+                        <div
+                          key={`${day.date}-${index}`}
+                          className={`border-r border-calendar-border border-b border-calendar-border/50 relative cursor-pointer transition-colors ${
+                            isHovered && sessionsInSlot.length === 0
+                              ? "bg-calendar-hover/10"
+                              : ""
+                          } ${isPending ? "bg-session-pending/20" : ""}`}
+                          style={{ height: "68px" }}
+                          onMouseEnter={() =>
+                            setHoveredSlot({
+                              day: day.date,
+                              hour: slot.hour,
+                              minute: slot.minute,
+                            })
+                          }
+                          onMouseLeave={() => setHoveredSlot(null)}
+                          onClick={() =>
+                            handleSlotClick(day.date, slot.hour, slot.minute)
+                          }
+                        >
+                          {sessionsInSlot.map((session) => (
+                            <SessionBlock
+                              key={session.id}
+                              session={session}
+                              onUpdate={(updates) =>
+                                onSessionUpdate(session.id, updates)
+                              }
+                            />
+                          ))}
+
+                          {isHovered && sessionsInSlot.length === 0 && (
+                            <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-white flex items-center justify-center font-medium">
+                              {slot.formatted}
+                            </div>
+                          )}
+
+                          {isPending && (
+                            <div className="absolute inset-0 bg-session-pending/40 border border-session-pending rounded text-xs text-white flex items-center justify-center font-medium">
+                              Confirm?
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }),
+                  ];
+                })
+                .flat()}
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
