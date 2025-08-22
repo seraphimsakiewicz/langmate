@@ -29,7 +29,6 @@ export const CalendarHeader = ({
   onPrevPeriod,
   onNextPeriod,
   onDateSelect,
-  daysToShow,
   viewMode,
   onViewModeChange,
 }: CalendarHeaderProps) => {
@@ -42,7 +41,6 @@ export const CalendarHeader = ({
 
   // Check if current period contains today
   const today = new Date();
-  const isCurrentPeriod = daysToShow.some((day) => day.isToday);
 
   const handleTodayClick = () => {
     onDateSelect(today);
@@ -53,13 +51,6 @@ export const CalendarHeader = ({
       onDateSelect(date);
       setIsDatePickerOpen(false);
     }
-  };
-
-  // Calculate grid template columns to match TimeGrid
-  const getGridCols = () => {
-    const timeColWidth = "80px"; // Fixed width for time column
-    const dayColsFr = `repeat(${daysToShow.length}, 1fr)`; // Equal fractions for day columns
-    return `${timeColWidth} ${dayColsFr}`;
   };
 
   return (
