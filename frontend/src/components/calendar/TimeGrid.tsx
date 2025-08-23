@@ -58,7 +58,6 @@ export const TimeGrid = ({
     const currentHour = now.getHours();
     const slotIndex = timeSlots.findIndex((slot) => slot.hour === currentHour);
     if (slotIndex !== -1 && scrollRef.current) {
-      // Calculate the exact position based on slot height
       const slotHeight = 68;
       scrollRef.current.scrollTop = slotIndex * slotHeight - 100;
     }
@@ -131,52 +130,15 @@ export const TimeGrid = ({
 
   return (
     <>
+      {/* WHITE CONTAINER WITH SCROLLBAR - like Focusmate */}
       <div
-        className="flex-1 flex flex-col"
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto bg-white border border-gray-200"
         style={{ height: "calc(100vh - 200px)" }}
       >
-        {/* STICKY HEADER ROW */}
-        <div className="w-full max-w-full sticky top-0 z-10 bg-background border-b border-calendar-border">
-          <div
-            className="grid"
-            style={{
-              gridTemplateColumns: getGridCols(),
-              width: "100%",
-            }}
-          >
-            {/* Header time column */}
-            <div
-              className="border-r border-calendar-border bg-calendar-sidebar"
-              style={{ height: "80px" }}
-            ></div>
-
-            {/* Header day columns */}
-            {daysToShow.map((day) => (
-              <div
-                key={`header-${day.date}`}
-                className="p-3 text-left border-r border-calendar-border bg-background"
-                style={{ height: "80px" }}
-              >
-                <div className="text-xs font-medium text-calendar-time-text uppercase mb-1">
-                  {day.dayName}
-                </div>
-                <div
-                  className={`text-2xl font-bold ${
-                    day.isToday
-                      ? "text-calendar-primary bg-calendar-primary/10 w-10 h-10 rounded-full flex items-center justify-center"
-                      : "text-foreground"
-                  }`}
-                >
-                  {day.dayNumber}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* SCROLLABLE TIME GRID */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto">
-          <div className="w-full max-w-full">
+        <div className="min-w-full">
+          {/* STICKY HEADER ROW */}
+          <div className="sticky top-0 z-10 bg-white border-b border-calendar-border">
             <div
               className="grid"
               style={{
@@ -184,104 +146,143 @@ export const TimeGrid = ({
                 width: "100%",
               }}
             >
-              {/* TIME SLOTS ROWS */}
-              {timeSlots
-                .map((slot, index) => {
-                  const isHourStart = slot.minute === 0;
-                  const isHalfHour = slot.minute === 30;
+              {/* Header time column */}
+              <div
+                className="border-r border-calendar-border bg-calendar-sidebar"
+                style={{ height: "80px" }}
+              >
+                <div className="p-3 text-xs text-calendar-time-text">EDT</div>
+              </div>
 
-                  const getHourLabel = (hour: number) => {
-                    if (hour === 0) return "12A";
-                    if (hour === 12) return "12P";
-                    if (hour < 12) return `${hour}A`;
-                    return `${hour - 12}P`;
-                  };
-
-                  return [
-                    // Time column for this slot
-                    <div
-                      key={`time-${index}`}
-                      className="border-r border-calendar-border bg-calendar-sidebar pl-5 pt-1 px-3 py-1 text-sm text-calendar-time-text flex font-medium relative"
-                      style={{ height: "68px" }}
-                    >
-                      {isHourStart && (
-                        <span className="absolute -top-1 right-1">
-                          {getHourLabel(slot.hour)}
-                        </span>
-                      )}
-                      {isHalfHour && (
-                        <span className="absolute -top-1 right-1 text-xs text-calendar-time-text/70">
-                          30
-                        </span>
-                      )}
-                    </div>,
-
-                    // Day columns for this slot
-                    ...daysToShow.map((day) => {
-                      const sessionsInSlot = getSessionsForSlot(
-                        day.date,
-                        slot.hour,
-                        slot.minute
-                      );
-                      const isHovered =
-                        hoveredSlot?.day === day.date &&
-                        hoveredSlot?.hour === slot.hour &&
-                        hoveredSlot?.minute === slot.minute;
-                      const isPending = isSlotPending(
-                        day.date,
-                        slot.hour,
-                        slot.minute
-                      );
-
-                      return (
-                        <div
-                          key={`${day.date}-${index}`}
-                          className={`border-r border-calendar-border border-b border-calendar-border/50 relative cursor-pointer transition-colors ${
-                            isHovered && sessionsInSlot.length === 0
-                              ? "bg-calendar-hover/10"
-                              : ""
-                          } ${isPending ? "bg-session-pending/20" : ""}`}
-                          style={{ height: "68px" }}
-                          onMouseEnter={() =>
-                            setHoveredSlot({
-                              day: day.date,
-                              hour: slot.hour,
-                              minute: slot.minute,
-                            })
-                          }
-                          onMouseLeave={() => setHoveredSlot(null)}
-                          onClick={() =>
-                            handleSlotClick(day.date, slot.hour, slot.minute)
-                          }
-                        >
-                          {sessionsInSlot.map((session) => (
-                            <SessionBlock
-                              key={session.id}
-                              session={session}
-                              onUpdate={(updates) =>
-                                onSessionUpdate(session.id, updates)
-                              }
-                            />
-                          ))}
-
-                          {isHovered && sessionsInSlot.length === 0 && (
-                            <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-white flex items-center justify-center font-medium">
-                              {slot.formatted}
-                            </div>
-                          )}
-
-                          {isPending && (
-                            <div className="absolute inset-0 bg-session-pending/40 border border-session-pending rounded text-xs text-white flex items-center justify-center font-medium">
-                              Confirm?
-                            </div>
-                          )}
-                        </div>
-                      );
-                    }),
-                  ];
-                })
-                .flat()}
+              {/* Header day columns */}
+              {daysToShow.map((day) => (
+                <div
+                  key={`header-${day.date}`}
+                  className="p-3 text-left border-r border-calendar-border bg-white"
+                  style={{ height: "80px" }}
+                >
+                  <div className="text-xs font-medium text-calendar-time-text uppercase mb-1">
+                    {day.dayName}
+                  </div>
+                  <div
+                    className={`text-2xl font-bold ${
+                      day.isToday
+                        ? "text-calendar-primary bg-calendar-primary/10 w-10 h-10 rounded-full flex items-center justify-center"
+                        : "text-foreground"
+                    }`}
+                  >
+                    {day.dayNumber}
+                  </div>
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* TIME GRID CONTENT - NO OVERFLOW */}
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: getGridCols(),
+              width: "100%",
+            }}
+          >
+            {/* TIME SLOTS ROWS */}
+            {timeSlots
+              .map((slot, index) => {
+                const isHourStart = slot.minute === 0;
+                const isHalfHour = slot.minute === 30;
+
+                const getHourLabel = (hour: number) => {
+                  if (hour === 0) return "12A";
+                  if (hour === 12) return "12P";
+                  if (hour < 12) return `${hour}A`;
+                  return `${hour - 12}P`;
+                };
+
+                return [
+                  // Time column for this slot
+                  <div
+                    key={`time-${index}`}
+                    className="border-r border-calendar-border bg-calendar-sidebar pl-5 pt-1 px-3 py-1 text-sm text-calendar-time-text flex font-medium relative"
+                    style={{ height: "68px" }}
+                  >
+                    {isHourStart && (
+                      <span className="absolute -top-1 right-1">
+                        {getHourLabel(slot.hour)}
+                      </span>
+                    )}
+                    {isHalfHour && (
+                      <span className="absolute -top-1 right-1 text-xs text-calendar-time-text/70">
+                        30
+                      </span>
+                    )}
+                  </div>,
+
+                  // Day columns for this slot
+                  ...daysToShow.map((day) => {
+                    const sessionsInSlot = getSessionsForSlot(
+                      day.date,
+                      slot.hour,
+                      slot.minute
+                    );
+                    const isHovered =
+                      hoveredSlot?.day === day.date &&
+                      hoveredSlot?.hour === slot.hour &&
+                      hoveredSlot?.minute === slot.minute;
+                    const isPending = isSlotPending(
+                      day.date,
+                      slot.hour,
+                      slot.minute
+                    );
+
+                    return (
+                      <div
+                        key={`${day.date}-${index}`}
+                        className={`border-r border-calendar-border border-b border-calendar-border/50 relative cursor-pointer transition-colors bg-white ${
+                          isHovered && sessionsInSlot.length === 0
+                            ? "bg-calendar-hover/10"
+                            : ""
+                        } ${isPending ? "bg-session-pending/20" : ""}`}
+                        style={{ height: "68px" }}
+                        onMouseEnter={() =>
+                          setHoveredSlot({
+                            day: day.date,
+                            hour: slot.hour,
+                            minute: slot.minute,
+                          })
+                        }
+                        onMouseLeave={() => setHoveredSlot(null)}
+                        onClick={() =>
+                          handleSlotClick(day.date, slot.hour, slot.minute)
+                        }
+                      >
+                        {sessionsInSlot.map((session) => (
+                          <SessionBlock
+                            key={session.id}
+                            session={session}
+                            onUpdate={(updates) =>
+                              onSessionUpdate(session.id, updates)
+                            }
+                          />
+                        ))}
+
+                        {isHovered && sessionsInSlot.length === 0 && (
+                          <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-white flex items-center justify-center font-medium">
+                            {slot.formatted}
+                          </div>
+                        )}
+
+                        {isPending && (
+                          <div className="absolute inset-0 bg-session-pending/40 border border-session-pending rounded text-xs text-white flex items-center justify-center font-medium">
+                            Confirm?
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }),
+                ];
+              })
+              .flat()}
           </div>
         </div>
       </div>
