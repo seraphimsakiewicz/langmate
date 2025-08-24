@@ -99,8 +99,7 @@ export default function Home() {
   }
 
   return (
-    // className="flex min-h-screen items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100"
-    <main>
+    <main className="h-full overflow-hidden">
       <Calendar />
       {/*       <div className="flex flex-col gap-2">
         <p>Connected: {isConnected ? "✅" : "❌"}</p>

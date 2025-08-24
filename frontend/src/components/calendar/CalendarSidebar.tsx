@@ -11,7 +11,7 @@ export const CalendarSidebar = ({ onBookSession, ongoingSession }: CalendarSideb
   const timeRemaining = ongoingSession ? '25m' : null;
 
   return (
-    <div className="w-64 bg-calendar-sidebar border-r border-calendar-border h-screen flex flex-col">
+    <div className="w-64 bg-calendar-sidebar border-r border-calendar-border h-full flex flex-col">
       {/* Navigation */}
       <div className="p-4 space-y-2">
         <Button variant="ghost" className="w-full justify-start text-calendar-primary font-medium">

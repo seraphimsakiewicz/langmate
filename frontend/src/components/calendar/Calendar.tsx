@@ -89,13 +89,13 @@ export const Calendar = () => {
   const ongoingSession = sessions.find(session => session.status === 'ongoing');
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-full bg-background overflow-hidden">
       <CalendarSidebar 
         onBookSession={() => setShowBookingModal(true)}
         ongoingSession={ongoingSession}
       />
       
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-h-0">
         <CalendarHeader 
           currentDate={currentDate}
           onPrevPeriod={handlePrevPeriod}

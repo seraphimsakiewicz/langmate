@@ -22,10 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Header />
-        <Providers>{children}</Providers>
+    <html lang="en" className="h-full">
+      <body className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden`}>
+        <div className="h-full flex flex-col">
+          <Header />
+          <div className="flex-1 overflow-hidden">
+            <Providers>{children}</Providers>
+          </div>
+        </div>
         <TailwindIndicator />
       </body>
     </html>

@@ -133,8 +133,7 @@ export const TimeGrid = ({
       {/* WHITE CONTAINER WITH SCROLLBAR - like Focusmate */}
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto bg-white border border-gray-200"
-        style={{ height: "calc(100vh - 200px)" }}
+        className="flex-1 overflow-y-auto bg-white border border-gray-200 min-h-0"
       >
         <div className="min-w-full">
           {/* STICKY HEADER ROW */}
