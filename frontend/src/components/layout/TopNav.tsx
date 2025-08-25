@@ -8,22 +8,20 @@ interface TopNavProps {
   onToggleCollapse: () => void;
 }
 
-export const TopNav = ({ currentView, onViewChange, isSidebarCollapsed, onToggleCollapse }: TopNavProps) => {
+export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavProps) => {
   return (
     <div className="border-b border-calendar-border bg-white">
-      <div className="px-6 py-3">
+      <div className="py-3">
         <div className="flex items-center space-x-1">
-          {/* Hamburger menu - only show when on calendar view */}
-          {currentView === 'calendar' && (
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={onToggleCollapse}
-              className="p-2 mr-2"
+              className={`p-2 mr-2 ${currentView !== 'calendar' && 'invisible'}`}
             >
-              <Menu className="h-4 w-4" />
+              <Menu className="size-[1.5rem]" />
             </Button>
-          )}
+          
           
           <Button 
             variant="ghost" 

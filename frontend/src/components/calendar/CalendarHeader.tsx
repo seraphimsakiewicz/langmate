@@ -107,14 +107,6 @@ export const CalendarHeader = ({
           >
             Week
           </Button>
-          <Button size="sm" variant="ghost" className="text-calendar-primary">
-            Refer
-          </Button>
-          <Button size="sm" variant="ghost">
-            <HelpCircle className="h-4 w-4 mr-1" />
-            Help
-          </Button>
-          <div className="w-8 h-8 bg-calendar-primary rounded-full"></div>
         </div>
       </div>
     </div>

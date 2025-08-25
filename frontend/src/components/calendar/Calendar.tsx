@@ -3,6 +3,7 @@ import { CalendarSidebar } from './CalendarSidebar';
 import { CalendarHeader } from './CalendarHeader';
 import { TimeGrid } from './TimeGrid';
 import { BookingModal } from './BookingModal';
+import { TopNav } from '../layout/TopNav';
 import { Session, DayColumn } from '@/types/calendar';
 import { dummySessions } from '@/data/sessionsData';
 
@@ -11,6 +12,8 @@ export const Calendar = () => {
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
+  const [currentView, setCurrentView] = useState<'calendar' | 'sessions' | 'people'>('calendar');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Generate days based on current date and view mode
   const getDaysToShow = (date: Date, mode: 'day' | 'week'): DayColumn[] => {
@@ -88,31 +91,72 @@ export const Calendar = () => {
   // Find ongoing session for sidebar
   const ongoingSession = sessions.find(session => session.status === 'ongoing');
 
+  const renderMainContent = () => {
+    switch (currentView) {
+      case 'calendar':
+        return (
+          <div className="flex h-full">
+            <CalendarSidebar 
+              onBookSession={() => setShowBookingModal(true)}
+              ongoingSession={ongoingSession}
+              isCollapsed={isSidebarCollapsed}
+            />
+            
+            <div className="flex-1 flex flex-col">
+              <CalendarHeader 
+                currentDate={currentDate}
+                onPrevPeriod={handlePrevPeriod}
+                onNextPeriod={handleNextPeriod}
+                onDateSelect={handleDateSelect}
+                daysToShow={daysToShow}
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
+              
+              <TimeGrid 
+                daysToShow={daysToShow}
+                sessions={sessions}
+                onSessionBook={handleSessionBook}
+                onSessionUpdate={handleSessionUpdate}
+                viewMode={viewMode}
+              />
+            </div>
+          </div>
+        );
+      case 'sessions':
+        return (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-muted-foreground">Sessions</h2>
+              <p className="text-muted-foreground mt-2">Session management coming soon</p>
+            </div>
+          </div>
+        );
+      case 'people':
+        return (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-muted-foreground">People</h2>
+              <p className="text-muted-foreground mt-2">People management coming soon</p>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="flex h-full bg-background overflow-hidden">
-      <CalendarSidebar 
-        onBookSession={() => setShowBookingModal(true)}
-        ongoingSession={ongoingSession}
+    <div className="flex flex-col h-screen bg-background">
+      <TopNav 
+        currentView={currentView} 
+        onViewChange={setCurrentView}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
       
-      <div className="flex-1 flex flex-col min-h-0">
-        <CalendarHeader 
-          currentDate={currentDate}
-          onPrevPeriod={handlePrevPeriod}
-          onNextPeriod={handleNextPeriod}
-          onDateSelect={handleDateSelect}
-          daysToShow={daysToShow}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-        />
-        
-        <TimeGrid 
-          daysToShow={daysToShow}
-          sessions={sessions}
-          onSessionBook={handleSessionBook}
-          onSessionUpdate={handleSessionUpdate}
-          viewMode={viewMode}
-        />
+      <div className="flex-1 overflow-hidden">
+        {renderMainContent()}
       </div>
 
       <BookingModal

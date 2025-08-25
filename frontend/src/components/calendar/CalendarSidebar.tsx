@@ -1,41 +1,44 @@
-import { Calendar, Users, User, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/types/calendar';
 
 interface CalendarSidebarProps {
   onBookSession: () => void;
   ongoingSession?: Session;
+  isCollapsed: boolean;
 }
 
-export const CalendarSidebar = ({ onBookSession, ongoingSession }: CalendarSidebarProps) => {
+export const CalendarSidebar = ({ 
+  onBookSession, 
+  ongoingSession, 
+  isCollapsed 
+}: CalendarSidebarProps) => {
   const timeRemaining = ongoingSession ? '25m' : null;
+
+  // Don't render sidebar at all when collapsed
+  if (isCollapsed) {
+    return null;
+  }
 
   return (
     <div className="w-64 bg-calendar-sidebar border-r border-calendar-border h-full flex flex-col">
-      {/* Navigation */}
-      <div className="p-4 space-y-2">
-        <Button variant="ghost" className="w-full justify-start text-calendar-primary font-medium">
-          <Calendar className="mr-3 h-4 w-4" />
-          Calendar
-        </Button>
-        <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-          <Users className="mr-3 h-4 w-4" />
-          Sessions
-        </Button>
-        <Button variant="ghost" className="w-full justify-start text-muted-foreground">
-          <User className="mr-3 h-4 w-4" />
-          People
-        </Button>
-      </div>
-
       {/* Book a session button */}
-      <div className="px-4 mb-6">
+      <div className="p-4">
         <Button 
           onClick={onBookSession}
-          className="w-full bg-calendar-primary hover:bg-calendar-primary/90 text-white rounded-lg font-medium"
+          className="w-full bg-session-ongoing hover:bg-session-ongoing/90 text-white rounded-lg font-medium"
         >
           + Book a session
         </Button>
+      </div>
+
+      {/* Upcoming sessions section */}
+      <div className="px-4 mb-6">
+        <div className="text-sm font-medium text-muted-foreground mb-3 uppercase tracking-wide">
+          UPCOMING
+        </div>
+        <div className="text-sm text-muted-foreground">
+          No upcoming sessions
+        </div>
       </div>
 
       {/* Ongoing session */}
@@ -63,7 +66,6 @@ export const CalendarSidebar = ({ onBookSession, ongoingSession }: CalendarSideb
           </div>
         </div>
       )}
-
     </div>
   );
 };
