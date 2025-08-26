@@ -1,9 +1,7 @@
 ## TODOS  for calendar
 
-- Fix X on booked session, make it bigger
-- Fix Font being so small, should be responsive.
-- Make calendar responsive to auto switch to day view when week view is shrunk to a certain view point
-
+fix the styling for booked and upcoming session blocks(booked with join button) and make them
+responsive.. use focusmate as good reference.
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 
 ## Core User Flow Goals:

@@ -25,7 +25,7 @@ export const CalendarSidebar = ({
       <div className="p-4">
         <Button 
           onClick={onBookSession}
-          className="w-full bg-session-ongoing hover:bg-session-ongoing/90 text-white rounded-lg font-medium"
+          className="w-full bg-session-booked hover:bg-session-booked/90 text-white rounded-lg font-medium"
         >
           + Book a session
         </Button>
@@ -52,7 +52,7 @@ export const CalendarSidebar = ({
               {ongoingSession.startTime}
             </div>
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-6 h-6 bg-session-ongoing rounded-full flex items-center justify-center text-white text-xs font-medium">
+              <div className="w-6 h-6 bg-session-booked rounded-full flex items-center justify-center text-white text-xs font-medium">
                 J
               </div>
               <span className="text-sm text-foreground">{ongoingSession.participant}</span>
@@ -60,7 +60,7 @@ export const CalendarSidebar = ({
             <div className="text-xs text-muted-foreground mb-2">
               {timeRemaining}
             </div>
-            <Button size="sm" className="w-full bg-session-ongoing hover:bg-session-ongoing/90 text-white text-xs">
+            <Button size="sm" className="w-full bg-session-booked hover:bg-session-booked/90 text-white text-xs">
               Join
             </Button>
           </div>

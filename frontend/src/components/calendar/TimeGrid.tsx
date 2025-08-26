@@ -8,6 +8,7 @@ interface TimeGridProps {
   sessions: Session[];
   onSessionBook: (session: Omit<Session, "id">) => void;
   onSessionUpdate: (sessionId: string, updates: Partial<Session>) => void;
+  onSessionDelete?: (sessionId: string) => void;
   viewMode: "day" | "week";
 }
 
@@ -16,7 +17,7 @@ export const TimeGrid = ({
   sessions,
   onSessionBook,
   onSessionUpdate,
-  viewMode,
+  onSessionDelete,
 }: TimeGridProps) => {
   const [hoveredSlot, setHoveredSlot] = useState<{
     day: string;
@@ -24,11 +25,6 @@ export const TimeGrid = ({
     minute: number;
   } | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<{
-    day: string;
-    hour: number;
-    minute: number;
-  } | null>(null);
   const [pendingConfirmation, setPendingConfirmation] = useState<{
     day: string;
     hour: number;
@@ -169,7 +165,7 @@ export const TimeGrid = ({
                 <div
                   key={`header-${day.date}`}
                   className={`p-3 text-left border-r border-b border-calendar-border ${
-                    day.isToday ? "bg-calendar-primary/13" : "bg-white"
+                    day.isToday ? "bg-calendar-primary/5" : "bg-white"
                   }`}
                   style={{ height: "80px" }}
                 >
@@ -210,7 +206,7 @@ export const TimeGrid = ({
                   <div
                     key={`time-${index}`}
                     className="border-r border-calendar-border bg-calendar-sidebar pl-5 pt-1 px-3 py-1 text-sm text-calendar-time-text flex font-medium relative"
-                    style={{ height: "68px" }}
+                    style={{ height: "73px" }}
                   >
                     {isHourStart && (
                       <span className="absolute -top-1 right-1">
@@ -244,14 +240,16 @@ export const TimeGrid = ({
                     return (
                       <div
                         key={`${day.date}-${index}`}
-                        className={`border-r border-calendar-border border-b border-calendar-border/13 relative cursor-pointer transition-colors ${
-                          day.isToday ? "bg-calendar-primary/13" : "bg-white"
+                        className={`border-r border-calendar-border border-b border-calendar-border/50 relative transition-colors ${
+                          sessionsInSlot.length === 0 ? "cursor-pointer" : ""
+                        } ${
+                          day.isToday ? "bg-calendar-primary/5" : "bg-white"
                         } ${
                           isHovered && sessionsInSlot.length === 0 && !isPending
                             ? ""
                             : ""
                         } ${isPending ? "" : ""}`}
-                        style={{ height: "68px" }}
+                        style={{ height: "73px" }}
                         onMouseEnter={() => {
                           if (!isPending && !clickCooldown) {
                             setHoveredSlot({
@@ -273,18 +271,19 @@ export const TimeGrid = ({
                             onUpdate={(updates) =>
                               onSessionUpdate(session.id, updates)
                             }
+                            onDelete={onSessionDelete}
                           />
                         ))}
 
                         {isHovered && sessionsInSlot.length === 0 && (
-                          <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-black flex items-center justify-center font-medium">
+                          <div className="absolute inset-0 border border-calendar-hover rounded text-md text-primary flex items-center justify-center font-medium">
                             {slot.formatted}
                           </div>
                         )}
 
                         {isPending && (
-                          <div className="absolute inset-0 bg-white border-2 border-calendar-primary rounded text-xs flex flex-col p-1">
-                            <div className="flex gap-1 mb-1">
+                          <div className="absolute inset-0 bg-white border-1 border-calendar-primary rounded text-xs flex flex-col justify-between p-1 cursor-default">
+                            <div className="flex gap-1 mb-1 h-full">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -294,7 +293,7 @@ export const TimeGrid = ({
                                     pendingConfirmation!.minute
                                   );
                                 }}
-                                className="bg-calendar-primary text-white text-[9px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/90 transition-colors flex-1"
+                                className="bg-calendar-primary text-white text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/90 transition-colors flex-1 cursor-pointer"
                               >
                                 Book
                               </button>
@@ -304,7 +303,7 @@ export const TimeGrid = ({
                                 e.stopPropagation();
                                 setPendingConfirmation(null);
                               }}
-                              className="border border-calendar-primary text-calendar-primary text-[9px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/10 transition-colors"
+                              className="h-8/10 border border-calendar-primary text-calendar-primary text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/5 transition-colors cursor-pointer"
                             >
                               Remove
                             </button>

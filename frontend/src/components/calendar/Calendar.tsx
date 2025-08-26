@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CalendarSidebar } from './CalendarSidebar';
 import { CalendarHeader } from './CalendarHeader';
 import { TimeGrid } from './TimeGrid';
@@ -14,6 +14,33 @@ export const Calendar = () => {
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [currentView, setCurrentView] = useState<'calendar' | 'sessions' | 'people'>('calendar');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [userSetViewMode, setUserSetViewMode] = useState(false);
+
+  // Auto-switch view mode based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+      if (screenWidth < 768 && viewMode === 'week') {
+        setViewMode('day');
+        setUserSetViewMode(false); // Reset user preference on mobile
+      } else if (screenWidth >= 768 && viewMode === 'day' && !userSetViewMode) {
+        // Only auto-switch to week if user hasn't explicitly chosen day mode
+        setViewMode('week');
+      }
+    };
+
+    // Set initial view mode based on screen size
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [viewMode, userSetViewMode]);
+
+  // Custom view mode handler that tracks user intent
+  const handleViewModeChange = (newMode: 'day' | 'week') => {
+    setViewMode(newMode);
+    setUserSetViewMode(true); // Mark that user explicitly chose this mode
+  };
 
   // Generate days based on current date and view mode
   const getDaysToShow = (date: Date, mode: 'day' | 'week'): DayColumn[] => {
@@ -88,8 +115,12 @@ export const Calendar = () => {
     ));
   };
 
+  const handleSessionDelete = (sessionId: string) => {
+    setSessions(prev => prev.filter(session => session.id !== sessionId));
+  };
+
   // Find ongoing session for sidebar
-  const ongoingSession = sessions.find(session => session.status === 'ongoing');
+  const ongoingSession = sessions.find(session => session.status === 'booked');
 
   const renderMainContent = () => {
     switch (currentView) {
@@ -110,7 +141,7 @@ export const Calendar = () => {
                 onDateSelect={handleDateSelect}
                 daysToShow={daysToShow}
                 viewMode={viewMode}
-                onViewModeChange={setViewMode}
+                onViewModeChange={handleViewModeChange}
               />
               
               <TimeGrid 
@@ -118,6 +149,7 @@ export const Calendar = () => {
                 sessions={sessions}
                 onSessionBook={handleSessionBook}
                 onSessionUpdate={handleSessionUpdate}
+                onSessionDelete={handleSessionDelete}
                 viewMode={viewMode}
               />
             </div>

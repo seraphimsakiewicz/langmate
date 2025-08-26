@@ -104,6 +104,7 @@ export const CalendarHeader = ({
             size="sm"
             variant={viewMode === "week" ? "default" : "ghost"}
             onClick={() => onViewModeChange("week")}
+            className="hidden md:inline-flex"
           >
             Week
           </Button>

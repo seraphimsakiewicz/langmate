@@ -5,7 +5,7 @@ export interface Session {
     endTime: string; // Format: "HH:mm"
     date: string; // Format: "YYYY-MM-DD"
     participant: string;
-    status: 'ongoing' | 'booked' | 'pending';
+    status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
     avatar?: string;
 }
 
