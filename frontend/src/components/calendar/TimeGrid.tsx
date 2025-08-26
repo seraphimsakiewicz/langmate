@@ -34,6 +34,7 @@ export const TimeGrid = ({
     hour: number;
     minute: number;
   } | null>(null);
+  const [clickCooldown, setClickCooldown] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Generate time slots from 12 AM to 11 PM
@@ -107,9 +108,13 @@ export const TimeGrid = ({
       });
 
       setPendingConfirmation(null);
+      setClickCooldown(true);
+      setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
     } else {
       // Set pending confirmation
       setPendingConfirmation({ day, hour, minute });
+      setClickCooldown(true);
+      setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
     }
   };
 
@@ -137,7 +142,7 @@ export const TimeGrid = ({
       >
         <div className="min-w-full">
           {/* STICKY HEADER ROW */}
-          <div className="sticky top-0 z-10 bg-white border-b border-calendar-border">
+          <div className="sticky top-0 z-11 bg-white border-calendar-border">
             <div
               className="grid"
               style={{
@@ -148,28 +153,30 @@ export const TimeGrid = ({
               {/* Header time column */}
               <div
                 className="border-r border-calendar-border bg-calendar-sidebar"
-                style={{ height: "80px" }}
+                style={{
+                  height: "80px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-end",
+                  alignItems: "flex-end",
+                }}
               >
                 <div className="p-3 text-xs text-calendar-time-text">EDT</div>
               </div>
-
+              {/* day.isToday */}
               {/* Header day columns */}
               {daysToShow.map((day) => (
                 <div
                   key={`header-${day.date}`}
-                  className="p-3 text-left border-r border-calendar-border bg-white"
+                  className={`p-3 text-left border-r border-b border-calendar-border ${
+                    day.isToday ? "bg-calendar-primary/13" : "bg-white"
+                  }`}
                   style={{ height: "80px" }}
                 >
                   <div className="text-xs font-medium text-calendar-time-text uppercase mb-1">
                     {day.dayName}
                   </div>
-                  <div
-                    className={`text-2xl font-bold ${
-                      day.isToday
-                        ? "text-calendar-primary bg-calendar-primary/10 w-10 h-10 rounded-full flex items-center justify-center"
-                        : "text-foreground"
-                    }`}
-                  >
+                  <div className="text-2xl font-bold bg-red text-foreground">
                     {day.dayNumber}
                   </div>
                 </div>
@@ -237,19 +244,23 @@ export const TimeGrid = ({
                     return (
                       <div
                         key={`${day.date}-${index}`}
-                        className={`border-r border-calendar-border border-b border-calendar-border/50 relative cursor-pointer transition-colors bg-white ${
-                          isHovered && sessionsInSlot.length === 0
-                            ? "bg-calendar-hover/10"
+                        className={`border-r border-calendar-border border-b border-calendar-border/13 relative cursor-pointer transition-colors ${
+                          day.isToday ? "bg-calendar-primary/13" : "bg-white"
+                        } ${
+                          isHovered && sessionsInSlot.length === 0 && !isPending
+                            ? ""
                             : ""
-                        } ${isPending ? "bg-session-pending/20" : ""}`}
+                        } ${isPending ? "" : ""}`}
                         style={{ height: "68px" }}
-                        onMouseEnter={() =>
-                          setHoveredSlot({
-                            day: day.date,
-                            hour: slot.hour,
-                            minute: slot.minute,
-                          })
-                        }
+                        onMouseEnter={() => {
+                          if (!isPending && !clickCooldown) {
+                            setHoveredSlot({
+                              day: day.date,
+                              hour: slot.hour,
+                              minute: slot.minute,
+                            });
+                          }
+                        }}
                         onMouseLeave={() => setHoveredSlot(null)}
                         onClick={() =>
                           handleSlotClick(day.date, slot.hour, slot.minute)
@@ -266,14 +277,37 @@ export const TimeGrid = ({
                         ))}
 
                         {isHovered && sessionsInSlot.length === 0 && (
-                          <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-white flex items-center justify-center font-medium">
+                          <div className="absolute inset-0 bg-calendar-hover/20 border border-calendar-hover rounded text-xs text-black flex items-center justify-center font-medium">
                             {slot.formatted}
                           </div>
                         )}
 
                         {isPending && (
-                          <div className="absolute inset-0 bg-session-pending/40 border border-session-pending rounded text-xs text-white flex items-center justify-center font-medium">
-                            Confirm?
+                          <div className="absolute inset-0 bg-white border-2 border-calendar-primary rounded text-xs flex flex-col p-1">
+                            <div className="flex gap-1 mb-1">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleSlotClick(
+                                    pendingConfirmation!.day,
+                                    pendingConfirmation!.hour,
+                                    pendingConfirmation!.minute
+                                  );
+                                }}
+                                className="bg-calendar-primary text-white text-[9px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/90 transition-colors flex-1"
+                              >
+                                Book
+                              </button>
+                            </div>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPendingConfirmation(null);
+                              }}
+                              className="border border-calendar-primary text-calendar-primary text-[9px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/10 transition-colors"
+                            >
+                              Remove
+                            </button>
                           </div>
                         )}
                       </div>
