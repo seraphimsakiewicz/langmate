@@ -17,10 +17,14 @@
 
   /* Breakpoints (match your old config) */
   --breakpoint-sm: 640px;
-  --breakpoint-md: 768px;
+  --breakpoint-md: 951px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
+
+  /* Custom breakpoints for Focusmate layout */
+  --breakpoint-medium: 1263px;
+  --breakpoint-large: 1515px;
 
   /* Radii (matches your intent) */
   --radius: 0.75rem;
@@ -173,5 +177,71 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+}
+
+/* =======================
+   Custom Responsive Utilities
+   ======================= */
+@layer utilities {
+  /* Hide on screens < 1263px */
+  .hidden-below-medium {
+    display: none;
+  }
+
+  /* Show only on screens >= 1263px and < 1515px */
+  .show-medium-only {
+    display: none;
+  }
+
+  /* Show only on screens >= 1515px */
+  .show-large-only {
+    display: none;
+  }
+
+  /* Show on screens < 1263px */
+  .show-below-medium {
+    display: block;
+  }
+
+  @media (min-width: 1263px) {
+    .hidden-below-medium {
+      display: block;
+    }
+
+    .show-below-medium {
+      display: none;
+    }
+
+    .show-medium-only {
+      display: block;
+    }
+  }
+
+  @media (min-width: 1515px) {
+    .show-medium-only {
+      display: none;
+    }
+
+    .show-large-only {
+      display: block;
+    }
+  }
+
+  /* Hide close button on screens < 950px in day view */
+  @media (max-width: 950px) {
+    .hide-on-mobile {
+      display: none;
+    }
+  }
+
+  /* Custom font sizes for session blocks */
+  .text-session-time {
+    font-size: 11px;
+    color: #2F3150;
+  }
+
+  .text-session-name {
+    font-size: 12px;
   }
 }

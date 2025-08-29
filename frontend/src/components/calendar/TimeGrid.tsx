@@ -18,6 +18,7 @@ export const TimeGrid = ({
   onSessionBook,
   onSessionUpdate,
   onSessionDelete,
+  viewMode,
 }: TimeGridProps) => {
   const [hoveredSlot, setHoveredSlot] = useState<{
     day: string;
@@ -272,6 +273,7 @@ export const TimeGrid = ({
                               onSessionUpdate(session.id, updates)
                             }
                             onDelete={onSessionDelete}
+                            viewMode={viewMode}
                           />
                         ))}
 

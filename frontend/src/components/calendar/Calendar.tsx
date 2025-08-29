@@ -20,10 +20,10 @@ export const Calendar = () => {
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
-      if (screenWidth < 768 && viewMode === 'week') {
+      if (screenWidth < 951 && viewMode === 'week') {
         setViewMode('day');
         setUserSetViewMode(false); // Reset user preference on mobile
-      } else if (screenWidth >= 768 && viewMode === 'day' && !userSetViewMode) {
+      } else if (screenWidth >= 951 && viewMode === 'day' && !userSetViewMode) {
         // Only auto-switch to week if user hasn't explicitly chosen day mode
         setViewMode('week');
       }

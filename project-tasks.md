@@ -1,7 +1,10 @@
 ## TODOS  for calendar
 
-fix the styling for booked and upcoming session blocks(booked with join button) and make them
-responsive.. use focusmate as good reference.
+- Fix session blocks being made not at current date. For ex. session date is 8/29, but showing 8/28
+for Sarah M.
+- Finish with upcoming session view ![alt text](image.png)
+- Make session blocks properly responsive
+
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 
 ## Core User Flow Goals:
