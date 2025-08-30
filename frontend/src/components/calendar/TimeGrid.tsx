@@ -136,6 +136,7 @@ export const TimeGrid = ({
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto bg-white border border-gray-200 min-h-0"
+        style={{ maxHeight: "calc(100vh - 200px)" }}
       >
         <div className="min-w-full">
           {/* STICKY HEADER ROW */}
