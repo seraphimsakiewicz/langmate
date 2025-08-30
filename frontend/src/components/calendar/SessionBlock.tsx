@@ -1,5 +1,6 @@
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
+import Link from "next/link";
 
 interface SessionBlockProps {
   session: Session;
@@ -35,29 +36,26 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
     const minutesDiff = Math.floor(timeDiff / (1000 * 60));
 
     // Session starts within 60 minutes and hasn't started yet
-    return minutesDiff >= 0 && minutesDiff <= 60;
+    return true;
   };
 
   const renderBookedSession = () => (
     <div
-      className="absolute rounded p-[6px] border-2 border-session-booked text-session-booked font-medium transition-all"
+      className="absolute rounded p-[6px] border-2 border-session-booked font-medium text-session-booked transition-all"
       style={{
         left: "2px",
         right: "2px",
         top: "2px",
         bottom: "2px",
-        minHeight: "56px",
+        minHeight: "72px",
         zIndex: 10,
       }}
     >
-      {/* Bottom row: Avatar + Name OR Join Button */}
-      <div className="flex flex-col items-stretch justify-between gap-2">
-        {/* Avatar and Name */}
-        <div className="flex items-start flex-1 min-w-0">
-          <div className="w-[30px] h-[30px]  bg-session-booked rounded-full hidden-below-medium"></div>
-          {/* Top row: Time and Close button */}
-          <div className="flex ml-1 justify-between items-start mb-2">
-            {/* Time display - responsive */}
+      <div className="flex flex-col justify-between h-full">
+        {/* Top row: Avatar + Time/Name on left, Close button on right */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-start gap-1 flex-1 min-w-0">
+            <div className="w-[30px] h-[30px] bg-session-booked rounded-full hidden-below-medium flex-shrink-0"></div>
             <div className="leading-tight">
               <div className="text-session-time">
                 <span className="show-large-only">
@@ -76,6 +74,20 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="flex flex-row justify-between align-end">
+          {/* Bottom row: Join Button on left */}
+          {isSessionStartingSoon() && (
+            <div className="flex justify-start mt-1">
+              <Link
+                href="#"
+                className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors cursor-pointer"
+              >
+                Join
+              </Link>
+            </div>
+          )}
 
           {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
           <button
@@ -85,24 +97,11 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
                 onDelete(session.id);
               }
             }}
-            className="text-session-booked w-[18px] h-[18px] p-[4px] rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors ml-auto -mt-1 cursor-pointer hover:bg-calendar-primary/20 hide-on-mobile hidden xl:flex items-center justify-center"
+            className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors cursor-pointer hover:bg-calendar-primary/20 hide-on-mobile hidden xl:flex items-center justify-center flex-shrink-0"
           >
-            <X  />
+            <X />
           </button>
         </div>
-
-        {/* Join Button - show when session is starting soon */}
-        {isSessionStartingSoon() && (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              console.log("Joining session:", session.id);
-            }}
-            className="bg-session-booked hover:bg-session-booked/90 text-white text-[12px] px-2 py-1 rounded font-medium transition-colors cursor-pointer flex-shrink-0"
-          >
-            Join
-          </button>
-        )}
       </div>
     </div>
   );
