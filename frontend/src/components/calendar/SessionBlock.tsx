@@ -76,7 +76,7 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
           </div>
         </div>
 
-        <div className="flex flex-row justify-between align-end">
+        <div className="flex flex-row justify-between items-end">
           {/* Bottom row: Join Button on left */}
           {isSessionStartingSoon() && (
             <div className="flex justify-start mt-1">
