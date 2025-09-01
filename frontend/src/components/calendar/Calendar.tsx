@@ -15,17 +15,29 @@ export const Calendar = () => {
   const [currentView, setCurrentView] = useState<'calendar' | 'sessions' | 'people'>('calendar');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userSetViewMode, setUserSetViewMode] = useState(false);
+  const [userSetSidebarCollapsed, setUserSetSidebarCollapsed] = useState(false);
 
-  // Auto-switch view mode based on screen size
+  // Auto-switch view mode and sidebar based on screen size
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
+      
+      // Handle view mode switching
       if (screenWidth < 951 && viewMode === 'week') {
         setViewMode('day');
         setUserSetViewMode(false); // Reset user preference on mobile
       } else if (screenWidth >= 951 && viewMode === 'day' && !userSetViewMode) {
         // Only auto-switch to week if user hasn't explicitly chosen day mode
         setViewMode('week');
+      }
+      
+      // Handle sidebar collapse/expand
+      if (screenWidth <= 950) {
+        // Always collapse sidebar on small screens
+        setIsSidebarCollapsed(true);
+      } else if (screenWidth >= 951 && !userSetSidebarCollapsed) {
+        // Auto-expand sidebar on larger screens unless user manually collapsed it
+        setIsSidebarCollapsed(false);
       }
     };
 
@@ -34,7 +46,7 @@ export const Calendar = () => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [viewMode, userSetViewMode]);
+  }, [viewMode, userSetViewMode, userSetSidebarCollapsed]);
 
   // Custom view mode handler that tracks user intent
   const handleViewModeChange = (newMode: 'day' | 'week') => {
@@ -184,7 +196,10 @@ export const Calendar = () => {
         currentView={currentView} 
         onViewChange={setCurrentView}
         isSidebarCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+        onToggleCollapse={() => {
+          setIsSidebarCollapsed(!isSidebarCollapsed);
+          setUserSetSidebarCollapsed(true); // Mark that user explicitly toggled sidebar
+        }}
       />
       
       <div className="flex-1 overflow-hidden">
