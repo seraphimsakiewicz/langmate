@@ -1,6 +1,7 @@
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface SessionBlockProps {
   session: Session;
@@ -10,6 +11,7 @@ interface SessionBlockProps {
 }
 
 export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
+  const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
   const formatTime = (time: string) => {
     const [hour, minute] = time.split(":").map(Number);
     const date = new Date();
@@ -39,6 +41,51 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
     return true;
   };
 
+  const renderCancelConfirmation = () => (
+    <div
+      className="absolute rounded transition-all bg-red-600"
+      style={{
+        left: "2px",
+        right: "2px",
+        top: "2px",
+        bottom: "2px",
+        minHeight: "72px",
+        zIndex: 10,
+      }}
+    >
+      <div className="flex flex-col h-full">
+        {/* Confirmation text */}
+        <div className="text-center py-2 text-white font-medium">
+          Cancel?
+        </div>
+        
+        {/* Buttons */}
+        <div className="flex flex-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsConfirmingCancel(false);
+            }}
+            className="flex-1 bg-red-600 hover:bg-red-600 text-white font-medium transition-colors cursor-pointer rounded-bl"
+          >
+            No
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onDelete) {
+                onDelete(session.id);
+              }
+            }}
+            className="flex-1 bg-white hover:bg-gray-50 text-red-600 font-medium transition-colors cursor-pointer rounded-br"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderBookedSession = () => (
     <div
       className="absolute rounded p-[6px] border-2 border-session-booked font-medium text-session-booked transition-all"
@@ -47,7 +94,7 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
         right: "2px",
         top: "2px",
         bottom: "2px",
-        minHeight: "72px",
+        minHeight: "71px",
         zIndex: 10,
       }}
     >
@@ -93,9 +140,7 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              if (onDelete) {
-                onDelete(session.id);
-              }
+              setIsConfirmingCancel(true);
             }}
             className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors cursor-pointer hover:bg-calendar-primary/20 hide-on-mobile hidden xl:flex items-center justify-center flex-shrink-0"
           >
@@ -106,5 +151,5 @@ export const SessionBlock = ({ session, onDelete }: SessionBlockProps) => {
     </div>
   );
 
-  return renderBookedSession();
+  return isConfirmingCancel ? renderCancelConfirmation() : renderBookedSession();
 };
