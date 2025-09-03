@@ -266,51 +266,35 @@ export const TimeGrid = ({
                           handleSlotClick(day.date, slot.hour, slot.minute)
                         }
                       >
-                        {sessionsInSlot.map((session) => (
+                        {sessionsInSlot.length > 0 ? (
+                          sessionsInSlot.map((session) => (
+                            <SessionBlock
+                              key={session.id}
+                              mode="booked"
+                              session={session}
+                              onUpdate={(updates) =>
+                                onSessionUpdate(session.id, updates)
+                              }
+                              onDelete={onSessionDelete}
+                              viewMode={viewMode}
+                            />
+                          ))
+                        ) : (
                           <SessionBlock
-                            key={session.id}
-                            session={session}
-                            onUpdate={(updates) =>
-                              onSessionUpdate(session.id, updates)
+                            key={`${day.date}-${slot.hour}-${slot.minute}`}
+                            mode={
+                              isPending
+                                ? "pending"
+                                : isHovered
+                                ? "hover"
+                                : "empty"
                             }
-                            onDelete={onSessionDelete}
-                            viewMode={viewMode}
+                            slotTime={slot.formatted}
+                            onBook={() =>
+                              handleSlotClick(day.date, slot.hour, slot.minute)
+                            }
+                            onRemovePending={() => setPendingConfirmation(null)}
                           />
-                        ))}
-
-                        {isHovered && sessionsInSlot.length === 0 && (
-                          <div className="absolute inset-0 border border-calendar-hover rounded text-md text-primary flex items-center justify-center font-medium">
-                            {slot.formatted}
-                          </div>
-                        )}
-
-                        {isPending && (
-                          <div className="absolute inset-0 bg-white border-1 border-calendar-primary rounded text-xs flex flex-col justify-between p-1 cursor-default">
-                            <div className="flex gap-1 mb-1 h-full">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleSlotClick(
-                                    pendingConfirmation!.day,
-                                    pendingConfirmation!.hour,
-                                    pendingConfirmation!.minute
-                                  );
-                                }}
-                                className="bg-calendar-primary text-white text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/90 transition-colors flex-1 cursor-pointer"
-                              >
-                                Book
-                              </button>
-                            </div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setPendingConfirmation(null);
-                              }}
-                              className="h-8/10 border border-calendar-primary text-calendar-primary text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/5 transition-colors cursor-pointer"
-                            >
-                              Remove
-                            </button>
-                          </div>
                         )}
                       </div>
                     );
