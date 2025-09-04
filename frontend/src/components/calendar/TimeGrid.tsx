@@ -138,7 +138,7 @@ export const TimeGrid = ({
                   alignItems: "flex-end",
                 }}
               >
-                <div className="absolute -bottom-1 right-1 text-xs text-calendar-time-text">EDT</div>
+                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">EDT</div>
               </div>
               {/* day.isToday */}
               {/* Header day columns */}

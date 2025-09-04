@@ -228,13 +228,6 @@
     }
   }
 
-  /* Hide close button on screens < 950px in day view */
-  @media (max-width: 950px) {
-    .hide-on-mobile {
-      display: none;
-    }
-  }
-
   /* Custom font sizes for session blocks */
   .text-session-time {
     font-size: 11px;
