@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
+import { formatTime, isSessionStartingSoon } from "@/utils/timeUtils";
 
 type SessionMode =
   | "empty"
@@ -30,55 +31,69 @@ const SessionContainer = ({
   className?: string;
 }) => (
   <div
-    className={`h-full w-full rounded p-[6px] font-medium transition-all ${className}`}
+    className={`h-full w-full rounded p-[6px] font-medium ${className}`}
   >
     {children}
   </div>
 );
 
-export const SessionBlock = ({
+const SessionBlockComponent = ({
   mode,
   session,
-  slotTime,
   onDelete,
   onBook,
   onRemovePending,
 }: SessionBlockProps) => {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
-  const formatTime = (time: string) => {
-    const [hour, minute] = time.split(":").map(Number);
-    const date = new Date();
-    date.setHours(hour, minute);
-    return date.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
 
-  const isSessionStartingSoon = () => {
-    if (!session) return false;
+  // Memoize callback functions to prevent unnecessary re-renders
+  const handleBookClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onBook?.();
+    },
+    [onBook]
+  );
 
-    const now = new Date();
-    const today = now.toISOString().split("T")[0];
+  const handleRemovePendingClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onRemovePending?.();
+    },
+    [onRemovePending]
+  );
 
-    // Only check sessions for today
-    if (session.date !== today) return false;
+  const handleCancelClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsConfirmingCancel(true);
+  }, []);
 
-    const [startHour, startMinute] = session.startTime.split(":").map(Number);
-    const sessionStart = new Date();
-    sessionStart.setHours(startHour, startMinute, 0, 0);
+  const handleCancelConfirmNo = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsConfirmingCancel(false);
+  }, []);
 
-    // Session starts within 60 minutes and hasn't started yet
-    return true;
-  };
+  const handleCancelConfirmYes = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (onDelete && session) {
+        onDelete(session.id);
+      }
+    },
+    [onDelete, session]
+  );
+
+  // Memoize expensive calculations
+  const sessionStartingSoon = session ? isSessionStartingSoon(session) : false;
 
   const renderEmpty = () => null;
 
   const renderHover = () => (
     <SessionContainer className="border border-calendar-hover text-primary">
-      <div className="flex items-center justify-center h-full">
-        <span className="text-md font-medium">{slotTime}</span>
+      <div className="flex flex-col justify-center h-full">
+        <div className="flex items-center justify-center">
+          <span className="text-xs font-medium">Select</span>
+        </div>
       </div>
     </SessionContainer>
   );
@@ -88,20 +103,14 @@ export const SessionBlock = ({
       <div className="flex flex-col justify-between h-full">
         <div className="flex gap-1 mb-1 h-full">
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onBook?.();
-            }}
+            onClick={handleBookClick}
             className="bg-calendar-primary text-white text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/90 transition-colors flex-1 cursor-pointer"
           >
             Book
           </button>
         </div>
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemovePending?.();
-          }}
+          onClick={handleRemovePendingClick}
           className="h-8/10 border border-calendar-primary text-calendar-primary text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/5 transition-colors cursor-pointer"
         >
           Remove
@@ -111,36 +120,23 @@ export const SessionBlock = ({
   );
 
   const renderCancelConfirmation = () => (
-    <SessionContainer className="bg-red-600 p-0 overflow-hidden">
-      {/* Confirmation text */}
-      <div className="text-white text-center">Cancel?</div>
-
-      {/* Buttons row */}
-      <div>
-        <button
-          className="text-white"
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsConfirmingCancel(false);
-          }}
-        >
-          No
-        </button>
+    <div className="h-full w-full bg-[#de3535] text-white rounded-[5px] shadow-[0_5px_10px_rgba(222,53,53,0.2)] grid grid-rows-2 grid-cols-2">
+      <div className="text-center text-[10px] font-medium tracking-[0.5px] col-span-2 flex items-center justify-center">
+        Cancel?
       </div>
-      <div>
-        <button
-          className="text-red-300"
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onDelete && session) {
-              onDelete(session.id);
-            }
-          }}
-        >
-          Yes
-        </button>
-      </div>
-    </SessionContainer>
+      <button
+        onClick={handleCancelConfirmNo}
+        className="flex items-center justify-center h-full bg-transparent text-white text-[11px] font-semibold rounded-bl-[5px] cursor-pointer"
+      >
+        No
+      </button>
+      <button
+        onClick={handleCancelConfirmYes}
+        className="bg-white text-[#de3535] text-[11px] font-semibold rounded-br-[5px] cursor-pointer border-0 p-0 w-full h-full"
+      >
+        Yes
+      </button>
+    </div>
   );
 
   const renderBooked = () => {
@@ -175,7 +171,7 @@ export const SessionBlock = ({
 
           <div className="flex flex-row justify-between items-end">
             {/* Bottom row: Join Button on left */}
-            {isSessionStartingSoon() && (
+            {sessionStartingSoon && (
               <div className="flex justify-start mt-1">
                 <Link
                   href="#"
@@ -188,10 +184,7 @@ export const SessionBlock = ({
 
             {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsConfirmingCancel(true);
-              }}
+              onClick={handleCancelClick}
               className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors cursor-pointer hover:bg-calendar-primary/20 hide-on-mobile hidden xl:flex items-center justify-center flex-shrink-0"
             >
               <X />
@@ -223,3 +216,22 @@ export const SessionBlock = ({
       return null;
   }
 };
+
+// Memoize the component to prevent unnecessary re-renders
+export const SessionBlock = memo(
+  SessionBlockComponent,
+  (prevProps, nextProps) => {
+    // Custom comparison function for better performance
+    return (
+      prevProps.mode === nextProps.mode &&
+      prevProps.session?.id === nextProps.session?.id &&
+      prevProps.session?.startTime === nextProps.session?.startTime &&
+      prevProps.session?.endTime === nextProps.session?.endTime &&
+      prevProps.session?.participant === nextProps.session?.participant &&
+      prevProps.slotTime === nextProps.slotTime &&
+      prevProps.viewMode === nextProps.viewMode
+    );
+  }
+);
+
+SessionBlock.displayName = "SessionBlock";
