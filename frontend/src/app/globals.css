@@ -231,10 +231,12 @@
   /* Custom font sizes for session blocks */
   .text-session-time {
     font-size: 11px;
-    color: #2F3150;
+    color: #2f3150;
   }
 
-  .text-session-name {
-    font-size: 12px;
+  .single-line-el {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

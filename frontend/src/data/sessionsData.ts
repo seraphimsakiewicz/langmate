@@ -82,7 +82,7 @@ const generateDynamicSessions = (): Session[] => {
     startTime: formatTime(todayUpcoming2),
     endTime: formatTime(addMinutes(todayUpcoming2, 25)),
     date: formatDate(today),
-    participant: 'Jason Lee',
+    participant: 'Jason Lee The lONGEST NAME OF ALL TIME HALLEJUAH',
     status: 'booked',
   });
 

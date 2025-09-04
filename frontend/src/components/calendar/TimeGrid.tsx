@@ -218,7 +218,7 @@ export const TimeGrid = ({
                     return (
                       <div
                         key={`${day.date}-${index}`}
-                        className={`border-r border-calendar-border border-b border-calendar-border/50 transition-colors ${
+                        className={`border-r min-w-0 border-calendar-border border-b border-calendar-border/50 transition-colors ${
                           sessionsInSlot.length === 0 ? "cursor-pointer" : ""
                         } ${
                           day.isToday ? "bg-calendar-primary/5" : "bg-white"

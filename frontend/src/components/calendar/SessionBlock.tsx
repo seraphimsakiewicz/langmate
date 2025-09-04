@@ -149,8 +149,8 @@ const SessionBlockComponent = ({
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-1 flex-1 min-w-0">
               <div className="w-[30px] h-[30px] bg-session-booked rounded-full hidden-below-medium flex-shrink-0"></div>
-              <div className="leading-tight">
-                <div className="text-session-time">
+              <div className="leading-tight min-w-0">
+                <div className="text-session-time single-line-el">
                   <span className="show-long-time">
                     {formatTime(session.startTime)} -{" "}
                     {formatTime(session.endTime)}
@@ -162,7 +162,7 @@ const SessionBlockComponent = ({
                     {formatTime(session.startTime)}
                   </span>
                 </div>
-                <div className="text-session-name font-medium truncate">
+                <div className="text-[12px] single-line-el">
                   {session.participant}
                 </div>
               </div>
