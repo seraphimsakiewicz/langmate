@@ -195,7 +195,7 @@
   }
 
   /* Show only on screens >= 1515px */
-  .show-large-only {
+  .show-long-time {
     display: none;
   }
 
@@ -223,7 +223,7 @@
       display: none;
     }
 
-    .show-large-only {
+    .show-long-time {
       display: block;
     }
   }

@@ -151,7 +151,7 @@ const SessionBlockComponent = ({
               <div className="w-[30px] h-[30px] bg-session-booked rounded-full hidden-below-medium flex-shrink-0"></div>
               <div className="leading-tight">
                 <div className="text-session-time">
-                  <span className="show-large-only">
+                  <span className="show-long-time">
                     {formatTime(session.startTime)} -{" "}
                     {formatTime(session.endTime)}
                   </span>
