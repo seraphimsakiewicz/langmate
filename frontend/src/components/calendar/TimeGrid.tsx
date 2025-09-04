@@ -129,7 +129,7 @@ export const TimeGrid = ({
             >
               {/* Header time column */}
               <div
-                className="border-r border-calendar-border bg-calendar-sidebar"
+                className="border-r border-calendar-border bg-calendar-sidebar relative"
                 style={{
                   height: "80px",
                   display: "flex",
@@ -138,7 +138,7 @@ export const TimeGrid = ({
                   alignItems: "flex-end",
                 }}
               >
-                <div className="p-3 text-xs text-calendar-time-text">EDT</div>
+                <div className="absolute -bottom-1 right-1 text-xs text-calendar-time-text">EDT</div>
               </div>
               {/* day.isToday */}
               {/* Header day columns */}
@@ -181,10 +181,10 @@ export const TimeGrid = ({
                   // Time column for this slot
                   <div
                     key={`time-${index}`}
-                    className="border-r border-calendar-border bg-calendar-sidebar px-3 py-1 text-sm text-calendar-time-text font-medium flex justify-end items-start"
+                    className="border-r border-calendar-border bg-calendar-sidebar px-3 py-1 text-sm text-calendar-time-text font-medium relative pl-5 pt-1"
                     style={{ height: "73px" }}
                   >
-                    <div className="text-right leading-none">
+                    <div className="absolute -top-1 right-1">
                       {isHourStart && (
                         <span className="block">
                           {getHourLabel(slot.hour)}
