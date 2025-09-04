@@ -2,7 +2,12 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Session, DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";
 import { BookingModal } from "./BookingModal";
-import { generateTimeSlots, createSessionLookup, getSessionsForSlot, getHourLabel } from "@/utils/timeUtils";
+import {
+  generateTimeSlots,
+  createSessionLookup,
+  getSessionsForSlot,
+  getHourLabel,
+} from "@/utils/timeUtils";
 
 interface TimeGridProps {
   daysToShow: DayColumn[];
@@ -39,7 +44,10 @@ export const TimeGrid = ({
   const timeSlots = useMemo(() => generateTimeSlots(), []);
 
   // Create session lookup hash map for O(1) session retrieval
-  const sessionLookup = useMemo(() => createSessionLookup(sessions), [sessions]);
+  const sessionLookup = useMemo(
+    () => createSessionLookup(sessions),
+    [sessions]
+  );
 
   // Auto-scroll to current time on mount
   useEffect(() => {
@@ -53,54 +61,63 @@ export const TimeGrid = ({
   }, [timeSlots]);
 
   // Use optimized session lookup from utils
-  const getSessionsForSlotOptimized = useCallback((day: string, hour: number, minute: number) => {
-    return getSessionsForSlot(sessionLookup, day, hour, minute);
-  }, [sessionLookup]);
+  const getSessionsForSlotOptimized = useCallback(
+    (day: string, hour: number, minute: number) => {
+      return getSessionsForSlot(sessionLookup, day, hour, minute);
+    },
+    [sessionLookup]
+  );
 
-  const handleSlotClick = useCallback((day: string, hour: number, minute: number) => {
-    const existingSessions = getSessionsForSlotOptimized(day, hour, minute);
-    if (existingSessions.length > 0) return;
+  const handleSlotClick = useCallback(
+    (day: string, hour: number, minute: number) => {
+      const existingSessions = getSessionsForSlotOptimized(day, hour, minute);
+      if (existingSessions.length > 0) return;
 
-    if (
-      pendingConfirmation?.day === day &&
-      pendingConfirmation?.hour === hour &&
-      pendingConfirmation?.minute === minute
-    ) {
-      // Confirm booking
-      const startTime = `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}`;
-      const endTime = `${hour.toString().padStart(2, "0")}:${(minute + 25)
-        .toString()
-        .padStart(2, "0")}`;
+      if (
+        pendingConfirmation?.day === day &&
+        pendingConfirmation?.hour === hour &&
+        pendingConfirmation?.minute === minute
+      ) {
+        // Confirm booking
+        const startTime = `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}`;
+        const endTime = `${hour.toString().padStart(2, "0")}:${(minute + 25)
+          .toString()
+          .padStart(2, "0")}`;
 
-      onSessionBook({
-        title: "New Session",
-        startTime,
-        endTime,
-        date: day,
-        participant: "New Participant",
-        status: "booked",
-      });
+        onSessionBook({
+          title: "New Session",
+          startTime,
+          endTime,
+          date: day,
+          participant: "New Participant",
+          status: "booked",
+        });
 
-      setPendingConfirmation(null);
-      setClickCooldown(true);
-      setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
-    } else {
-      // Set pending confirmation
-      setPendingConfirmation({ day, hour, minute });
-      setClickCooldown(true);
-      setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
-    }
-  }, [pendingConfirmation, onSessionBook, getSessionsForSlotOptimized]);
+        setPendingConfirmation(null);
+        setClickCooldown(true);
+        setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
+      } else {
+        // Set pending confirmation
+        setPendingConfirmation({ day, hour, minute });
+        setClickCooldown(true);
+        setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
+      }
+    },
+    [pendingConfirmation, onSessionBook, getSessionsForSlotOptimized]
+  );
 
-  const isSlotPending = useCallback((day: string, hour: number, minute: number) => {
-    return (
-      pendingConfirmation?.day === day &&
-      pendingConfirmation?.hour === hour &&
-      pendingConfirmation?.minute === minute
-    );
-  }, [pendingConfirmation]);
+  const isSlotPending = useCallback(
+    (day: string, hour: number, minute: number) => {
+      return (
+        pendingConfirmation?.day === day &&
+        pendingConfirmation?.hour === hour &&
+        pendingConfirmation?.minute === minute
+      );
+    },
+    [pendingConfirmation]
+  );
 
   // Memoize grid template columns calculation
   const gridCols = useMemo(() => {
@@ -138,7 +155,9 @@ export const TimeGrid = ({
                   alignItems: "flex-end",
                 }}
               >
-                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">EDT</div>
+                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">
+                  EDT
+                </div>
               </div>
               {/* day.isToday */}
               {/* Header day columns */}
@@ -186,9 +205,7 @@ export const TimeGrid = ({
                   >
                     <div className="absolute -top-1 right-1">
                       {isHourStart && (
-                        <span className="block">
-                          {getHourLabel(slot.hour)}
-                        </span>
+                        <span className="block">{getHourLabel(slot.hour)}</span>
                       )}
                       {isHalfHour && (
                         <span className="block text-xs text-calendar-time-text/70">

@@ -30,9 +30,7 @@ const SessionContainer = ({
   children: React.ReactNode;
   className?: string;
 }) => (
-  <div
-    className={`h-full w-full rounded p-[6px] font-medium ${className}`}
-  >
+  <div className={`h-full w-full rounded p-[6px] font-medium ${className}`}>
     {children}
   </div>
 );
@@ -42,6 +40,7 @@ const SessionBlockComponent = ({
   session,
   onDelete,
   onBook,
+  viewMode,
   onRemovePending,
 }: SessionBlockProps) => {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
@@ -139,28 +138,39 @@ const SessionBlockComponent = ({
     </div>
   );
 
-  const renderBooked = () => {
+  const renderBooked = (viewMode: "day" | "week") => {
     if (!session) return null;
 
+    console.log("viewMode", viewMode);
     return (
       <SessionContainer className="border-2 border-session-booked text-session-booked">
         <div className="flex flex-col justify-between h-full">
           {/* Top row: Avatar + Time/Name on left, Close button on right */}
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-1 flex-1 min-w-0">
-              <div className="w-[30px] h-[30px] bg-session-booked rounded-full hidden-below-medium flex-shrink-0"></div>
+              {/* need to hide on lg desktop, show at xl deskop, always show for day */}
+              <div
+                className={`w-[30px] h-[30px] bg-session-booked rounded-full flex-shrink-0 ${
+                  viewMode === "day" ? "block" : "hidden 2xl:block"
+                }`}
+              ></div>
               <div className="leading-tight min-w-0">
                 <div className="text-session-time single-line-el">
-                  <span className="show-long-time">
-                    {formatTime(session.startTime)} -{" "}
-                    {formatTime(session.endTime)}
+                  {/* need to figure out how to always show on day view */}
+                  <span
+                    className={`${
+                      viewMode === "day" ? "block" : "md:hidden xl:block"
+                    }`}
+                  >
+                    {/* this will need to be dynamic later */}
+                    {formatTime(session.startTime, true)} -{" "}
+                    {formatTime(session.endTime, true)}
                   </span>
-                  <span className="show-medium-only">
-                    {formatTime(session.startTime)}
-                  </span>
-                  <span className="show-below-medium">
-                    {formatTime(session.startTime)}
-                  </span>
+                  {viewMode === "week" && (
+                    <span className="md:block xl:hidden">
+                      {formatTime(session.startTime, true)}
+                    </span>
+                  )}
                 </div>
                 <div className="text-[12px] single-line-el">
                   {session.participant}
@@ -209,7 +219,7 @@ const SessionBlockComponent = ({
     case "pending":
       return renderPending();
     case "booked":
-      return renderBooked();
+      return renderBooked(viewMode);
     case "cancel-confirmation":
       return renderCancelConfirmation();
     default:

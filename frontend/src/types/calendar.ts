@@ -21,3 +21,5 @@ export interface DayColumn {
     dayNumber: number;
     isToday: boolean;
 }
+
+export type TimeFormat = "12h" | "24h";

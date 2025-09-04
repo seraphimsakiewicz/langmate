@@ -19,12 +19,12 @@
   --breakpoint-sm: 640px;
   --breakpoint-md: 951px;
   --breakpoint-lg: 1024px;
-  --breakpoint-xl: 1280px;
-  --breakpoint-2xl: 1536px;
+  --breakpoint-xl: 1263px;
+  --breakpoint-2xl: 1515px;
 
-  /* Custom breakpoints for Focusmate layout */
+  /* Custom breakpoints for Focusmate layout
   --breakpoint-medium: 1263px;
-  --breakpoint-large: 1515px;
+  --breakpoint-large: 1515px; */
 
   /* Radii (matches your intent) */
   --radius: 0.75rem;
@@ -180,63 +180,14 @@
   }
 }
 
-/* =======================
-   Custom Responsive Utilities
-   ======================= */
-@layer utilities {
-  /* Hide on screens < 1263px */
-  .hidden-below-medium {
-    display: none;
-  }
+/* Custom font sizes for session blocks */
+.text-session-time {
+  font-size: 11px;
+  color: #2f3150;
+}
 
-  /* Show only on screens >= 1263px and < 1515px */
-  .show-medium-only {
-    display: none;
-  }
-
-  /* Show only on screens >= 1515px */
-  .show-long-time {
-    display: none;
-  }
-
-  /* Show on screens < 1263px */
-  .show-below-medium {
-    display: block;
-  }
-
-  @media (min-width: 1263px) {
-    .hidden-below-medium {
-      display: block;
-    }
-
-    .show-below-medium {
-      display: none;
-    }
-
-    .show-medium-only {
-      display: block;
-    }
-  }
-
-  @media (min-width: 1515px) {
-    .show-medium-only {
-      display: none;
-    }
-
-    .show-long-time {
-      display: block;
-    }
-  }
-
-  /* Custom font sizes for session blocks */
-  .text-session-time {
-    font-size: 11px;
-    color: #2f3150;
-  }
-
-  .single-line-el {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.single-line-el {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

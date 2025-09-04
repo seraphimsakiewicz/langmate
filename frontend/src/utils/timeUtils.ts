@@ -3,7 +3,7 @@
  * Extracted from components to improve performance and reusability
  */
 
-export const formatTime = (time: string): string => {
+export const formatTime = (time: string, hour12: boolean): string => {
   const [hour, minute] = time.split(":").map(Number);
   const date = new Date();
   date.setHours(hour, minute);
@@ -62,27 +62,27 @@ export const generateTimeSlots = () => {
  */
 export const createSessionLookup = (sessions: Array<{ date: string; startTime: string; endTime: string; id: string }>) => {
   const lookup: Record<string, Array<{ date: string; startTime: string; endTime: string; id: string }>> = {};
-  
+
   sessions.forEach((session) => {
     const [startHour, startMinute] = session.startTime.split(":").map(Number);
     const [endHour, endMinute] = session.endTime.split(":").map(Number);
-    
+
     const sessionStartMinutes = startHour * 60 + startMinute;
     const sessionEndMinutes = endHour * 60 + endMinute;
-    
+
     // Add session to all time slots it spans
     for (let minutes = sessionStartMinutes; minutes < sessionEndMinutes; minutes += 30) {
       const hour = Math.floor(minutes / 60);
       const minute = minutes % 60;
       const key = `${session.date}-${hour}-${minute}`;
-      
+
       if (!lookup[key]) {
         lookup[key] = [];
       }
       lookup[key].push(session);
     }
   });
-  
+
   return lookup;
 };
 
