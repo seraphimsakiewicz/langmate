@@ -1,10 +1,6 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  CalendarIcon,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DatePicker } from "@/components/ui/date-picker";
+import { MiniCalendar } from "@/components/ui/mini-calendar";
 import {
   Popover,
   PopoverContent,
@@ -31,7 +27,7 @@ export const CalendarHeader = ({
   viewMode,
   onViewModeChange,
 }: CalendarHeaderProps) => {
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [isMiniCalendarOpen, setIsMiniCalendarOpen] = useState(false);
 
   const monthYear = currentDate.toLocaleDateString("en-US", {
     month: "long",
@@ -48,7 +44,7 @@ export const CalendarHeader = ({
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
       onDateSelect(date);
-      setIsDatePickerOpen(false);
+      setIsMiniCalendarOpen(false);
     }
   };
 
@@ -65,7 +61,10 @@ export const CalendarHeader = ({
             <Button variant="ghost" size="sm" onClick={onPrevPeriod}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
+            <Popover
+              open={isMiniCalendarOpen}
+              onOpenChange={setIsMiniCalendarOpen}
+            >
               <PopoverTrigger asChild>
                 <Button
                   variant="ghost"
@@ -76,7 +75,7 @@ export const CalendarHeader = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <DatePicker
+                <MiniCalendar
                   mode="single"
                   selected={currentDate}
                   onSelect={handleDateSelect}

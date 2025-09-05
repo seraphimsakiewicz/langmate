@@ -1,98 +1,164 @@
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Session, DayColumn } from '@/types/calendar';
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ChevronDownIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MiniCalendar } from "@/components/ui/mini-calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Session, DayColumn } from "@/types/calendar";
+import { isToday } from "date-fns";
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onBook: (session: Omit<Session, 'id'>) => void;
+  onBook: (session: Omit<Session, "id">) => void;
   weekDays: DayColumn[];
 }
 
-export const BookingModal = ({ isOpen, onClose, onBook, weekDays }: BookingModalProps) => {
-  const [selectedDay, setSelectedDay] = useState('');
-  const [selectedTime, setSelectedTime] = useState('');
-  const [participantName, setParticipantName] = useState('');
+export const BookingModal = ({
+  isOpen,
+  onClose,
+  onBook,
+}: BookingModalProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState("");
+  const [participantName, setParticipantName] = useState("");
 
-  // Generate time options (every 30 minutes from 9 AM to 6 PM)
+  const [open, setOpen] = useState(false);
+  // const [selectedDate, setDate] = useState<Date | undefined>(undefined);
+
+  // Generate time options (every 30 minutes from 12 AM to 11.30 PM)
   const timeOptions = [];
   for (let hour = 0; hour <= 23; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
-      if (hour === 18 && minute > 0) break; // Stop at 6:00 PM
+      if (hour === 24 && minute > 0) break; // Stop at midnight.
       const time = new Date();
       time.setHours(hour, minute);
-      const formatted = time.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
+      const formatted = time.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
       });
       timeOptions.push({
-        value: `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-        label: formatted
+        value: `${hour.toString().padStart(2, "0")}:${minute
+          .toString()
+          .padStart(2, "0")}`,
+        label: formatted,
       });
     }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!selectedDay || !selectedTime || !participantName.trim()) {
+
+    if (!selectedDate || !selectedTime || !participantName.trim()) {
       return;
     }
 
-    const [hour, minute] = selectedTime.split(':').map(Number);
+    const [hour, minute] = selectedTime.split(":").map(Number);
     const endHour = minute >= 30 ? hour + 1 : hour;
     const endMinute = minute >= 30 ? (minute + 25) % 60 : minute + 25;
-    
-    const endTime = `${endHour.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+
+    const endTime = `${endHour.toString().padStart(2, "0")}:${endMinute
+      .toString()
+      .padStart(2, "0")}`;
 
     onBook({
       title: `Session with ${participantName}`,
       startTime: selectedTime,
       endTime,
-      date: selectedDay,
+      selectedDate: selectedDate,
       participant: participantName,
-      status: 'booked'
+      status: "booked",
     });
 
     // Reset form
-    setSelectedDay('');
-    setSelectedTime('');
-    setParticipantName('');
+    setSelectedDate(undefined);
+    setSelectedTime("");
+    setParticipantName("");
     onClose();
   };
+
+  const currentDate = new Date();
+
+  const startMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDay()
+  );
+
+  const endMonth = new Date(currentDate.getFullYear() + 10, 11, 1);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Book a Session</DialogTitle>
+          <DialogTitle className="text-xl font-semibold">
+            Book a Session
+          </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="day">Date</Label>
-            <Select value={selectedDay} onValueChange={setSelectedDay} required>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose a day" />
-              </SelectTrigger>
-              <SelectContent>
-                {weekDays.map((day) => (
-                  <SelectItem key={day.date} value={day.date}>
-                    {day.dayName}, {day.dayNumber}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col gap-3 w-full">
+            <Label htmlFor="selectedDate" className="px-1">
+              Date
+            </Label>
+            <Popover open={open} modal={true} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  id="selectedDate"
+                  className="w-full justify-between font-normal"
+                >
+                  {selectedDate
+                    ? selectedDate.toLocaleDateString()
+                    : "Select Date"}
+                  <ChevronDownIcon />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-auto overflow-hidden p-0"
+                align="start"
+              >
+                <MiniCalendar
+                  mode="single"
+                  selected={selectedDate}
+                  disabled={{ before: currentDate }}
+                  startMonth={startMonth}
+                  endMonth={endMonth}
+                  captionLayout="dropdown"
+                  onSelect={(selectedDate) => {
+                    setSelectedDate(selectedDate);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="time">Time</Label>
-            <Select value={selectedTime} onValueChange={setSelectedTime} required>
+            <Select
+              value={selectedTime}
+              onValueChange={setSelectedTime}
+              required
+              
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Choose a time" />
               </SelectTrigger>
@@ -107,13 +173,20 @@ export const BookingModal = ({ isOpen, onClose, onBook, weekDays }: BookingModal
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="flex-1"
+            >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="flex-1 bg-calendar-primary hover:bg-calendar-primary/90"
-              disabled={!selectedDay || !selectedTime || !participantName.trim()}
+              disabled={
+                !selectedDate || !selectedTime || !participantName.trim()
+              }
             >
               Book Session
             </Button>
