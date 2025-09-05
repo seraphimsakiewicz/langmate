@@ -141,7 +141,6 @@ const SessionBlockComponent = ({
   const renderBooked = (viewMode: "day" | "week") => {
     if (!session) return null;
 
-    console.log("viewMode", viewMode);
     return (
       <SessionContainer className="border-2 border-session-booked text-session-booked">
         <div className="flex flex-col justify-between h-full">
@@ -219,7 +218,7 @@ const SessionBlockComponent = ({
     case "pending":
       return renderPending();
     case "booked":
-      return renderBooked(viewMode);
+      return viewMode && renderBooked(viewMode);
     case "cancel-confirmation":
       return renderCancelConfirmation();
     default:

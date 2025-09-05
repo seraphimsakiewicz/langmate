@@ -40,7 +40,6 @@ export default function SessionPage() {
     useEffect(() => {
         // This ONLY runs on the client after component mounts
         const data: Partial<SessionData> = JSON.parse(localStorage.getItem(sessionId as string) || "{}");
-        console.log("data", data);
         if (data[2]?.startTime) {
             setStartTime(new Date(data[2].startTime).getTime());
             setSessionPhase("WAITING");

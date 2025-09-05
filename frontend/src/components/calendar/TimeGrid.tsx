@@ -2,12 +2,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Session, DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";
 import { BookingModal } from "./BookingModal";
-import {
-  generateTimeSlots,
-  createSessionLookup,
-  getSessionsForSlot,
-  getHourLabel,
-} from "@/utils/timeUtils";
+import { generateTimeSlots, getHourLabel } from "@/utils/timeUtils";
 
 interface TimeGridProps {
   daysToShow: DayColumn[];
@@ -43,12 +38,6 @@ export const TimeGrid = ({
   // Memoize expensive time slot generation
   const timeSlots = useMemo(() => generateTimeSlots(), []);
 
-  // Create session lookup hash map for O(1) session retrieval
-  const sessionLookup = useMemo(
-    () => createSessionLookup(sessions),
-    [sessions]
-  );
-
   // Auto-scroll to current time on mount
   useEffect(() => {
     const now = new Date();
@@ -60,18 +49,28 @@ export const TimeGrid = ({
     }
   }, [timeSlots]);
 
-  // Use optimized session lookup from utils
-  const getSessionsForSlotOptimized = useCallback(
-    (day: string, hour: number, minute: number) => {
-      return getSessionsForSlot(sessionLookup, day, hour, minute);
-    },
-    [sessionLookup]
-  );
+  const getSessionForSlot = (day: string, hour: number, minute: number) => {
+    // const lastIndex = sessions.length - 1; const randomIndex = Math.floor(Math.random() *
+    // (lastIndex + 1) + 0); return sessions[randomIndex];
+    return sessions.find((session) => {
+      if (session.date !== day) return false;
+      const [startHour, startMinute] = session.startTime.split(":").map(Number);
+      const [endHour, endMinute] = session.endTime.split(":").map(Number);
+
+      const sessionStartMinutes = startHour * 60 + startMinute;
+      const sessionEndMinutes = endHour * 60 + endMinute;
+      const slotMinutes = hour * 60 + minute;
+
+      return (
+        slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes
+      );
+    });
+  };
 
   const handleSlotClick = useCallback(
     (day: string, hour: number, minute: number) => {
-      const existingSessions = getSessionsForSlotOptimized(day, hour, minute);
-      if (existingSessions.length > 0) return;
+      const existingSession = getSessionForSlot(day, hour, minute);
+      if (existingSession) return;
 
       if (
         pendingConfirmation?.day === day &&
@@ -87,12 +86,12 @@ export const TimeGrid = ({
           .padStart(2, "0")}`;
 
         onSessionBook({
-          title: "New Session",
+          // title: "New Session",
           startTime,
           endTime,
           date: day,
           participant: "New Participant",
-          status: "booked",
+          // status: "booked",
         });
 
         setPendingConfirmation(null);
@@ -105,7 +104,7 @@ export const TimeGrid = ({
         setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
       }
     },
-    [pendingConfirmation, onSessionBook, getSessionsForSlotOptimized]
+    [pendingConfirmation, onSessionBook]
   );
 
   const isSlotPending = useCallback(
@@ -128,7 +127,7 @@ export const TimeGrid = ({
 
   return (
     <>
-      {/* WHITE CONTAINER WITH SCROLLBAR - like Focusmate */}
+      {/* WHITE CONTAINER WITH SCROLLBAR */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto bg-white border border-gray-200 min-h-0"
@@ -194,8 +193,6 @@ export const TimeGrid = ({
                 const isHourStart = slot.minute === 0;
                 const isHalfHour = slot.minute === 30;
 
-                // Use getHourLabel from utils
-
                 return [
                   // Time column for this slot
                   <div
@@ -217,7 +214,7 @@ export const TimeGrid = ({
 
                   // Day columns for this slot
                   ...daysToShow.map((day) => {
-                    const sessionsInSlot = getSessionsForSlotOptimized(
+                    const sessionInSlot = getSessionForSlot(
                       day.date,
                       slot.hour,
                       slot.minute
@@ -235,8 +232,8 @@ export const TimeGrid = ({
                     return (
                       <div
                         key={`${day.date}-${index}`}
-                        className={`border-r min-w-0 border-calendar-border border-b border-calendar-border/50 transition-colors ${
-                          sessionsInSlot.length === 0 ? "cursor-pointer" : ""
+                        className={`border-r min-w-0 border-b border-calendar-border/50 transition-colors ${
+                          sessionInSlot ? "cursor-pointer" : ""
                         } ${
                           day.isToday ? "bg-calendar-primary/5" : "bg-white"
                         }`}
@@ -255,22 +252,23 @@ export const TimeGrid = ({
                           handleSlotClick(day.date, slot.hour, slot.minute)
                         }
                       >
-                        {sessionsInSlot.length > 0 ? (
-                          sessionsInSlot.map((session) => (
-                            <SessionBlock
-                              key={session.id}
-                              mode="booked"
-                              session={session}
-                              onUpdate={(updates) =>
-                                onSessionUpdate(session.id, updates)
-                              }
-                              onDelete={onSessionDelete}
-                              viewMode={viewMode}
-                            />
-                          ))
+                        {sessionInSlot ? (
+                          <SessionBlock
+                            key={sessionInSlot.id}
+                            mode="booked"
+                            session={sessionInSlot}
+                            onUpdate={(updates) =>
+                              onSessionUpdate(sessionInSlot.id, updates)
+                            }
+                            onDelete={onSessionDelete}
+                            viewMode={viewMode}
+                          />
                         ) : (
+                          // TODO: refactor this lator to not use SessionBlock for
+                          // pending/hover/empty states.
                           <SessionBlock
                             key={`${day.date}-${slot.hour}-${slot.minute}`}
+                            viewMode={viewMode}
                             mode={
                               isPending
                                 ? "pending"

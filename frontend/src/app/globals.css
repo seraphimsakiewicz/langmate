@@ -1,11 +1,8 @@
 @import "tailwindcss";
 
 /* Optional: use class-based dark mode utilities anywhere under a .dark root */
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *)); */
 
-/* =======================
-   Tailwind v4 Design Tokens
-   ======================= */
 @theme {
   /* Defaults / misc */
   --default-font-family: system-ui, sans-serif;
@@ -21,10 +18,6 @@
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1263px;
   --breakpoint-2xl: 1515px;
-
-  /* Custom breakpoints for Focusmate layout
-  --breakpoint-medium: 1263px;
-  --breakpoint-large: 1515px; */
 
   /* Radii (matches your intent) */
   --radius: 0.75rem;
