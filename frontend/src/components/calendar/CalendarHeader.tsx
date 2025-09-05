@@ -1,11 +1,10 @@
 import {
   ChevronLeft,
   ChevronRight,
-  HelpCircle,
   CalendarIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { DatePicker } from "@/components/ui/date-picker";
 import {
   Popover,
   PopoverContent,
@@ -77,7 +76,7 @@ export const CalendarHeader = ({
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
+                <DatePicker
                   mode="single"
                   selected={currentDate}
                   onSelect={handleDateSelect}

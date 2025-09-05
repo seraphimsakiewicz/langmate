@@ -1,4 +1,4 @@
-import { Calendar, Users, User, Menu } from 'lucide-react';
+import { Calendar as CalendarIcon, Users as UsersIcon, User as UserIcon, Menu  as MenuIcon} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface TopNavProps {
@@ -19,7 +19,7 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
               onClick={onToggleCollapse}
               className={`p-2 mr-2 ${currentView !== 'calendar' && 'invisible'}`}
             >
-              <Menu className="size-[1.5rem]" />
+              <MenuIcon className="size-[1.5rem]" />
             </Button>
           
           
@@ -32,7 +32,7 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             }`}
             onClick={() => onViewChange('calendar')}
           >
-            <Calendar className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-4 w-4" />
             Calendar
           </Button>
           <Button 
@@ -44,7 +44,7 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             }`}
             onClick={() => onViewChange('sessions')}
           >
-            <Users className="mr-2 h-4 w-4" />
+            <UsersIcon className="mr-2 h-4 w-4" />
             Sessions
           </Button>
           <Button 
@@ -56,7 +56,7 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             }`}
             onClick={() => onViewChange('people')}
           >
-            <User className="mr-2 h-4 w-4" />
+            <UserIcon className="mr-2 h-4 w-4" />
             People
           </Button>
         </div>

@@ -20,7 +20,7 @@ export const BookingModal = ({ isOpen, onClose, onBook, weekDays }: BookingModal
 
   // Generate time options (every 30 minutes from 9 AM to 6 PM)
   const timeOptions = [];
-  for (let hour = 9; hour <= 18; hour++) {
+  for (let hour = 0; hour <= 23; hour++) {
     for (let minute = 0; minute < 60; minute += 30) {
       if (hour === 18 && minute > 0) break; // Stop at 6:00 PM
       const time = new Date();
@@ -75,18 +75,7 @@ export const BookingModal = ({ isOpen, onClose, onBook, weekDays }: BookingModal
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="participant">Participant Name</Label>
-            <Input
-              id="participant"
-              value={participantName}
-              onChange={(e) => setParticipantName(e.target.value)}
-              placeholder="Enter participant name"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="day">Select Day</Label>
+            <Label htmlFor="day">Date</Label>
             <Select value={selectedDay} onValueChange={setSelectedDay} required>
               <SelectTrigger>
                 <SelectValue placeholder="Choose a day" />
@@ -102,7 +91,7 @@ export const BookingModal = ({ isOpen, onClose, onBook, weekDays }: BookingModal
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="time">Select Time</Label>
+            <Label htmlFor="time">Time</Label>
             <Select value={selectedTime} onValueChange={setSelectedTime} required>
               <SelectTrigger>
                 <SelectValue placeholder="Choose a time" />
