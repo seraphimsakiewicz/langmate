@@ -6,11 +6,12 @@ import { BookingModal } from "./BookingModal";
 import { TopNav } from "../layout/TopNav";
 import { Session, DayColumn } from "@/types/calendar";
 import { dummySessions } from "@/data/sessionsData";
+import { useMiniCalendar } from "@/hooks/useMiniCalendar";
 
 export const Calendar = () => {
-  const [calendarDate, setCalendarDate] = useState(new Date());
+  // const [calendarDate, setCalendarDate] = useState(new Date());
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
-  const [showBookingModal, setShowBookingModal] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"day" | "week">("day");
   const [currentView, setCurrentView] = useState<
     "calendar" | "sessions" | "people"
@@ -18,6 +19,20 @@ export const Calendar = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userSetViewMode, setUserSetViewMode] = useState(false);
   const [userSetSidebarCollapsed, setUserSetSidebarCollapsed] = useState(false);
+  const {
+    selectedDate: calendarDate,
+    handleDateSelect: setCalendarDate,
+    ...restOfPropsForHeader
+    /*   displayMonth,
+    handleDisplayMonth,
+    handleDateSelect,
+    currentDate,
+    startMonth,
+    endMonth,
+    shortUS,
+    openPopper,
+    handlePopper, */
+  } = useMiniCalendar();
 
   // Auto-switch view mode and sidebar based on screen size
   useEffect(() => {
@@ -97,30 +112,6 @@ export const Calendar = () => {
 
   const daysToShow = getDaysToShow(calendarDate, viewMode);
 
-  const handlePrevPeriod = () => {
-    const newDate = new Date(calendarDate);
-    if (viewMode === "day") {
-      newDate.setDate(calendarDate.getDate() - 1);
-    } else {
-      newDate.setDate(calendarDate.getDate() - 7);
-    }
-    setCalendarDate(newDate);
-  };
-
-  const handleNextPeriod = () => {
-    const newDate = new Date(calendarDate);
-    if (viewMode === "day") {
-      newDate.setDate(calendarDate.getDate() + 1);
-    } else {
-      newDate.setDate(calendarDate.getDate() + 7);
-    }
-    setCalendarDate(newDate);
-  };
-
-  const handleDateSelect = (date: Date) => {
-    setCalendarDate(date);
-  };
-
   const handleSessionBook = (newSession: Omit<Session, "id">) => {
     const slotOccupied = [...sessions].some(
       (session) =>
@@ -158,19 +149,18 @@ export const Calendar = () => {
         return (
           <div className="flex h-full">
             <CalendarSidebar
-              onBookSession={() => setShowBookingModal(true)}
+              setOpenModal={setOpenModal}
               isCollapsed={isSidebarCollapsed}
             />
 
             <div className="flex-1 flex flex-col">
               <CalendarHeader
                 calendarDate={calendarDate}
-                onPrevPeriod={handlePrevPeriod}
-                onNextPeriod={handleNextPeriod}
-                onDateSelect={handleDateSelect}
+                setCalendarDate={setCalendarDate}
                 daysToShow={daysToShow}
                 viewMode={viewMode}
                 onViewModeChange={handleViewModeChange}
+                {...restOfPropsForHeader}
               />
 
               <TimeGrid
@@ -230,10 +220,9 @@ export const Calendar = () => {
       <div className="flex-1 overflow-hidden">{renderMainContent()}</div>
 
       <BookingModal
-        isOpen={showBookingModal}
-        setShowBookingModal={setShowBookingModal}
         onBook={handleSessionBook}
         weekDays={daysToShow}
+        modalState={{ openModal, setOpenModal }}
       />
     </div>
   );

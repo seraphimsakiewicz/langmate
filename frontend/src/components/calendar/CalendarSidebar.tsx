@@ -1,18 +1,18 @@
-import { Button } from '@/components/ui/button';
-import { Session } from '@/types/calendar';
+import { Button } from "@/components/ui/button";
+import { Session } from "@/types/calendar";
 
 interface CalendarSidebarProps {
-  onBookSession: () => void;
+  setOpenModal: (state: boolean) => void;
   ongoingSession?: Session;
   isCollapsed: boolean;
 }
 
-export const CalendarSidebar = ({ 
-  onBookSession, 
-  ongoingSession, 
-  isCollapsed 
+export const CalendarSidebar = ({
+  setOpenModal,
+  ongoingSession,
+  isCollapsed,
 }: CalendarSidebarProps) => {
-  const timeRemaining = ongoingSession ? '25m' : null;
+  const timeRemaining = ongoingSession ? "25m" : null;
 
   // Don't render sidebar at all when collapsed
   if (isCollapsed) {
@@ -23,8 +23,8 @@ export const CalendarSidebar = ({
     <div className="w-64 bg-calendar-sidebar border-r border-calendar-border h-full flex flex-col">
       {/* Book a session button */}
       <div className="p-4">
-        <Button 
-          onClick={onBookSession}
+        <Button
+          onClick={() => setOpenModal(true)}
           className="w-full bg-session-booked hover:bg-session-booked/90 text-white rounded-lg font-medium"
         >
           + Book a session
@@ -55,12 +55,17 @@ export const CalendarSidebar = ({
               <div className="w-6 h-6 bg-session-booked rounded-full flex items-center justify-center text-white text-xs font-medium">
                 J
               </div>
-              <span className="text-sm text-foreground">{ongoingSession.participant}</span>
+              <span className="text-sm text-foreground">
+                {ongoingSession.participant}
+              </span>
             </div>
             <div className="text-xs text-muted-foreground mb-2">
               {timeRemaining}
             </div>
-            <Button size="sm" className="w-full bg-session-booked hover:bg-session-booked/90 text-white text-xs">
+            <Button
+              size="sm"
+              className="w-full bg-session-booked hover:bg-session-booked/90 text-white text-xs"
+            >
               Join
             </Button>
           </div>

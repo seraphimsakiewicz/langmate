@@ -23,40 +23,33 @@ import {
 } from "@/components/ui/select";
 import { Session, DayColumn } from "@/types/calendar";
 import { formatDate } from "@/data/sessionsData";
+import { useMiniCalendar } from "@/hooks/useMiniCalendar";
 
 interface BookingModalProps {
-  isOpen: boolean;
-  setShowBookingModal: (toggleModal: boolean) => void;
   onBook: (session: Omit<Session, "id">) => void;
   weekDays: DayColumn[];
+  modalState: {
+    setOpenModal: (state: boolean) => void;
+    openModal: boolean;
+  };
 }
 
-export const BookingModal = ({
-  isOpen,
-  setShowBookingModal,
-  onBook,
-}: BookingModalProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
   const [selectedTime, setSelectedTime] = useState<string>("");
-  const [displayMonth, setDisplayMonth] = useState(selectedDate);
+  const { setOpenModal, openModal } = modalState;
 
-  const [open, setOpen] = useState(false);
-
-  const currentDate = new Date();
-
-  const startMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    1
-  );
-
-  const endMonth = new Date(currentDate.getFullYear() + 10, 11, 1);
-
-  const shortUS = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
+  const {
+    selectedDate,
+    displayMonth,
+    handleDisplayMonth,
+    handleDateSelect,
+    currentDate,
+    startMonth,
+    endMonth,
+    shortUS,
+    openPopper,
+    handlePopper,
+  } = useMiniCalendar();
 
   // Generate time options (every 30 minutes from 12 AM to 11.30 PM)
   const timeOptions = [];
@@ -101,13 +94,13 @@ export const BookingModal = ({
     });
 
     // Reset form
-    setSelectedDate(new Date());
+    handleDateSelect(new Date());
     onClose();
   };
 
   const onClose = () => {
-    setShowBookingModal(false);
-    setSelectedDate(new Date());
+    setOpenModal(false);
+    handleDateSelect(new Date());
     setSelectedTime("");
   };
 
@@ -123,7 +116,7 @@ export const BookingModal = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={openModal} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
@@ -136,7 +129,7 @@ export const BookingModal = ({
             <Label htmlFor="selectedDate" className="px-1">
               Date
             </Label>
-            <Popover open={open} modal={true} onOpenChange={setOpen}>
+            <Popover open={openPopper} modal={true} onOpenChange={handlePopper}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
@@ -157,13 +150,10 @@ export const BookingModal = ({
                   disabled={{ before: currentDate }}
                   startMonth={startMonth}
                   endMonth={endMonth}
-                  onMonthChange={setDisplayMonth}
+                  onMonthChange={handleDisplayMonth}
                   month={displayMonth}
                   captionLayout="dropdown"
-                  onSelect={(selectedDate) => {
-                    if (!selectedDate) return;
-                    setSelectedDate(selectedDate);
-                  }}
+                  onSelect={handleDateSelect}
                 />
               </PopoverContent>
             </Popover>

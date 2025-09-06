@@ -11,9 +11,7 @@ import { useState } from "react";
 
 interface CalendarHeaderProps {
   calendarDate: Date;
-  onPrevPeriod: () => void;
-  onNextPeriod: () => void;
-  onDateSelect: (date: Date) => void;
+  setCalendarDate: (date: Date) => void;
   daysToShow: DayColumn[];
   viewMode: "day" | "week";
   onViewModeChange: (mode: "day" | "week") => void;
@@ -21,12 +19,19 @@ interface CalendarHeaderProps {
 
 export const CalendarHeader = ({
   calendarDate,
-  onPrevPeriod,
-  onNextPeriod,
-  onDateSelect,
+  setCalendarDate,
   viewMode,
   onViewModeChange,
-}: CalendarHeaderProps) => {
+}: /*   displayMonth,
+    handleDisplayMonth,
+    handleDateSelect,
+    currentDate,
+    startMonth,
+    endMonth,
+    shortUS,
+    openPopper,
+    handlePopper, */
+CalendarHeaderProps) => {
   const [isMiniCalendarOpen, setIsMiniCalendarOpen] = useState(false);
 
   const monthYear = calendarDate.toLocaleDateString("en-US", {
@@ -48,14 +53,34 @@ export const CalendarHeader = ({
   const today = new Date();
 
   const handleTodayClick = () => {
-    onDateSelect(today);
+    setCalendarDate(today);
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      onDateSelect(date);
+      setCalendarDate(date);
       setIsMiniCalendarOpen(false);
     }
+  };
+
+  const handlePrevPeriod = () => {
+    const newDate = new Date(calendarDate);
+    if (viewMode === "day") {
+      newDate.setDate(calendarDate.getDate() - 1);
+    } else {
+      newDate.setDate(calendarDate.getDate() - 7);
+    }
+    setCalendarDate(newDate);
+  };
+
+  const handleNextPeriod = () => {
+    const newDate = new Date(calendarDate);
+    if (viewMode === "day") {
+      newDate.setDate(calendarDate.getDate() + 1);
+    } else {
+      newDate.setDate(calendarDate.getDate() + 7);
+    }
+    setCalendarDate(newDate);
   };
 
   return (
@@ -68,7 +93,7 @@ export const CalendarHeader = ({
           </Button>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onPrevPeriod}>
+            <Button variant="ghost" size="sm" onClick={handlePrevPeriod}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Popover
@@ -97,7 +122,7 @@ export const CalendarHeader = ({
                 />
               </PopoverContent>
             </Popover>
-            <Button variant="ghost" size="sm" onClick={onNextPeriod}>
+            <Button variant="ghost" size="sm" onClick={handleNextPeriod}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
