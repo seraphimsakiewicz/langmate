@@ -10,7 +10,7 @@ import { DayColumn } from "@/types/calendar";
 import { useState } from "react";
 
 interface CalendarHeaderProps {
-  currentDate: Date;
+  calendarDate: Date;
   onPrevPeriod: () => void;
   onNextPeriod: () => void;
   onDateSelect: (date: Date) => void;
@@ -20,7 +20,7 @@ interface CalendarHeaderProps {
 }
 
 export const CalendarHeader = ({
-  currentDate,
+  calendarDate,
   onPrevPeriod,
   onNextPeriod,
   onDateSelect,
@@ -29,10 +29,20 @@ export const CalendarHeader = ({
 }: CalendarHeaderProps) => {
   const [isMiniCalendarOpen, setIsMiniCalendarOpen] = useState(false);
 
-  const monthYear = currentDate.toLocaleDateString("en-US", {
+  const monthYear = calendarDate.toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
   });
+
+  const currentDate = new Date();
+
+  const startMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1
+  );
+
+  const endMonth = new Date(currentDate.getFullYear() + 10, 11, 1);
 
   // Check if current period contains today
   const today = new Date();
@@ -77,10 +87,13 @@ export const CalendarHeader = ({
               <PopoverContent className="w-auto p-0" align="start">
                 <MiniCalendar
                   mode="single"
-                  selected={currentDate}
+                  selected={calendarDate}
+                  disabled={{ before: currentDate }}
+                  startMonth={startMonth}
+                  endMonth={endMonth}
                   onSelect={handleDateSelect}
-                  initialFocus
                   className="p-3 pointer-events-auto"
+                  captionLayout="dropdown"
                 />
               </PopoverContent>
             </Popover>

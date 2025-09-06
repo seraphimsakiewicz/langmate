@@ -8,7 +8,7 @@ import { Session, DayColumn } from "@/types/calendar";
 import { dummySessions } from "@/data/sessionsData";
 
 export const Calendar = () => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [calendarDate, setCalendarDate] = useState(new Date());
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
   const [showBookingModal, setShowBookingModal] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"day" | "week">("day");
@@ -95,30 +95,30 @@ export const Calendar = () => {
     }
   };
 
-  const daysToShow = getDaysToShow(currentDate, viewMode);
+  const daysToShow = getDaysToShow(calendarDate, viewMode);
 
   const handlePrevPeriod = () => {
-    const newDate = new Date(currentDate);
+    const newDate = new Date(calendarDate);
     if (viewMode === "day") {
-      newDate.setDate(currentDate.getDate() - 1);
+      newDate.setDate(calendarDate.getDate() - 1);
     } else {
-      newDate.setDate(currentDate.getDate() - 7);
+      newDate.setDate(calendarDate.getDate() - 7);
     }
-    setCurrentDate(newDate);
+    setCalendarDate(newDate);
   };
 
   const handleNextPeriod = () => {
-    const newDate = new Date(currentDate);
+    const newDate = new Date(calendarDate);
     if (viewMode === "day") {
-      newDate.setDate(currentDate.getDate() + 1);
+      newDate.setDate(calendarDate.getDate() + 1);
     } else {
-      newDate.setDate(currentDate.getDate() + 7);
+      newDate.setDate(calendarDate.getDate() + 7);
     }
-    setCurrentDate(newDate);
+    setCalendarDate(newDate);
   };
 
   const handleDateSelect = (date: Date) => {
-    setCurrentDate(date);
+    setCalendarDate(date);
   };
 
   const handleSessionBook = (newSession: Omit<Session, "id">) => {
@@ -164,7 +164,7 @@ export const Calendar = () => {
 
             <div className="flex-1 flex flex-col">
               <CalendarHeader
-                currentDate={currentDate}
+                calendarDate={calendarDate}
                 onPrevPeriod={handlePrevPeriod}
                 onNextPeriod={handleNextPeriod}
                 onDateSelect={handleDateSelect}

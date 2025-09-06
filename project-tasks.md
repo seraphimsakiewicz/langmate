@@ -1,10 +1,11 @@
-## TODOS  for calendar
+## current TODOS
 
-- Fix Modal 
-  - book session to be exact
-  - also show sep 5, 2025 for date for example instead of 9/5/2025.
+- ~~Fix Modal~~ 
+  - ~~book session to be exact~~
+  - ~~also show sep 5, 2025 for date for example instead of 9/5/2025.~~
 - Fix Calendar Date Picker
 - add prettier
+- markup some designs with stitch for sessions/people sections.
 
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 
@@ -50,15 +51,13 @@
   - [ ] Ask: **"Are you able to hold a basic 5-minute conversation in your target language?"** 
   - [ ] Add proficiency level selection
   > *“How well do you speak your **target language**?”*
-  * 🟢 **Fluent** 
-    “I can speak and discuss complex topics with ease.”
-  * 🟡 **Intermediate**
-    “I can talk about everyday things with some mistakes. I’m still working on fluency.”
-  * 🟢 **Conversational**
-    “I can hold a basic conversation about familiar topics. I don’t need to translate every word.”
-  * 🟠 **Beginner** *(blocked in MVP)*
-    “I know some words and phrases but can’t hold a conversation yet.”
-    👉 Show message: *“LangMate is currently only for users who are at least conversational.”*
+  * 🟢 **Fluent** “I can speak and discuss complex topics with ease.”
+  * 🟡 **Intermediate** “I can talk about everyday things with some mistakes. I’m still working on
+    fluency.”
+  * 🟢 **Conversational** “I can hold a basic conversation about familiar topics. I don’t need to
+    translate every word.”
+  * 🟠 **Beginner** *(blocked in MVP)* “I know some words and phrases but can’t hold a conversation
+    yet.” 👉 Show message: *“LangMate is currently only for users who are at least conversational.”*
   - [ ] Save selections to user_languages table
 - [ ] **Profile completion flow:**
   - [ ] Redirect new users to complete profile
