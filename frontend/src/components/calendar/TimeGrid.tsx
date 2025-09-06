@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Session, DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";
-import { BookingModal } from "./BookingModal";
 import { generateTimeSlots, getHourLabel } from "@/utils/timeUtils";
 
 interface TimeGridProps {
@@ -26,7 +25,6 @@ export const TimeGrid = ({
     hour: number;
     minute: number;
   } | null>(null);
-  const [showBookingModal, setShowBookingModal] = useState(false);
   const [pendingConfirmation, setPendingConfirmation] = useState<{
     day: string;
     hour: number;
@@ -292,13 +290,6 @@ export const TimeGrid = ({
           </div>
         </div>
       </div>
-
-      <BookingModal
-        isOpen={showBookingModal}
-        onClose={() => setShowBookingModal(false)}
-        onBook={onSessionBook}
-        weekDays={daysToShow}
-      />
     </>
   );
 };

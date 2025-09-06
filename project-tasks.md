@@ -1,6 +1,10 @@
 ## TODOS  for calendar
 
-- Fix Modal
+- Fix Modal 
+  - book session to be exact
+  - also show sep 5, 2025 for date for example instead of 9/5/2025.
+- Fix Calendar Date Picker
+- add prettier
 
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 

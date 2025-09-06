@@ -22,26 +22,40 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Session, DayColumn } from "@/types/calendar";
-import { isToday } from "date-fns";
+import { formatDate } from "@/data/sessionsData";
 
 interface BookingModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  setShowBookingModal: (toggleModal: boolean) => void;
   onBook: (session: Omit<Session, "id">) => void;
   weekDays: DayColumn[];
 }
 
 export const BookingModal = ({
   isOpen,
-  onClose,
+  setShowBookingModal,
   onBook,
 }: BookingModalProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState("");
-  const [participantName, setParticipantName] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedTime, setSelectedTime] = useState<string>("");
 
   const [open, setOpen] = useState(false);
-  // const [selectedDate, setDate] = useState<Date | undefined>(undefined);
+
+  const currentDate = new Date();
+
+  const startMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1
+  );
+
+  const endMonth = new Date(currentDate.getFullYear() + 10, 11, 1);
+
+  const shortUS = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   // Generate time options (every 30 minutes from 12 AM to 11.30 PM)
   const timeOptions = [];
@@ -67,43 +81,45 @@ export const BookingModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedDate || !selectedTime || !participantName.trim()) {
+    if (!selectedDate || !selectedTime) {
       return;
     }
 
-    const [hour, minute] = selectedTime.split(":").map(Number);
-    const endHour = minute >= 30 ? hour + 1 : hour;
-    const endMinute = minute >= 30 ? (minute + 25) % 60 : minute + 25;
+    const [hour, minute] = selectedTime.split(":");
+    // const endHour = minute >= 30 ? hour + 1 : hour;
+    const endMinute = minute === "30" ? "55" : "25";
 
-    const endTime = `${endHour.toString().padStart(2, "0")}:${endMinute
-      .toString()
-      .padStart(2, "0")}`;
+    const endTime = `${hour}:${endMinute}`;
 
     onBook({
-      title: `Session with ${participantName}`,
       startTime: selectedTime,
       endTime,
-      selectedDate: selectedDate,
-      participant: participantName,
-      status: "booked",
+      date: formatDate(selectedDate),
+      participant: "New Participant",
+      // status: "booked",
     });
 
     // Reset form
-    setSelectedDate(undefined);
-    setSelectedTime("");
-    setParticipantName("");
+    setSelectedDate(new Date());
     onClose();
   };
 
-  const currentDate = new Date();
+  const onClose = () => {
+    setShowBookingModal(false);
+    setSelectedDate(new Date());
+    setSelectedTime("");
+  };
 
-  const startMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    currentDate.getDay()
-  );
-
-  const endMonth = new Date(currentDate.getFullYear() + 10, 11, 1);
+  const timeValid = (): boolean => {
+    if (!selectedTime) return false;
+    const [selectedHours, selectedMinutes] = selectedTime
+      .split(":")
+      .map(Number);
+    const selectedTimeDate = new Date(selectedDate);
+    selectedTimeDate.setHours(selectedHours, selectedMinutes, 0, 0);
+    // time valid is selectedTime is greater than time of currentDate
+    return selectedTimeDate > new Date();
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -126,15 +142,13 @@ export const BookingModal = ({
                   id="selectedDate"
                   className="w-full justify-between font-normal"
                 >
-                  {selectedDate
-                    ? selectedDate.toLocaleDateString()
-                    : "Select Date"}
+                  {selectedDate ? shortUS.format(selectedDate) : "Select Date"}
                   <ChevronDownIcon />
                 </Button>
               </PopoverTrigger>
               <PopoverContent
                 className="w-auto overflow-hidden p-0"
-                align="start"
+                align="end"
               >
                 <MiniCalendar
                   mode="single"
@@ -144,6 +158,7 @@ export const BookingModal = ({
                   endMonth={endMonth}
                   captionLayout="dropdown"
                   onSelect={(selectedDate) => {
+                    if (!selectedDate) return;
                     setSelectedDate(selectedDate);
                   }}
                 />
@@ -157,9 +172,8 @@ export const BookingModal = ({
               value={selectedTime}
               onValueChange={setSelectedTime}
               required
-              
             >
-              <SelectTrigger>
+              <SelectTrigger className="[&_svg]:![color:var(--color-foreground)] [&_svg]:opacity-100">
                 <SelectValue placeholder="Choose a time" />
               </SelectTrigger>
               <SelectContent>
@@ -184,9 +198,7 @@ export const BookingModal = ({
             <Button
               type="submit"
               className="flex-1 bg-calendar-primary hover:bg-calendar-primary/90"
-              disabled={
-                !selectedDate || !selectedTime || !participantName.trim()
-              }
+              disabled={!selectedDate || !selectedTime || !timeValid()}
             >
               Book Session
             </Button>

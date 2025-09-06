@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { CalendarSidebar } from './CalendarSidebar';
-import { CalendarHeader } from './CalendarHeader';
-import { TimeGrid } from './TimeGrid';
-import { BookingModal } from './BookingModal';
-import { TopNav } from '../layout/TopNav';
-import { Session, DayColumn } from '@/types/calendar';
-import { dummySessions } from '@/data/sessionsData';
+import { useState, useEffect } from "react";
+import { CalendarSidebar } from "./CalendarSidebar";
+import { CalendarHeader } from "./CalendarHeader";
+import { TimeGrid } from "./TimeGrid";
+import { BookingModal } from "./BookingModal";
+import { TopNav } from "../layout/TopNav";
+import { Session, DayColumn } from "@/types/calendar";
+import { dummySessions } from "@/data/sessionsData";
 
 export const Calendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
-  const [showBookingModal, setShowBookingModal] = useState(false);
-  const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
-  const [currentView, setCurrentView] = useState<'calendar' | 'sessions' | 'people'>('calendar');
+  const [showBookingModal, setShowBookingModal] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<"day" | "week">("day");
+  const [currentView, setCurrentView] = useState<
+    "calendar" | "sessions" | "people"
+  >("calendar");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userSetViewMode, setUserSetViewMode] = useState(false);
   const [userSetSidebarCollapsed, setUserSetSidebarCollapsed] = useState(false);
@@ -21,16 +23,16 @@ export const Calendar = () => {
   useEffect(() => {
     const handleResize = () => {
       const screenWidth = window.innerWidth;
-      
+
       // Handle view mode switching
-      if (screenWidth < 951 && viewMode === 'week') {
-        setViewMode('day');
+      if (screenWidth < 951 && viewMode === "week") {
+        setViewMode("day");
         setUserSetViewMode(false); // Reset user preference on mobile
-      } else if (screenWidth >= 951 && viewMode === 'day' && !userSetViewMode) {
+      } else if (screenWidth >= 951 && viewMode === "day" && !userSetViewMode) {
         // Only auto-switch to week if user hasn't explicitly chosen day mode
-        setViewMode('week');
+        setViewMode("week");
       }
-      
+
       // Handle sidebar collapse/expand
       if (screenWidth <= 950) {
         // Always collapse sidebar on small screens
@@ -44,26 +46,30 @@ export const Calendar = () => {
     // Set initial view mode based on screen size
     handleResize();
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [viewMode, userSetViewMode, userSetSidebarCollapsed]);
 
   // Custom view mode handler that tracks user intent
-  const handleViewModeChange = (newMode: 'day' | 'week') => {
+  const handleViewModeChange = (newMode: "day" | "week") => {
     setViewMode(newMode);
     setUserSetViewMode(true); // Mark that user explicitly chose this mode
   };
 
   // Generate days based on current date and view mode
-  const getDaysToShow = (date: Date, mode: 'day' | 'week'): DayColumn[] => {
-    if (mode === 'day') {
+  const getDaysToShow = (date: Date, mode: "day" | "week"): DayColumn[] => {
+    if (mode === "day") {
       // Show only the current day
-      return [{
-        date: date.toISOString().split('T')[0],
-        dayName: date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
-        dayNumber: date.getDate(),
-        isToday: date.toDateString() === new Date().toDateString(),
-      }];
+      return [
+        {
+          date: date.toISOString().split("T")[0],
+          dayName: date
+            .toLocaleDateString("en-US", { weekday: "short" })
+            .toUpperCase(),
+          dayNumber: date.getDate(),
+          isToday: date.toDateString() === new Date().toDateString(),
+        },
+      ];
     } else {
       // Show the full week
       const startOfWeek = new Date(date);
@@ -75,10 +81,12 @@ export const Calendar = () => {
       for (let i = 0; i < 7; i++) {
         const currentDay = new Date(startOfWeek);
         currentDay.setDate(startOfWeek.getDate() + i);
-        
+
         weekDays.push({
-          date: currentDay.toISOString().split('T')[0],
-          dayName: currentDay.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+          date: currentDay.toISOString().split("T")[0],
+          dayName: currentDay
+            .toLocaleDateString("en-US", { weekday: "short" })
+            .toUpperCase(),
           dayNumber: currentDay.getDate(),
           isToday: currentDay.toDateString() === new Date().toDateString(),
         });
@@ -91,7 +99,7 @@ export const Calendar = () => {
 
   const handlePrevPeriod = () => {
     const newDate = new Date(currentDate);
-    if (viewMode === 'day') {
+    if (viewMode === "day") {
       newDate.setDate(currentDate.getDate() - 1);
     } else {
       newDate.setDate(currentDate.getDate() - 7);
@@ -101,7 +109,7 @@ export const Calendar = () => {
 
   const handleNextPeriod = () => {
     const newDate = new Date(currentDate);
-    if (viewMode === 'day') {
+    if (viewMode === "day") {
       newDate.setDate(currentDate.getDate() + 1);
     } else {
       newDate.setDate(currentDate.getDate() + 7);
@@ -113,40 +121,41 @@ export const Calendar = () => {
     setCurrentDate(date);
   };
 
-  const handleSessionBook = (newSession: Omit<Session, 'id'>) => {
+  const handleSessionBook = (newSession: Omit<Session, "id">) => {
     const session: Session = {
       ...newSession,
       id: `session-${Date.now()}`,
     };
-    setSessions(prev => [...prev, session]);
+    setSessions((prev) => [...prev, session]);
   };
 
-  const handleSessionUpdate = (sessionId: string, updates: Partial<Session>) => {
-    setSessions(prev => prev.map(session => 
-      session.id === sessionId ? { ...session, ...updates } : session
-    ));
+  const handleSessionUpdate = (
+    sessionId: string,
+    updates: Partial<Session>
+  ) => {
+    setSessions((prev) =>
+      prev.map((session) =>
+        session.id === sessionId ? { ...session, ...updates } : session
+      )
+    );
   };
 
   const handleSessionDelete = (sessionId: string) => {
-    setSessions(prev => prev.filter(session => session.id !== sessionId));
+    setSessions((prev) => prev.filter((session) => session.id !== sessionId));
   };
-
-  // Find ongoing session for sidebar
-  const ongoingSession = sessions.find(session => session.status === 'booked');
 
   const renderMainContent = () => {
     switch (currentView) {
-      case 'calendar':
+      case "calendar":
         return (
           <div className="flex h-full">
-            <CalendarSidebar 
+            <CalendarSidebar
               onBookSession={() => setShowBookingModal(true)}
-              ongoingSession={ongoingSession}
               isCollapsed={isSidebarCollapsed}
             />
-            
+
             <div className="flex-1 flex flex-col">
-              <CalendarHeader 
+              <CalendarHeader
                 currentDate={currentDate}
                 onPrevPeriod={handlePrevPeriod}
                 onNextPeriod={handleNextPeriod}
@@ -155,8 +164,8 @@ export const Calendar = () => {
                 viewMode={viewMode}
                 onViewModeChange={handleViewModeChange}
               />
-              
-              <TimeGrid 
+
+              <TimeGrid
                 daysToShow={daysToShow}
                 sessions={sessions}
                 onSessionBook={handleSessionBook}
@@ -167,21 +176,29 @@ export const Calendar = () => {
             </div>
           </div>
         );
-      case 'sessions':
+      case "sessions":
         return (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-muted-foreground">Sessions</h2>
-              <p className="text-muted-foreground mt-2">Session management coming soon</p>
+              <h2 className="text-2xl font-bold text-muted-foreground">
+                Sessions
+              </h2>
+              <p className="text-muted-foreground mt-2">
+                Session management coming soon
+              </p>
             </div>
           </div>
         );
-      case 'people':
+      case "people":
         return (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-muted-foreground">People</h2>
-              <p className="text-muted-foreground mt-2">People management coming soon</p>
+              <h2 className="text-2xl font-bold text-muted-foreground">
+                People
+              </h2>
+              <p className="text-muted-foreground mt-2">
+                People management coming soon
+              </p>
             </div>
           </div>
         );
@@ -192,8 +209,8 @@ export const Calendar = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <TopNav 
-        currentView={currentView} 
+      <TopNav
+        currentView={currentView}
         onViewChange={setCurrentView}
         isSidebarCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => {
@@ -201,14 +218,12 @@ export const Calendar = () => {
           setUserSetSidebarCollapsed(true); // Mark that user explicitly toggled sidebar
         }}
       />
-      
-      <div className="flex-1 overflow-hidden">
-        {renderMainContent()}
-      </div>
+
+      <div className="flex-1 overflow-hidden">{renderMainContent()}</div>
 
       <BookingModal
         isOpen={showBookingModal}
-        onClose={() => setShowBookingModal(false)}
+        setShowBookingModal={setShowBookingModal}
         onBook={handleSessionBook}
         weekDays={daysToShow}
       />
