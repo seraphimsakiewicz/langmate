@@ -122,6 +122,14 @@ export const Calendar = () => {
   };
 
   const handleSessionBook = (newSession: Omit<Session, "id">) => {
+    const slotOccupied = [...sessions].some(
+      (session) =>
+        newSession.date === session.date &&
+        newSession.startTime === session.startTime
+    );
+
+    if (slotOccupied) return;
+
     const session: Session = {
       ...newSession,
       id: `session-${Date.now()}`,
