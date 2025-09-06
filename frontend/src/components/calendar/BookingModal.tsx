@@ -38,6 +38,7 @@ export const BookingModal = ({
 }: BookingModalProps) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedTime, setSelectedTime] = useState<string>("");
+  const [displayMonth, setDisplayMonth] = useState(selectedDate);
 
   const [open, setOpen] = useState(false);
 
@@ -156,6 +157,8 @@ export const BookingModal = ({
                   disabled={{ before: currentDate }}
                   startMonth={startMonth}
                   endMonth={endMonth}
+                  onMonthChange={setDisplayMonth}
+                  month={displayMonth}
                   captionLayout="dropdown"
                   onSelect={(selectedDate) => {
                     if (!selectedDate) return;
