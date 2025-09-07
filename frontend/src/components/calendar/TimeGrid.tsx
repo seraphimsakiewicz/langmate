@@ -59,9 +59,7 @@ export const TimeGrid = ({
       const sessionEndMinutes = endHour * 60 + endMinute;
       const slotMinutes = hour * 60 + minute;
 
-      return (
-        slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes
-      );
+      return slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes;
     });
   };
 
@@ -152,9 +150,7 @@ export const TimeGrid = ({
                   alignItems: "flex-end",
                 }}
               >
-                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">
-                  EDT
-                </div>
+                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">EDT</div>
               </div>
               {/* day.isToday */}
               {/* Header day columns */}
@@ -169,9 +165,7 @@ export const TimeGrid = ({
                   <div className="text-xs font-medium text-calendar-time-text uppercase mb-1">
                     {day.dayName}
                   </div>
-                  <div className="text-2xl font-bold bg-red text-foreground">
-                    {day.dayNumber}
-                  </div>
+                  <div className="text-2xl font-bold bg-red text-foreground">{day.dayNumber}</div>
                 </div>
               ))}
             </div>
@@ -199,42 +193,28 @@ export const TimeGrid = ({
                     style={{ height: "73px" }}
                   >
                     <div className="absolute -top-1 right-1">
-                      {isHourStart && (
-                        <span className="block">{getHourLabel(slot.hour)}</span>
-                      )}
+                      {isHourStart && <span className="block">{getHourLabel(slot.hour)}</span>}
                       {isHalfHour && (
-                        <span className="block text-xs text-calendar-time-text/70">
-                          30
-                        </span>
+                        <span className="block text-xs text-calendar-time-text/70">30</span>
                       )}
                     </div>
                   </div>,
 
                   // Day columns for this slot
                   ...daysToShow.map((day) => {
-                    const sessionInSlot = getSessionForSlot(
-                      day.date,
-                      slot.hour,
-                      slot.minute
-                    );
+                    const sessionInSlot = getSessionForSlot(day.date, slot.hour, slot.minute);
                     const isHovered =
                       hoveredSlot?.day === day.date &&
                       hoveredSlot?.hour === slot.hour &&
                       hoveredSlot?.minute === slot.minute;
-                    const isPending = isSlotPending(
-                      day.date,
-                      slot.hour,
-                      slot.minute
-                    );
+                    const isPending = isSlotPending(day.date, slot.hour, slot.minute);
 
                     return (
                       <div
                         key={`${day.date}-${index}`}
                         className={`border-r min-w-0 border-b border-calendar-border/50 transition-colors ${
                           sessionInSlot ? "cursor-pointer" : ""
-                        } ${
-                          day.isToday ? "bg-calendar-primary/5" : "bg-white"
-                        }`}
+                        } ${day.isToday ? "bg-calendar-primary/5" : "bg-white"}`}
                         style={{ height: "73px" }}
                         onMouseEnter={() => {
                           if (!isPending && !clickCooldown) {
@@ -246,18 +226,14 @@ export const TimeGrid = ({
                           }
                         }}
                         onMouseLeave={() => setHoveredSlot(null)}
-                        onClick={() =>
-                          handleSlotClick(day.date, slot.hour, slot.minute)
-                        }
+                        onClick={() => handleSlotClick(day.date, slot.hour, slot.minute)}
                       >
                         {sessionInSlot ? (
                           <SessionBlock
                             key={sessionInSlot.id}
                             mode="booked"
                             session={sessionInSlot}
-                            onUpdate={(updates) =>
-                              onSessionUpdate(sessionInSlot.id, updates)
-                            }
+                            onUpdate={(updates) => onSessionUpdate(sessionInSlot.id, updates)}
                             onDelete={onSessionDelete}
                             viewMode={viewMode}
                           />
@@ -267,17 +243,9 @@ export const TimeGrid = ({
                           <SessionBlock
                             key={`${day.date}-${slot.hour}-${slot.minute}`}
                             viewMode={viewMode}
-                            mode={
-                              isPending
-                                ? "pending"
-                                : isHovered
-                                ? "hover"
-                                : "empty"
-                            }
+                            mode={isPending ? "pending" : isHovered ? "hover" : "empty"}
                             slotTime={slot.formatted}
-                            onBook={() =>
-                              handleSlotClick(day.date, slot.hour, slot.minute)
-                            }
+                            onBook={() => handleSlotClick(day.date, slot.hour, slot.minute)}
                             onRemovePending={() => setPendingConfirmation(null)}
                           />
                         )}

@@ -12,16 +12,12 @@ export const Calendar = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
   const [viewMode, setViewMode] = useState<"day" | "week">("day");
-  const [currentView, setCurrentView] = useState<
-    "calendar" | "sessions" | "people"
-  >("calendar");
+  const [currentView, setCurrentView] = useState<"calendar" | "sessions" | "people">("calendar");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userSetViewMode, setUserSetViewMode] = useState(false);
   const [userSetSidebarCollapsed, setUserSetSidebarCollapsed] = useState(false);
-  const {
-    selectedDate: calendarDate,
-    ...restOfPropsForHeader
-  }: MiniCalendarProps = useMiniCalendar();
+  const { selectedDate: calendarDate, ...restOfPropsForHeader }: MiniCalendarProps =
+    useMiniCalendar();
 
   // Auto-switch view mode and sidebar based on screen size
   useEffect(() => {
@@ -67,9 +63,7 @@ export const Calendar = () => {
       return [
         {
           date: date.toISOString().split("T")[0],
-          dayName: date
-            .toLocaleDateString("en-US", { weekday: "short" })
-            .toUpperCase(),
+          dayName: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
           dayNumber: date.getDate(),
           isToday: date.toDateString() === new Date().toDateString(),
         },
@@ -88,9 +82,7 @@ export const Calendar = () => {
 
         weekDays.push({
           date: currentDay.toISOString().split("T")[0],
-          dayName: currentDay
-            .toLocaleDateString("en-US", { weekday: "short" })
-            .toUpperCase(),
+          dayName: currentDay.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
           dayNumber: currentDay.getDate(),
           isToday: currentDay.toDateString() === new Date().toDateString(),
         });
@@ -103,9 +95,7 @@ export const Calendar = () => {
 
   const handleSessionBook = (newSession: Omit<Session, "id">) => {
     const slotOccupied = [...sessions].some(
-      (session) =>
-        newSession.date === session.date &&
-        newSession.startTime === session.startTime
+      (session) => newSession.date === session.date && newSession.startTime === session.startTime
     );
 
     if (slotOccupied) return;
@@ -117,14 +107,9 @@ export const Calendar = () => {
     setSessions((prev) => [...prev, session]);
   };
 
-  const handleSessionUpdate = (
-    sessionId: string,
-    updates: Partial<Session>
-  ) => {
+  const handleSessionUpdate = (sessionId: string, updates: Partial<Session>) => {
     setSessions((prev) =>
-      prev.map((session) =>
-        session.id === sessionId ? { ...session, ...updates } : session
-      )
+      prev.map((session) => (session.id === sessionId ? { ...session, ...updates } : session))
     );
   };
 
@@ -137,10 +122,7 @@ export const Calendar = () => {
       case "calendar":
         return (
           <div className="flex h-full">
-            <CalendarSidebar
-              setOpenModal={setOpenModal}
-              isCollapsed={isSidebarCollapsed}
-            />
+            <CalendarSidebar setOpenModal={setOpenModal} isCollapsed={isSidebarCollapsed} />
 
             <div className="flex-1 flex flex-col">
               <CalendarHeader
@@ -165,12 +147,8 @@ export const Calendar = () => {
         return (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-muted-foreground">
-                Sessions
-              </h2>
-              <p className="text-muted-foreground mt-2">
-                Session management coming soon
-              </p>
+              <h2 className="text-2xl font-bold text-muted-foreground">Sessions</h2>
+              <p className="text-muted-foreground mt-2">Session management coming soon</p>
             </div>
           </div>
         );
@@ -178,12 +156,8 @@ export const Calendar = () => {
         return (
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-2xl font-bold text-muted-foreground">
-                People
-              </h2>
-              <p className="text-muted-foreground mt-2">
-                People management coming soon
-              </p>
+              <h2 className="text-2xl font-bold text-muted-foreground">People</h2>
+              <p className="text-muted-foreground mt-2">People management coming soon</p>
             </div>
           </div>
         );

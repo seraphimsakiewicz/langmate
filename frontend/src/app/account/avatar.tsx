@@ -2,11 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
-import {
-  AvatarImage,
-  Avatar as AvatorComponent,
-  AvatarFallback,
-} from "@/components/ui/avatar";
+import { AvatarImage, Avatar as AvatorComponent, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Avatar({
   uid,
@@ -26,9 +22,7 @@ export default function Avatar({
   useEffect(() => {
     async function downloadImage(path: string) {
       try {
-        const { data, error } = await supabase.storage
-          .from("avatars")
-          .download(path);
+        const { data, error } = await supabase.storage.from("avatars").download(path);
         if (error) {
           throw error;
         }
@@ -43,9 +37,7 @@ export default function Avatar({
     if (url) downloadImage(url);
   }, [url, supabase]);
 
-  const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (
-    event
-  ) => {
+  const uploadAvatar: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
     try {
       setUploading(true);
 
@@ -57,9 +49,7 @@ export default function Avatar({
       const fileExt = file.name.split(".").pop();
       const filePath = `${uid}-${Math.random()}.${fileExt}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(filePath, file);
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(filePath, file);
 
       if (uploadError) {
         throw uploadError;
@@ -81,10 +71,7 @@ export default function Avatar({
           <AvatarFallback>CN</AvatarFallback>
         </AvatorComponent>
       ) : (
-        <div
-          className="avatar no-image"
-          style={{ height: size, width: size }}
-        />
+        <div className="avatar no-image" style={{ height: size, width: size }} />
       )}
       <div style={{ width: size }}>
         <label className="button primary block" htmlFor="single">

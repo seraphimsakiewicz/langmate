@@ -51,10 +51,7 @@ export const MainNav = () => {
           </Button>
         ) : (
           <Fragment>
-            <Link
-              href="/login"
-              className="text-sm font-medium text-gray-600 hover:text-gray-900"
-            >
+            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">
               Login
             </Link>
             <Link

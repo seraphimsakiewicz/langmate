@@ -1,8 +1,8 @@
-import { Session } from '@/types/calendar';
+import { Session } from "@/types/calendar";
 
-export const formatDate = (date: Date) => date.toISOString().split('T')[0];
+export const formatDate = (date: Date) => date.toISOString().split("T")[0];
 export const formatTime = (date: Date) => {
-  return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+  return `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
 };
 
 const generateDynamicSessions = (): Session[] => {
@@ -41,48 +41,48 @@ const generateDynamicSessions = (): Session[] => {
   const yesterdaySession = new Date(yesterday);
   yesterdaySession.setHours(14, 30, 0, 0);
   sessions.push({
-    id: 'yesterday-1',
+    id: "yesterday-1",
     // title: 'Session with Bryan C.',
     startTime: formatTime(yesterdaySession),
     endTime: formatTime(addMinutes(yesterdaySession, 25)),
     date: formatDate(yesterday),
-    participant: 'Bryan C.',
+    participant: "Bryan C.",
     // status: 'booked',
   });
 
   // Today's past session (find a past 30-min slot)
   const todayPast = getNext30MinSlot(now, -120);
   sessions.push({
-    id: 'today-past-1',
+    id: "today-past-1",
     // title: 'Session with Mubarak',
     startTime: formatTime(todayPast),
     endTime: formatTime(addMinutes(todayPast, 25)),
     date: formatDate(today),
-    participant: 'Mubarak',
+    participant: "Mubarak",
     // status: 'booked',
   });
 
   // Today's upcoming session (30 minutes from now)
   const todayUpcoming = getNext30MinSlot(now, 30);
   sessions.push({
-    id: 'today-upcoming-1',
+    id: "today-upcoming-1",
     // title: 'Session with Andrea H.',
     startTime: formatTime(todayUpcoming),
     endTime: formatTime(addMinutes(todayUpcoming, 25)),
     date: formatDate(today),
-    participant: 'Andrea H.',
+    participant: "Andrea H.",
     // status: 'booked',
   });
 
   // Today's second upcoming session (1 hour from now)
   const todayUpcoming2 = getNext30MinSlot(now, 60);
   sessions.push({
-    id: 'today-upcoming-2',
+    id: "today-upcoming-2",
     // title: 'Session with Jason Lee',
     startTime: formatTime(todayUpcoming2),
     endTime: formatTime(addMinutes(todayUpcoming2, 25)),
     date: formatDate(today),
-    participant: 'Jason Lee The lONGEST NAME OF ALL TIME HALLEJUAH',
+    participant: "Jason Lee The lONGEST NAME OF ALL TIME HALLEJUAH",
     // status: 'booked',
   });
 
@@ -90,12 +90,12 @@ const generateDynamicSessions = (): Session[] => {
   const todayLate = new Date(today);
   todayLate.setHours(23, 30, 0, 0);
   sessions.push({
-    id: 'today-late-1',
+    id: "today-late-1",
     // title: 'Session with Mike T.',
     startTime: formatTime(todayLate),
     endTime: formatTime(addMinutes(todayLate, 25)),
     date: formatDate(today),
-    participant: 'Mike T.',
+    participant: "Mike T.",
     // status: 'booked',
   });
 
@@ -104,12 +104,12 @@ const generateDynamicSessions = (): Session[] => {
   const tomorrowSession = new Date(tomorrow);
   tomorrowSession.setHours(tomorrowUpcoming.getHours(), tomorrowUpcoming.getMinutes(), 0, 0);
   sessions.push({
-    id: 'tomorrow-1',
+    id: "tomorrow-1",
     // title: 'Session with Sarah M.',
     startTime: formatTime(tomorrowSession),
     endTime: formatTime(addMinutes(tomorrowSession, 25)),
     date: formatDate(tomorrow),
-    participant: 'Sarah M.',
+    participant: "Sarah M.",
     // status: 'booked',
   });
 
@@ -117,12 +117,12 @@ const generateDynamicSessions = (): Session[] => {
   const tomorrowFixed = new Date(tomorrow);
   tomorrowFixed.setHours(15, 0, 0, 0);
   sessions.push({
-    id: 'tomorrow-2',
+    id: "tomorrow-2",
     // title: 'Session with Emily R.',
     startTime: formatTime(tomorrowFixed),
     endTime: formatTime(addMinutes(tomorrowFixed, 25)),
     date: formatDate(tomorrow),
-    participant: 'Emily R.',
+    participant: "Emily R.",
     // status: 'booked',
   });
 

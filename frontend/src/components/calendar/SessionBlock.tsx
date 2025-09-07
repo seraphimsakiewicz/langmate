@@ -4,12 +4,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { formatTime, isSessionStartingSoon } from "@/utils/timeUtils";
 
-type SessionMode =
-  | "empty"
-  | "hover"
-  | "pending"
-  | "booked"
-  | "cancel-confirmation";
+type SessionMode = "empty" | "hover" | "pending" | "booked" | "cancel-confirmation";
 
 interface SessionBlockProps {
   mode: SessionMode;
@@ -29,11 +24,7 @@ const SessionContainer = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => (
-  <div className={`h-full w-full rounded p-[6px] font-medium ${className}`}>
-    {children}
-  </div>
-);
+}) => <div className={`h-full w-full rounded p-[6px] font-medium ${className}`}>{children}</div>;
 
 const SessionBlockComponent = ({
   mode,
@@ -156,14 +147,9 @@ const SessionBlockComponent = ({
               <div className="leading-tight min-w-0">
                 <div className="text-session-time single-line-el">
                   {/* need to figure out how to always show on day view */}
-                  <span
-                    className={`${
-                      viewMode === "day" ? "block" : "md:hidden xl:block"
-                    }`}
-                  >
+                  <span className={`${viewMode === "day" ? "block" : "md:hidden xl:block"}`}>
                     {/* this will need to be dynamic later */}
-                    {formatTime(session.startTime, true)} -{" "}
-                    {formatTime(session.endTime, true)}
+                    {formatTime(session.startTime, true)} - {formatTime(session.endTime, true)}
                   </span>
                   {viewMode === "week" && (
                     <span className="md:block xl:hidden">
@@ -171,9 +157,7 @@ const SessionBlockComponent = ({
                     </span>
                   )}
                 </div>
-                <div className="text-[12px] single-line-el">
-                  {session.participant}
-                </div>
+                <div className="text-[12px] single-line-el">{session.participant}</div>
               </div>
             </div>
           </div>
@@ -227,20 +211,17 @@ const SessionBlockComponent = ({
 };
 
 // Memoize the component to prevent unnecessary re-renders
-export const SessionBlock = memo(
-  SessionBlockComponent,
-  (prevProps, nextProps) => {
-    // Custom comparison function for better performance
-    return (
-      prevProps.mode === nextProps.mode &&
-      prevProps.session?.id === nextProps.session?.id &&
-      prevProps.session?.startTime === nextProps.session?.startTime &&
-      prevProps.session?.endTime === nextProps.session?.endTime &&
-      prevProps.session?.participant === nextProps.session?.participant &&
-      prevProps.slotTime === nextProps.slotTime &&
-      prevProps.viewMode === nextProps.viewMode
-    );
-  }
-);
+export const SessionBlock = memo(SessionBlockComponent, (prevProps, nextProps) => {
+  // Custom comparison function for better performance
+  return (
+    prevProps.mode === nextProps.mode &&
+    prevProps.session?.id === nextProps.session?.id &&
+    prevProps.session?.startTime === nextProps.session?.startTime &&
+    prevProps.session?.endTime === nextProps.session?.endTime &&
+    prevProps.session?.participant === nextProps.session?.participant &&
+    prevProps.slotTime === nextProps.slotTime &&
+    prevProps.viewMode === nextProps.viewMode
+  );
+});
 
 SessionBlock.displayName = "SessionBlock";

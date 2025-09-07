@@ -13,11 +13,7 @@ interface TopNavProps {
   onToggleCollapse: () => void;
 }
 
-export const TopNav = ({
-  currentView,
-  onViewChange,
-  onToggleCollapse,
-}: TopNavProps) => {
+export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavProps) => {
   return (
     <div className="border-b border-calendar-border bg-white">
       <div className="py-3">

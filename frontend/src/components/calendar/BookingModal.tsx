@@ -1,18 +1,9 @@
 import { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ChevronDownIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MiniCalendar } from "@/components/ui/mini-calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -63,9 +54,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
         hour12: true,
       });
       timeOptions.push({
-        value: `${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`,
+        value: `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`,
         label: formatted,
       });
     }
@@ -105,9 +94,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
 
   const timeValid = (): boolean => {
     if (!selectedTime) return false;
-    const [selectedHours, selectedMinutes] = selectedTime
-      .split(":")
-      .map(Number);
+    const [selectedHours, selectedMinutes] = selectedTime.split(":").map(Number);
     const selectedTimeDate = new Date(selectedDate);
     selectedTimeDate.setHours(selectedHours, selectedMinutes, 0, 0);
     // time valid is selectedTime is greater than time of currentDate
@@ -124,9 +111,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
     <Dialog open={openModal} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
-            Book a Session
-          </DialogTitle>
+          <DialogTitle className="text-xl font-semibold">Book a Session</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -145,10 +130,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
                   <ChevronDownIcon />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent
-                className="w-auto overflow-hidden p-0"
-                align="end"
-              >
+              <PopoverContent className="w-auto overflow-hidden p-0" align="end">
                 <MiniCalendar
                   mode="single"
                   selected={selectedDate}
@@ -166,11 +148,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
 
           <div className="space-y-2">
             <Label htmlFor="time">Time</Label>
-            <Select
-              value={selectedTime}
-              onValueChange={setSelectedTime}
-              required
-            >
+            <Select value={selectedTime} onValueChange={setSelectedTime} required>
               <SelectTrigger className="[&_svg]:![color:var(--color-foreground)] [&_svg]:opacity-100 hover:cursor-pointer">
                 <SelectValue placeholder="Choose a time" />
               </SelectTrigger>
@@ -185,12 +163,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="flex-1"
-            >
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
             <Button

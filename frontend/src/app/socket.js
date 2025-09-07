@@ -2,4 +2,4 @@
 
 import { io } from "socket.io-client";
 
-export const socket = null // io(process.env.NEXT_PUBLIC_WS_URL);
+export const socket = null; // io(process.env.NEXT_PUBLIC_WS_URL);

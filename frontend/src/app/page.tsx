@@ -12,12 +12,7 @@ import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import {
-  Language,
-  SessionInfo,
-  UserData,
-  FindMatchData,
-} from "@/types";
+import { Language, SessionInfo, UserData, FindMatchData } from "@/types";
 import { Calendar } from "@/components/calendar/Calendar";
 
 export default function Home() {

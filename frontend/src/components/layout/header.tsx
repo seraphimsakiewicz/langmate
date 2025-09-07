@@ -1,25 +1,26 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import { Button } from "../button"
-import { MainNav } from "./main-nav"
-import { MobileNav } from "./mobile-nav"
+import * as React from "react";
+import Link from "next/link";
+import { Button } from "../button";
+import { MainNav } from "./main-nav";
+import { MobileNav } from "./mobile-nav";
 
 export function Header() {
-    return (
-        <header className="sticky top-0 w-full border-b">
-            <div className="h-16 container flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-2">
-                    <h1 className="text-xl font-bold">Lang<span className="font-normal">mate</span></h1>
-                </Link>
+  return (
+    <header className="sticky top-0 w-full border-b">
+      <div className="h-16 container flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2">
+          <h1 className="text-xl font-bold">
+            Lang<span className="font-normal">mate</span>
+          </h1>
+        </Link>
 
-                {/* desktop nav */}
-                <MainNav />
-                {/* mobile */}
-                <MobileNav />
-
-            </div>
-        </header>
-    );
+        {/* desktop nav */}
+        <MainNav />
+        {/* mobile */}
+        <MobileNav />
+      </div>
+    </header>
+  );
 }
