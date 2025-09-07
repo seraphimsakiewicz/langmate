@@ -1,5 +1,18 @@
 import { useState } from "react";
 
+export type MiniCalendarProps = {
+  selectedDate: Date
+  displayMonth: Date
+  openPopper: boolean
+  handleDateSelect: (selectedDate: Date | undefined) => void
+  handleDisplayMonth: (displayMonth: Date) => void
+  handlePopper: (open: boolean) => void
+  currentDate: Date
+  startMonth: Date
+  endMonth: Date
+  shortUS: Intl.DateTimeFormat
+}
+
 export const useMiniCalendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [displayMonth, setDisplayMonth] = useState<Date>(new Date());
@@ -21,17 +34,17 @@ export const useMiniCalendar = () => {
     year: "numeric",
   });
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (!date) return;
-    setSelectedDate(date);
+  const handleDateSelect = (selectedDate: Date | undefined): void => {
+    if (!selectedDate) return;
+    setSelectedDate(selectedDate);
   };
 
-  const handleDisplayMonth = (date: Date) => {
-    if (!date) return;
-    setDisplayMonth(date)
+  const handleDisplayMonth = (displayMonth: Date): void => {
+    if (!displayMonth) return;
+    setDisplayMonth(displayMonth)
   }
 
-  const handlePopper = (open: boolean) => {
+  const handlePopper = (open: boolean): void => {
     setOpenPopper(open);
 
     if (!open && selectedDate.getMonth() !== displayMonth.getMonth()) {
@@ -43,8 +56,6 @@ export const useMiniCalendar = () => {
     selectedDate,
     displayMonth,
     openPopper,
-    setDisplayMonth,
-    setSelectedDate,
     handleDateSelect,
     handleDisplayMonth,
     handlePopper,

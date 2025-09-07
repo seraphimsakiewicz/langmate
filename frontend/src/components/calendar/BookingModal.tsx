@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Session, DayColumn } from "@/types/calendar";
 import { formatDate } from "@/data/sessionsData";
-import { useMiniCalendar } from "@/hooks/useMiniCalendar";
+import { useMiniCalendar, MiniCalendarProps } from "@/hooks/useMiniCalendar";
 
 interface BookingModalProps {
   onBook: (session: Omit<Session, "id">) => void;
@@ -49,7 +49,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
     shortUS,
     openPopper,
     handlePopper,
-  } = useMiniCalendar();
+  }: MiniCalendarProps = useMiniCalendar();
 
   // Generate time options (every 30 minutes from 12 AM to 11.30 PM)
   const timeOptions = [];
