@@ -3,10 +3,10 @@
 - ~~Fix Modal~~ 
   - ~~book session to be exact~~
   - ~~also show sep 5, 2025 for date for example instead of 9/5/2025.~~
-- Fix Calendar Date Picker and BookingModal bug, not showing current date again when you reopen the
-  daypicker.
+- ~~Fix Calendar Date Picker and BookingModal bug, not showing current date again when you reopen the daypicker.~~
 - add prettier
 - markup some designs with stitch for sessions/people sections.
+- Fix the hover states for buttons/navigation items
 
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 
