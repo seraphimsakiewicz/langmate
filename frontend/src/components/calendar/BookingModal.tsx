@@ -46,7 +46,6 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
     currentDate,
     startMonth,
     endMonth,
-    shortUS,
     openPopper,
     handlePopper,
   }: MiniCalendarProps = useMiniCalendar();
@@ -115,6 +114,12 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
     return selectedTimeDate > new Date();
   };
 
+  const shortUS = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
     <Dialog open={openModal} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
@@ -134,7 +139,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
                 <Button
                   variant="outline"
                   id="selectedDate"
-                  className="w-full justify-between font-normal"
+                  className="w-full justify-between font-normal hover:cursor-pointer"
                 >
                   {selectedDate ? shortUS.format(selectedDate) : "Select Date"}
                   <ChevronDownIcon />
@@ -166,7 +171,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
               onValueChange={setSelectedTime}
               required
             >
-              <SelectTrigger className="[&_svg]:![color:var(--color-foreground)] [&_svg]:opacity-100">
+              <SelectTrigger className="[&_svg]:![color:var(--color-foreground)] [&_svg]:opacity-100 hover:cursor-pointer">
                 <SelectValue placeholder="Choose a time" />
               </SelectTrigger>
               <SelectContent>

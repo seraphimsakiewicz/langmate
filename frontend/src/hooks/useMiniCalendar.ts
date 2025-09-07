@@ -10,7 +10,6 @@ export type MiniCalendarProps = {
   currentDate: Date
   startMonth: Date
   endMonth: Date
-  shortUS: Intl.DateTimeFormat
 }
 
 export const useMiniCalendar = () => {
@@ -27,12 +26,6 @@ export const useMiniCalendar = () => {
   );
 
   const endMonth = new Date(currentDate.getFullYear() + 10, 11, 1);
-
-  const shortUS = new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 
   const handleDateSelect = (selectedDate: Date | undefined): void => {
     if (!selectedDate) return;
@@ -62,6 +55,5 @@ export const useMiniCalendar = () => {
     currentDate,
     startMonth,
     endMonth,
-    shortUS,
   };
 }

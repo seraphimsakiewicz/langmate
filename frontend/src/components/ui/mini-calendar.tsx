@@ -210,4 +210,4 @@ function CalendarDayButton({
   )
 }
 
-export { MiniCalendar, CalendarDayButton }
+export { MiniCalendar }

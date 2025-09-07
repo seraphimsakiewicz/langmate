@@ -6,10 +6,9 @@ import { BookingModal } from "./BookingModal";
 import { TopNav } from "../layout/TopNav";
 import { Session, DayColumn } from "@/types/calendar";
 import { dummySessions } from "@/data/sessionsData";
-import { useMiniCalendar } from "@/hooks/useMiniCalendar";
+import { MiniCalendarProps, useMiniCalendar } from "@/hooks/useMiniCalendar";
 
 export const Calendar = () => {
-  // const [calendarDate, setCalendarDate] = useState(new Date());
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
   const [viewMode, setViewMode] = useState<"day" | "week">("day");
@@ -21,18 +20,8 @@ export const Calendar = () => {
   const [userSetSidebarCollapsed, setUserSetSidebarCollapsed] = useState(false);
   const {
     selectedDate: calendarDate,
-    handleDateSelect: setCalendarDate,
     ...restOfPropsForHeader
-    /*   displayMonth,
-    handleDisplayMonth,
-    handleDateSelect,
-    currentDate,
-    startMonth,
-    endMonth,
-    shortUS,
-    openPopper,
-    handlePopper, */
-  } = useMiniCalendar();
+  }: MiniCalendarProps = useMiniCalendar();
 
   // Auto-switch view mode and sidebar based on screen size
   useEffect(() => {
@@ -155,10 +144,8 @@ export const Calendar = () => {
 
             <div className="flex-1 flex flex-col">
               <CalendarHeader
-                calendarDate={calendarDate}
-                setCalendarDate={setCalendarDate}
-                daysToShow={daysToShow}
                 viewMode={viewMode}
+                calendarDate={calendarDate}
                 onViewModeChange={handleViewModeChange}
                 {...restOfPropsForHeader}
               />

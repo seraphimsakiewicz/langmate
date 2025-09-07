@@ -88,7 +88,7 @@ const SessionBlockComponent = ({
   const renderEmpty = () => null;
 
   const renderHover = () => (
-    <SessionContainer className="border border-calendar-hover text-primary">
+    <SessionContainer className="border border-calendar-hover text-primary hover:cursor-pointer">
       <div className="flex flex-col justify-center h-full">
         <div className="flex items-center justify-center">
           <span className="text-xs font-medium">Select</span>
