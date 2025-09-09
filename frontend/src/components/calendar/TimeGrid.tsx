@@ -9,7 +9,7 @@ interface TimeGridProps {
   onSessionBook: (session: Omit<Session, "id">) => void;
   onSessionUpdate: (sessionId: string, updates: Partial<Session>) => void;
   onSessionDelete?: (sessionId: string) => void;
-  viewMode: "day" | "week";
+  calendarMode: "day" | "week";
 }
 
 export const TimeGrid = ({
@@ -18,7 +18,7 @@ export const TimeGrid = ({
   onSessionBook,
   onSessionUpdate,
   onSessionDelete,
-  viewMode,
+  calendarMode,
 }: TimeGridProps) => {
   const [hoveredSlot, setHoveredSlot] = useState<{
     day: string;
@@ -233,14 +233,14 @@ export const TimeGrid = ({
                             session={sessionInSlot}
                             onUpdate={(updates) => onSessionUpdate(sessionInSlot.id, updates)}
                             onDelete={onSessionDelete}
-                            viewMode={viewMode}
+                            calendarMode={calendarMode}
                           />
                         ) : (
                           // TODO: refactor this lator to not use SessionBlock for
                           // pending/hover/empty states.
                           <SessionBlock
                             key={`${day.date}-${slot.hour}-${slot.minute}`}
-                            viewMode={viewMode}
+                            calendarMode={calendarMode}
                             mode={isPending ? "pending" : isHovered ? "hover" : "empty"}
                             slotTime={slot.formatted}
                             onBook={() => handleSlotClick(day.date, slot.hour, slot.minute)}

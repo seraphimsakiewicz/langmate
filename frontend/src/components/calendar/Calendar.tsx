@@ -11,7 +11,7 @@ import { MiniCalendarProps, useMiniCalendar } from "@/hooks/useMiniCalendar";
 export const Calendar = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [sessions, setSessions] = useState<Session[]>(dummySessions);
-  const [viewMode, setViewMode] = useState<"day" | "week">("day");
+  const [calendarMode, setCalendarMode] = useState<"day" | "week">("day");
   const [currentView, setCurrentView] = useState<"calendar" | "sessions" | "people">("calendar");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [userSetViewMode, setUserSetViewMode] = useState(false);
@@ -25,12 +25,12 @@ export const Calendar = () => {
       const screenWidth = window.innerWidth;
 
       // Handle view mode switching
-      if (screenWidth < 951 && viewMode === "week") {
-        setViewMode("day");
+      if (screenWidth < 951 && calendarMode === "week") {
+        setCalendarMode("day");
         setUserSetViewMode(false); // Reset user preference on mobile
-      } else if (screenWidth >= 951 && viewMode === "day" && !userSetViewMode) {
+      } else if (screenWidth >= 951 && calendarMode === "day" && !userSetViewMode) {
         // Only auto-switch to week if user hasn't explicitly chosen day mode
-        setViewMode("week");
+        setCalendarMode("week");
       }
 
       // Handle sidebar collapse/expand
@@ -48,11 +48,11 @@ export const Calendar = () => {
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [viewMode, userSetViewMode, userSetSidebarCollapsed]);
+  }, [calendarMode, userSetViewMode, userSetSidebarCollapsed]);
 
   // Custom view mode handler that tracks user intent
   const handleViewModeChange = (newMode: "day" | "week") => {
-    setViewMode(newMode);
+    setCalendarMode(newMode);
     setUserSetViewMode(true); // Mark that user explicitly chose this mode
   };
 
@@ -91,7 +91,7 @@ export const Calendar = () => {
     }
   };
 
-  const daysToShow = getDaysToShow(calendarDate, viewMode);
+  const daysToShow = getDaysToShow(calendarDate, calendarMode);
 
   const handleSessionBook = (newSession: Omit<Session, "id">) => {
     const slotOccupied = [...sessions].some(
@@ -126,9 +126,9 @@ export const Calendar = () => {
 
             <div className="flex-1 flex flex-col">
               <CalendarHeader
-                viewMode={viewMode}
+                calendarMode={calendarMode}
                 calendarDate={calendarDate}
-                onViewModeChange={handleViewModeChange}
+                onCalendarModeChange={handleViewModeChange}
                 {...restOfPropsForHeader}
               />
 
@@ -138,7 +138,7 @@ export const Calendar = () => {
                 onSessionBook={handleSessionBook}
                 onSessionUpdate={handleSessionUpdate}
                 onSessionDelete={handleSessionDelete}
-                viewMode={viewMode}
+                calendarMode={calendarMode}
               />
             </div>
           </div>

@@ -4,8 +4,8 @@ import { MiniCalendar } from "@/components/ui/mini-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface CalendarHeaderProps {
-  viewMode: "day" | "week";
-  onViewModeChange: (mode: "day" | "week") => void;
+  calendarMode: "day" | "week";
+  onCalendarModeChange: (mode: "day" | "week") => void;
   calendarDate: Date;
   displayMonth: Date;
   openPopper: boolean;
@@ -18,8 +18,8 @@ interface CalendarHeaderProps {
 }
 
 export const CalendarHeader = ({
-  viewMode,
-  onViewModeChange,
+  calendarMode,
+  onCalendarModeChange,
   calendarDate,
   displayMonth,
   handleDateSelect,
@@ -41,7 +41,7 @@ export const CalendarHeader = ({
 
   const handlePrevPeriod = () => {
     const newDate = new Date(calendarDate);
-    if (viewMode === "day") {
+    if (calendarMode === "day") {
       newDate.setDate(calendarDate.getDate() - 1);
     } else {
       newDate.setDate(calendarDate.getDate() - 7);
@@ -51,7 +51,7 @@ export const CalendarHeader = ({
 
   const handleNextPeriod = () => {
     const newDate = new Date(calendarDate);
-    if (viewMode === "day") {
+    if (calendarMode === "day") {
       newDate.setDate(calendarDate.getDate() + 1);
     } else {
       newDate.setDate(calendarDate.getDate() + 7);
@@ -103,16 +103,17 @@ export const CalendarHeader = ({
         <div className="flex items-center gap-2">
           <Button
             size="sm"
-            variant={viewMode === "day" ? "default" : "ghost"}
-            onClick={() => onViewModeChange("day")}
+            variant={calendarMode === "day" ? "default" : "ghost"}
+            onClick={() => onCalendarModeChange("day")}
+            className={`${calendarMode === "day" && "pointer-events-none"}`}
           >
             Day
           </Button>
           <Button
             size="sm"
-            variant={viewMode === "week" ? "default" : "ghost"}
-            onClick={() => onViewModeChange("week")}
-            className="hidden md:inline-flex"
+            variant={calendarMode === "week" ? "default" : "ghost"}
+            onClick={() => onCalendarModeChange("week")}
+            className={`${calendarMode === "week" && "pointer-events-none"} hidden md:inline-flex`}
           >
             Week
           </Button>

@@ -15,7 +15,7 @@ interface SessionBlockProps {
   onDelete?: (sessionId: string) => void;
   onBook?: () => void;
   onRemovePending?: () => void;
-  viewMode?: "day" | "week";
+  calendarMode?: "day" | "week";
 }
 
 // Shared container component that naturally fills the grid cell
@@ -32,7 +32,7 @@ const SessionBlockComponent = ({
   session,
   onDelete,
   onBook,
-  viewMode,
+  calendarMode,
   onRemovePending,
 }: SessionBlockProps) => {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
@@ -130,7 +130,7 @@ const SessionBlockComponent = ({
     </div>
   );
 
-  const renderBooked = (viewMode: "day" | "week") => {
+  const renderBooked = (calendarMode: "day" | "week") => {
     if (!session) return null;
 
     return (
@@ -142,17 +142,17 @@ const SessionBlockComponent = ({
               {/* need to hide on lg desktop, show at xl deskop, always show for day */}
               <div
                 className={`w-[30px] h-[30px] bg-session-booked rounded-full flex-shrink-0 ${
-                  viewMode === "day" ? "block" : "hidden 2xl:block"
+                  calendarMode === "day" ? "block" : "hidden 2xl:block"
                 }`}
               ></div>
               <div className="leading-tight min-w-0">
                 <div className="text-session-time single-line-el">
                   {/* need to figure out how to always show on day view */}
-                  <span className={`${viewMode === "day" ? "block" : "md:hidden xl:block"}`}>
+                  <span className={`${calendarMode === "day" ? "block" : "md:hidden xl:block"}`}>
                     {/* this will need to be dynamic later */}
                     {formatTime(session.startTime, true)} - {formatTime(session.endTime, true)}
                   </span>
-                  {viewMode === "week" && (
+                  {calendarMode === "week" && (
                     <span className="md:block xl:hidden">
                       {formatTime(session.startTime, true)}
                     </span>
@@ -203,7 +203,7 @@ const SessionBlockComponent = ({
     case "pending":
       return renderPending();
     case "booked":
-      return viewMode && renderBooked(viewMode);
+      return calendarMode && renderBooked(calendarMode);
     case "cancel-confirmation":
       return renderCancelConfirmation();
     default:
@@ -221,7 +221,7 @@ export const SessionBlock = memo(SessionBlockComponent, (prevProps, nextProps) =
     prevProps.session?.endTime === nextProps.session?.endTime &&
     prevProps.session?.participant === nextProps.session?.participant &&
     prevProps.slotTime === nextProps.slotTime &&
-    prevProps.viewMode === nextProps.viewMode
+    prevProps.calendarMode === nextProps.calendarMode
   );
 });
 
