@@ -124,7 +124,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
                 <Button
                   variant="outline"
                   id="selectedDate"
-                  className="w-full justify-between font-normal hover:cursor-pointer"
+                  className="w-full justify-between font-normal"
                 >
                   {selectedDate ? shortUS.format(selectedDate) : "Select Date"}
                   <ChevronDownIcon />
@@ -149,7 +149,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
           <div className="space-y-2">
             <Label htmlFor="time">Time</Label>
             <Select value={selectedTime} onValueChange={setSelectedTime} required>
-              <SelectTrigger className="[&_svg]:![color:var(--color-foreground)] [&_svg]:opacity-100 hover:cursor-pointer">
+              <SelectTrigger className="[&_svg]:![color:var(--color-foreground)] [&_svg]:opacity-100">
                 <SelectValue placeholder="Choose a time" />
               </SelectTrigger>
               <SelectContent>

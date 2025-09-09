@@ -3,6 +3,7 @@ import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { formatTime, isSessionStartingSoon } from "@/utils/timeUtils";
+import { Button } from "../ui/button";
 
 type SessionMode = "empty" | "hover" | "pending" | "booked" | "cancel-confirmation";
 
@@ -79,7 +80,7 @@ const SessionBlockComponent = ({
   const renderEmpty = () => null;
 
   const renderHover = () => (
-    <SessionContainer className="border border-calendar-hover text-primary hover:cursor-pointer">
+    <SessionContainer className="border border-calendar-hover text-primary cursor-pointer">
       <div className="flex flex-col justify-center h-full">
         <div className="flex items-center justify-center">
           <span className="text-xs font-medium">Select</span>
@@ -168,7 +169,7 @@ const SessionBlockComponent = ({
               <div className="flex justify-start mt-1">
                 <Link
                   href="#"
-                  className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors cursor-pointer"
+                  className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
                 >
                   Join
                 </Link>
@@ -176,12 +177,12 @@ const SessionBlockComponent = ({
             )}
 
             {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
-            <button
+            <Button
               onClick={handleCancelClick}
-              className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors cursor-pointer hover:bg-calendar-primary/20 flex items-center justify-center flex-shrink-0"
+              className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors hover:bg-calendar-primary/20 flex items-center justify-center flex-shrink-0"
             >
               <X />
-            </button>
+            </Button>
           </div>
         </div>
       </SessionContainer>

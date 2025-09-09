@@ -1,16 +1,19 @@
 ## current TODOS
 
-- ~~Fix Modal~~ 
+- ~~Fix Modal~~
   - ~~book session to be exact~~
   - ~~also show sep 5, 2025 for date for example instead of 9/5/2025.~~
-- ~~Fix Calendar Date Picker and BookingModal bug, not showing current date again when you reopen the daypicker.~~
-- add prettier
-- markup some designs with stitch for sessions/people sections.
+- ~~Fix Calendar Date Picker and BookingModal bug, not showing current date again when you reopen
+  the daypicker.~~ ~~- add prettier~~
 - Fix the hover states for buttons/navigation items
+  - Try to get the select in dayPicker, if not just move on.
+- Convert buttons to Buttons...
+- markup some designs with stitch for sessions/people sections.
 
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 
 ## Core User Flow Goals:
+
 1. Multi-language signup (native/target languages)
 2. Simple session matching via websocket
 3. Session page with split timers per language
@@ -22,12 +25,14 @@
 ## 🏗️ **Database & Schema**
 
 ### ✅ **Completed:**
+
 - [x] DBML schema design (`dmbl-schema.sql`)
 - [x] PostgreSQL schema conversion (`langmate-schema.sql`)
 - [x] All tables defined: users, languages, user_languages, sessions, user_favorites, user_reports,
-  user_snoozes
+      user_snoozes
 
 ### 🔲 **Setup Tasks:**
+
 - [x] Apply schema to Supabase database
 - [x] Seed languages table with common languages (en, es)
 - [x] Define RLS policies
@@ -39,26 +44,28 @@
 ## 🔐 **Authentication & User Management**
 
 ### ✅ **Completed:**
+
 - [x] Supabase auth integration
 - [x] Login/signup forms with auth-form.tsx
 - [x] Auth actions and middleware
 - [x] Protected routes setup
 
 ### 🔲 **Enhancement Tasks:**
+
 - [ ] **Multi-language signup flow:**
   - [ ] Add language selection to signup form
   - [ ] Create native language selection (multiple choice)
   - [ ] Create target language selection (multiple choice)
-  - [ ] Ask: **"Are you able to hold a basic 5-minute conversation in your target language?"** 
+  - [ ] Ask: **"Are you able to hold a basic 5-minute conversation in your target language?"**
   - [ ] Add proficiency level selection
-  > *“How well do you speak your **target language**?”*
+    > _“How well do you speak your **target language**?”_
   * 🟢 **Fluent** “I can speak and discuss complex topics with ease.”
   * 🟡 **Intermediate** “I can talk about everyday things with some mistakes. I’m still working on
     fluency.”
   * 🟢 **Conversational** “I can hold a basic conversation about familiar topics. I don’t need to
     translate every word.”
-  * 🟠 **Beginner** *(blocked in MVP)* “I know some words and phrases but can’t hold a conversation
-    yet.” 👉 Show message: *“LangMate is currently only for users who are at least conversational.”*
+  * 🟠 **Beginner** _(blocked in MVP)_ “I know some words and phrases but can’t hold a conversation
+    yet.” 👉 Show message: _“LangMate is currently only for users who are at least conversational.”_
   - [ ] Save selections to user_languages table
 - [ ] **Profile completion flow:**
   - [ ] Redirect new users to complete profile
@@ -70,10 +77,12 @@
 ## 🔌 **WebSocket & Matchmaking**
 
 ### ✅ **Completed:**
+
 - [x] Basic websocket server (ws-server/server.js)
 - [x] Simple in-memory matchmaking logic
 
 ### 🔲 **Integration Tasks:**
+
 - [] Daily.co to Agora integration for video rooms
 - [ ] **Re-enable frontend socket connection:**
   - [ ] Uncomment and fix socket.js integration
@@ -90,16 +99,18 @@
 ## 🎯 **Session Matching UI**
 
 ### ✅ **Completed:**
+
 - [x] Basic session page template
 
 ### 🔲 **Implementation Tasks:**
+
 - [ ] **Home page session launcher:**
   - [ ] Create "Start Session" modal/component
   - [ ] Language selection for this session (from user's languages)
   - [ ] Duration selection (25/50 minutes, moving to a simpler timeslot & durations options since
-    makes sense to offer less options to the user to concentrate users to book in only 4 available
-    session slots an hour instead of 6, but maybe this will even change to only start of hour and
-    middle of the hour even...)
+        makes sense to offer less options to the user to concentrate users to book in only 4 available
+        session slots an hour instead of 6, but maybe this will even change to only start of hour and
+        middle of the hour even...)
   - [ ] "Finding match..." loading state
 - [ ] **Matchmaking flow:**
   - [ ] Connect to websocket for real-time matching
@@ -113,11 +124,13 @@
 ## 🎥 **Session Page Enhancement**
 
 ### ✅ **Completed:**
+
 - [x] Split timer functionality (hardcoded en/es)
 - [x] Session state management
 - [x] Session end sound
 
 ### 🔲 **Dynamic Features:**
+
 - [] Daily to Agora video integration
 - [ ] **Dynamic language display:**
   - [ ] Show actual session languages (not hardcoded)
@@ -141,9 +154,11 @@
 ## ⚙️ **User Settings Dashboard**
 
 ### ✅ **Completed:**
+
 - [x] Basic account page structure
 
 ### 🔲 **Settings Implementation:**
+
 - [ ] **Language management:**
   - [ ] Display user's current languages
   - [ ] Add/remove native languages
@@ -163,6 +178,7 @@
 ## 🎨 **UI/UX Polish**
 
 ### 🔲 **Essential UI Tasks:**
+
 - [ ] **Landing page improvements:**
   - [ ] Show how the app works (language exchange explanation)
   - [ ] Add FAQ section
@@ -182,6 +198,7 @@
 ## 🐛 **Bug Fixes & Integration**
 
 ### 🔲 **Critical Fixes:**
+
 - [ ] **Schema alignment:**
   - [ ] Remove references to legacy "profiles" table
   - [ ] Update account-form.tsx to use "users" table
@@ -200,6 +217,7 @@
 ## 🧪 **Testing & Validation**
 
 ### 🔲 **Testing Tasks:**
+
 - [ ] **End-to-end user flow:**
   - [ ] Signup → language selection → matching → session → completion
   - [ ] Test with multiple language combinations
@@ -207,14 +225,15 @@
 - [ ] **Edge cases:**
   - [ ] No match found scenarios
   - [ ] Connection drops during session
-  - [ ] Partner leaves mid-session -> report unless user 
-  - [ ] Simultaneous matching requests 
+  - [ ] Partner leaves mid-session -> report unless user
+  - [ ] Simultaneous matching requests
 
 ---
 
 ## 📋 **Launch Checklist**
 
 ### 🔲 **Pre-launch:**
+
 - [ ] Database migrations applied to production
 - [ ] Environment variables configured
 - [ ] Basic analytics/error tracking setup
@@ -222,6 +241,7 @@
 - [ ] Test deployment pipeline
 
 ### 🔲 **Soft Launch:**
+
 - [ ] Deploy to staging for internal testing
 - [ ] Test with 4-6 real users
 - [ ] Fix critical bugs found in testing
@@ -231,6 +251,7 @@
 ---
 
 ## Future Phases Preview:
+
 - **Phase 1:** Scheduled sessions with calendar integration
 - **Phase 2:** Advanced matching with preferences and compatibility
 - **Phase 3:** Community features, interest groups, and gamification

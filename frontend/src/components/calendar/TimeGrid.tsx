@@ -212,9 +212,7 @@ export const TimeGrid = ({
                     return (
                       <div
                         key={`${day.date}-${index}`}
-                        className={`border-r min-w-0 border-b border-calendar-border/50 transition-colors ${
-                          sessionInSlot ? "cursor-pointer" : ""
-                        } ${day.isToday ? "bg-calendar-primary/5" : "bg-white"}`}
+                        className={`border-r min-w-0 border-b border-calendar-border/50 transition-colors ${day.isToday ? "bg-calendar-primary/5" : "bg-white"}`}
                         style={{ height: "73px" }}
                         onMouseEnter={() => {
                           if (!isPending && !clickCooldown) {

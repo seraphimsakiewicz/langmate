@@ -64,30 +64,17 @@ export const CalendarHeader = ({
       {/* Top header with month/year and controls */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hover:cursor-pointer"
-            onClick={handleTodayClick}
-          >
+          <Button variant="outline" size="sm" onClick={handleTodayClick}>
             Today
           </Button>
 
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="hover:cursor-pointer"
-              size="sm"
-              onClick={handlePrevPeriod}
-            >
+            <Button variant="outline" size="sm" onClick={handlePrevPeriod}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <Popover open={openPopper} onOpenChange={handlePopper}>
               <PopoverTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="text-xl font-semibold hover:bg-accent hover:cursor-pointer"
-                >
+                <Button variant="ghost" className="text-xl font-semibold hover:bg-accent">
                   {monthYear}
                   <CalendarIcon className="ml-2 h-4 w-4" />
                 </Button>
@@ -107,12 +94,7 @@ export const CalendarHeader = ({
                 />
               </PopoverContent>
             </Popover>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hover:cursor-pointer"
-              onClick={handleNextPeriod}
-            >
+            <Button variant="outline" size="sm" onClick={handleNextPeriod}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
@@ -121,7 +103,6 @@ export const CalendarHeader = ({
         <div className="flex items-center gap-2">
           <Button
             size="sm"
-            className="hover:cursor-pointer"
             variant={viewMode === "day" ? "default" : "ghost"}
             onClick={() => onViewModeChange("day")}
           >
@@ -131,7 +112,7 @@ export const CalendarHeader = ({
             size="sm"
             variant={viewMode === "week" ? "default" : "ghost"}
             onClick={() => onViewModeChange("week")}
-            className="hidden md:inline-flex hover:cursor-pointer"
+            className="hidden md:inline-flex"
           >
             Week
           </Button>

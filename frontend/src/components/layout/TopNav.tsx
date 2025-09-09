@@ -12,7 +12,8 @@ interface TopNavProps {
   isSidebarCollapsed: boolean;
   onToggleCollapse: () => void;
 }
-
+// TODO figure out how to make active button (to stay with active styles on hover too.) also to
+// disable it point-event(almost like its a disabled button.)
 export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavProps) => {
   return (
     <div className="border-b border-calendar-border bg-white">
@@ -22,9 +23,7 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className={`p-2 mr-2 ${
-              currentView !== "calendar" ? "invisible" : "hover:cursor-pointer"
-            }`}
+            className={`p-2 mr-2 ${currentView !== "calendar" && "invisible"}`}
           >
             <MenuIcon className="size-[1.5rem]" />
           </Button>
@@ -33,8 +32,8 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             variant="ghost"
             className={`px-4 py-2 ${
               currentView === "calendar"
-                ? "bg-calendar-primary/10 text-calendar-primary font-medium border-b-2 border-calendar-primary"
-                : "text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                ? "bg-calendar-primary/10 text-black hover-none font-medium border-b-2 border-calendar-primary"
+                : "text-muted-foreground hover:text-foreground hover:underline"
             }`}
             onClick={() => onViewChange("calendar")}
           >
@@ -45,8 +44,8 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             variant="ghost"
             className={`px-4 py-2 ${
               currentView === "sessions"
-                ? "bg-calendar-primary/10 text-calendar-primary font-medium"
-                : "text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                ? "bg-calendar-primary/10 text-calendar-primary font-medium border-b-2 border-calendar-primary"
+                : "text-muted-foreground hover:text-foreground hover:underline"
             }`}
             onClick={() => onViewChange("sessions")}
           >
@@ -58,7 +57,7 @@ export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavPr
             className={`px-4 py-2 ${
               currentView === "people"
                 ? "bg-calendar-primary/10 text-calendar-primary font-medium border-b-2 border-calendar-primary"
-                : "text-muted-foreground hover:text-foreground hover:cursor-pointer"
+                : "text-muted-foreground hover:text-foreground hover:underline"
             }`}
             onClick={() => onViewChange("people")}
           >
