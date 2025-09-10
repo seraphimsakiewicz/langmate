@@ -93,19 +93,20 @@ const SessionBlockComponent = ({
     <SessionContainer className="bg-white border-1 border-calendar-primary text-xs">
       <div className="flex flex-col justify-between h-full">
         <div className="flex gap-1 mb-1 h-full">
-          <button
+          <Button
             onClick={handleBookClick}
-            className="bg-calendar-primary text-white text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/90 transition-colors flex-1 cursor-pointer"
+            className="w-full bg-session-booked hover:bg-session-booked/90 text-white rounded font-medium text-[12px] px-2 py-1 h-auto"
           >
             Book
-          </button>
+          </Button>
         </div>
-        <button
+        <Button
           onClick={handleRemovePendingClick}
-          className="h-8/10 border border-calendar-primary text-calendar-primary text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/5 transition-colors cursor-pointer"
+          variant="ghost"
+          className="w-full h-auto border border-calendar-primary text-calendar-primary text-[12px] px-2 py-1 rounded font-medium hover:bg-calendar-primary/5 transition-colors cursor-pointer"
         >
           Remove
-        </button>
+        </Button>
       </div>
     </SessionContainer>
   );
@@ -115,18 +116,12 @@ const SessionBlockComponent = ({
       <div className="text-center text-[10px] font-medium tracking-[0.5px] col-span-2 flex items-center justify-center">
         Cancel?
       </div>
-      <button
-        onClick={handleCancelConfirmNo}
-        className="flex items-center justify-center h-full bg-transparent text-white text-[11px] font-semibold rounded-bl-[5px] cursor-pointer"
-      >
+      <Button onClick={handleCancelConfirmNo} variant="cancelNo">
         No
-      </button>
-      <button
-        onClick={handleCancelConfirmYes}
-        className="bg-white text-[#de3535] text-[11px] font-semibold rounded-br-[5px] cursor-pointer border-0 p-0 w-full h-full"
-      >
+      </Button>
+      <Button onClick={handleCancelConfirmYes} variant="cancelYes">
         Yes
-      </button>
+      </Button>
     </div>
   );
 

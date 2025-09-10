@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { type User } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
 
 // ...
 
@@ -111,20 +112,19 @@ export default function AccountForm({ user }: { user: User | null }) {
       </div>
 
       <div>
-        <button
-          className="button primary block"
+        <Button
           onClick={() => updateProfile({ fullname, username, website, avatar_url })}
           disabled={loading}
         >
           {loading ? "Loading ..." : "Update"}
-        </button>
+        </Button>
       </div>
 
       <div>
         <form action="/auth/signout" method="post">
-          <button className="button block" type="submit">
+          <Button type="submit" variant={"ghost"}>
             Sign out
-          </button>
+          </Button>
         </form>
       </div>
     </div>

@@ -1,16 +1,3 @@
-## current TODOS
-
-- ~~Fix Modal~~
-  - ~~book session to be exact~~
-  - ~~also show sep 5, 2025 for date for example instead of 9/5/2025.~~
-- ~~Fix Calendar Date Picker and BookingModal bug, not showing current date again when you reopen
-  the daypicker.~~ ~~- add prettier~~
-- Fix the hover states for buttons/navigation items
-~~  - Try to get the select in dayPicker, if not just move on.~~
-  - Setup hover states properly for 
-- Convert buttons to Buttons...
-- markup some designs with stitch for sessions/people sections.
-
 # Phase 0 Tasks - Language Exchange Matchmaking MVP
 
 ## Core User Flow Goals:
@@ -109,9 +96,9 @@
   - [ ] Create "Start Session" modal/component
   - [ ] Language selection for this session (from user's languages)
   - [ ] Duration selection (25/50 minutes, moving to a simpler timeslot & durations options since
-        makes sense to offer less options to the user to concentrate users to book in only 4 available
-        session slots an hour instead of 6, but maybe this will even change to only start of hour and
-        middle of the hour even...)
+        makes sense to offer less options to the user to concentrate users to book in only 4
+        available session slots an hour instead of 6, but maybe this will even change to only start
+        of hour and middle of the hour even...)
   - [ ] "Finding match..." loading state
 - [ ] **Matchmaking flow:**
   - [ ] Connect to websocket for real-time matching

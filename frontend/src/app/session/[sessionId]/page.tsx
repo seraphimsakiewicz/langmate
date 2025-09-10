@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Language, SessionData } from "@/types";
 import { useRouter } from "next/navigation";
 import { DailyProvider, useCallFrame } from "@daily-co/daily-react";
+import { Button } from "@/components/ui/button";
 
 type SessionPhase = "LOADING" | "WAITING" | "FIRST_LANG" | "SECOND_LANG" | "DONE";
 type PageParams = {
@@ -164,7 +165,7 @@ export default function SessionPage() {
               {renderDisplay()}
             </div>
           </div>
-          <button
+          <Button
             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg"
             onClick={async () => {
               localStorage.removeItem(sessionId as string);
@@ -172,7 +173,7 @@ export default function SessionPage() {
             }}
           >
             Leave
-          </button>
+          </Button>
         </div>
       </div>
 
