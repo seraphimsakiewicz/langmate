@@ -2,9 +2,11 @@
 
 frontend/node_modules
 frontend/.next
+frontend/.claude
 ws-server/node_modules
 testing_supabase/node_modules
 testing_supabase/.next
+ws-server/.claude
 # dependencies
 /node_modules
 /.pnp
@@ -14,6 +16,7 @@ testing_supabase/.next
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+.claude
 
 # testing
 /coverage

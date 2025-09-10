@@ -42,7 +42,7 @@ export const MainNav = () => {
             </nav> */}
       {/* Desktop & mobile */}
       <div className="flex items-center justify-end flex-1 gap-4">
-        {loggedIn ? (
+        {/*        {loggedIn ? (
           <Button
             onClick={logOut}
             // className="text-sm font-medium text-gray-600 hover:text-gray-900"
@@ -61,7 +61,7 @@ export const MainNav = () => {
               Signup
             </Link>
           </Fragment>
-        )}
+        )} */}
       </div>
     </div>
   );
