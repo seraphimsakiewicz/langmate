@@ -1,14 +1,9 @@
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { AlignJustify, Apple } from "lucide-react";
+import { AlignJustify } from "lucide-react";
 import Link from "next/link";
 
 export const MobileNav = () => {

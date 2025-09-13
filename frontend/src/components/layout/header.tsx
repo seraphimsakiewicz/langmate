@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Button } from "../button";
 import { MainNav } from "./main-nav";
 import { MobileNav } from "./mobile-nav";
 

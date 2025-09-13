@@ -1,14 +1,12 @@
 "use client";
 
-import { Apple, SubscriptIcon } from "lucide-react";
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
-import { useState, useEffect, Fragment } from "react";
+import { useEffect } from "react";
+// import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
 
 export const MainNav = () => {
-  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  // const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const supabase = createClient();
   const router = useRouter();
@@ -20,7 +18,8 @@ export const MainNav = () => {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        setLoggedIn(true);
+        console.log("Setting logged in true")
+        // setLoggedIn(true);
       }
     };
     fetchUser();
