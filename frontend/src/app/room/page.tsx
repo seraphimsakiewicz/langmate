@@ -68,7 +68,7 @@ export default function Page() {
 
     const newRoom = {
       videoCaptureDefaults: videoCaptureDefaults,
-      //   publishDefaults: publishDefaults,
+      publishDefaults: publishDefaults,
       audioCaptureDefaults: {
         deviceId: values.audioDeviceId ?? undefined,
       },
@@ -81,6 +81,17 @@ export default function Page() {
     roomInstance.connect(process.env.NEXT_PUBLIC_LIVEKIT_URL || "", data.token, {
       autoSubscribe: true,
     });
+
+    if (values.videoEnabled) {
+      roomInstance.localParticipant.setCameraEnabled(true).catch((error) => {
+        console.log("ERROR", error);
+      });
+    }
+    if (values.audioEnabled) {
+      roomInstance.localParticipant.setMicrophoneEnabled(true).catch((error) => {
+        console.log("ERROR", error);
+      });
+    }
   }, []);
 
   const handlePreJoinError = useCallback((e: any) => console.error(e), []);
@@ -96,21 +107,19 @@ export default function Page() {
           />
         </div>
       ) : (
-        <RoomContext.Provider value={roomInstance}>
-          <p>RoomInstance!!!! {JSON.stringify(roomInstance)}</p>
-          <div data-lk-theme="default" style={{ height: "100dvh" }}>
-            <VideoConference
-            //   chatMessageFormatter={formatChatMessageLinks}
-            //   SettingsComponent={SHOW_SETTINGS_MENU ? SettingsMenu : undefined}
-            />
-            {/* Your custom component with basic video conferencing functionality. */}
-            {/* <MyVideoConference /> */}
-            {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
-            {/* <RoomAudioRenderer /> */}
-            {/* Controls for the user to start/stop audio, video, and screen share tracks */}
-            <ControlBar />
-          </div>
-        </RoomContext.Provider>
+        <div style={{ border: "2px solid red" }}>
+          <RoomContext.Provider value={roomInstance}>
+            <div data-lk-theme="default" style={{ height: "100dvh", border: "4px solid green" }}>
+              <VideoConference />
+              {/* Your custom component with basic video conferencing functionality. */}
+              {/* <MyVideoConference /> */}
+              {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
+              {/* <RoomAudioRenderer /> */}
+              {/* Controls for the user to start/stop audio, video, and screen share tracks */}
+              <ControlBar />
+            </div>
+          </RoomContext.Provider>
+        </div>
       )}
     </main>
   );
@@ -121,8 +130,8 @@ function MyVideoConference() {
   // camera track, a placeholder track is returned.
   const tracks = useTracks(
     [
-      { source: Track.Source.Camera, withPlaceholder: false },
-      { source: Track.Source.ScreenShare, withPlaceholder: false },
+      { source: Track.Source.Camera, withPlaceholder: true },
+      { source: Track.Source.ScreenShare, withPlaceholder: true },
     ],
     { onlySubscribed: false }
   );
