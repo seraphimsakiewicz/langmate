@@ -2,11 +2,11 @@
 
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
-// import { useState } from "react";
+import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
 export const MainNav = () => {
-  // const [loggedIn, setLoggedIn] = useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const supabase = createClient();
   const router = useRouter();
