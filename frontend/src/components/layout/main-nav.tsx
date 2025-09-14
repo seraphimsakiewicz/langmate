@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -18,7 +18,7 @@ export const MainNav = () => {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        console.log("Setting logged in true")
+        console.log("Setting logged in true");
         // setLoggedIn(true);
       }
     };
