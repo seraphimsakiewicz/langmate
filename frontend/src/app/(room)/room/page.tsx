@@ -107,17 +107,15 @@ export default function Page() {
           />
         </div>
       ) : (
-        <div style={{ border: "2px solid red" }}>
+        <div data-lk-theme="default" style={{ height: "100dvh" }}>
           <RoomContext.Provider value={roomInstance}>
-            <div data-lk-theme="default" style={{ height: "100dvh", border: "4px solid green" }}>
-              <VideoConference />
-              {/* Your custom component with basic video conferencing functionality. */}
-              {/* <MyVideoConference /> */}
-              {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
-              {/* <RoomAudioRenderer /> */}
-              {/* Controls for the user to start/stop audio, video, and screen share tracks */}
-              <ControlBar />
-            </div>
+            <VideoConference />
+            {/* Your custom component with basic video conferencing functionality. */}
+            {/* <MyVideoConference /> */}
+            {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
+            {/* <RoomAudioRenderer /> */}
+            {/* Controls for the user to start/stop audio, video, and screen share tracks */}
+            {/* <ControlBar /> */}
           </RoomContext.Provider>
         </div>
       )}

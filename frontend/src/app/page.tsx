@@ -9,7 +9,6 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
-import { socket } from "./socket";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Language, SessionInfo, UserData, FindMatchData } from "@/types";
@@ -96,48 +95,12 @@ export default function Home() {
   return (
     <main className="h-full overflow-hidden">
       <Calendar />
-      {/*       <div className="flex flex-col gap-2">
-        <p>Connected: {isConnected ? "✅" : "❌"}</p>
-        <p>Transport: {transport}</p>
-      </div>
-      <Card className="w-full max-w-md p-4">
-
-        <CardHeader>
-          <CardTitle>
-            <h1 className="text-2xl font-bold">Find a langmate</h1>
-            <p className="text-sm text-gray-500">
-              Select your language and find a langmate to practice with.
-            </p>
-            <div className="flex flex-col gap-2 mt-4">
-              <Select onValueChange={(value) => setNativeLanguage(value as Language)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your native language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select onValueChange={(value) => setTargetLanguage(value as Language)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your target language" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="es">Spanish</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button onClick={handleMatchMe} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage || isLookingForMatch}>
-                {isLookingForMatch ? "Looking for match..." : "Match me"}
-              </Button>
-              {isMatched &&
-                <Button onClick={handleConnect} className="w-full mt-4" disabled={!nativeLanguage || !targetLanguage || nativeLanguage === targetLanguage || isLookingForMatch}>
-                  Join Session
-                </Button>}
-            </div>
-          </CardTitle>
-        </CardHeader>
-      </Card> */}
     </main>
   );
 }
+// TODO: below wil lbe new contents, need to take
+/* import { redirect } from "next/navigation";
+
+export default function AppHome() {
+  redirect("/calendar");
+} */

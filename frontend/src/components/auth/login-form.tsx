@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/app/login/actions";
+import { login } from "@/app/(auth)/login/actions";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -43,7 +43,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <a href="/sign-up" className="underline underline-offset-4">
+              <a href="/signup" className="underline underline-offset-4">
                 Sign up
               </a>
             </div>

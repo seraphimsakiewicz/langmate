@@ -121,7 +121,7 @@ export default function AccountForm({ user }: { user: User | null }) {
       </div>
 
       <div>
-        <form action="/auth/signout" method="post">
+        <form action="/api/auth/signout" method="post">
           <Button type="submit" variant={"ghost"}>
             Sign out
           </Button>
