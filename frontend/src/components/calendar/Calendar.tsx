@@ -3,7 +3,7 @@ import { CalendarSidebar } from "./CalendarSidebar";
 import { CalendarHeader } from "./CalendarHeader";
 import { TimeGrid } from "./TimeGrid";
 import { BookingModal } from "./BookingModal";
-import { TopNav } from "../layout/TopNav";
+import { SecondNav } from "../layout/second-nav";
 import { Session, DayColumn } from "@/types/calendar";
 import { dummySessions } from "@/data/sessionsData";
 import { MiniCalendarProps, useMiniCalendar } from "@/hooks/useMiniCalendar";
@@ -168,7 +168,7 @@ export const Calendar = () => {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      <TopNav
+      <SecondNav
         currentView={currentView}
         onViewChange={setCurrentView}
         isSidebarCollapsed={isSidebarCollapsed}

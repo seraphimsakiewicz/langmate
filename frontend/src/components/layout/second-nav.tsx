@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface TopNavProps {
+interface SecondNavProps {
   currentView: "calendar" | "sessions" | "people";
   onViewChange: (view: "calendar" | "sessions" | "people") => void;
   isSidebarCollapsed: boolean;
@@ -19,7 +19,7 @@ interface NavItemProps {
   children: React.ReactNode;
   className?: string;
 }
-export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavProps) => {
+export const SecondNav = ({ currentView, onViewChange, onToggleCollapse }: SecondNavProps) => {
   return (
     <div className="border-b border-calendar-border bg-white">
       <div className="py-3">
