@@ -19,8 +19,6 @@ interface NavItemProps {
   children: React.ReactNode;
   className?: string;
 }
-// TODO figure out how to make active button (to stay with active styles on hover too.) also to
-// disable it point-event(almost like its a disabled button.)
 export const TopNav = ({ currentView, onViewChange, onToggleCollapse }: TopNavProps) => {
   return (
     <div className="border-b border-calendar-border bg-white">

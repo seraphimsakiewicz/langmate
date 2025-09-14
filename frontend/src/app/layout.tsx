@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
-import { Header } from "@/components/layout/header";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
 import { Providers } from "./providers";
 
@@ -20,14 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full">
       <body className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden`}>
-        {/* todo move this */}
-        <div className="h-full flex flex-col">
-          <Header />
-          <div className="flex-1 overflow-hidden">
-            <Providers>{children}</Providers>
-          </div>
-        </div>
-        {/* to layout of main */}
+        <Providers>{children}</Providers>
         <TailwindIndicator />
       </body>
     </html>
