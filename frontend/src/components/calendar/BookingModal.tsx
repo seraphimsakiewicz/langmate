@@ -12,22 +12,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Session, DayColumn } from "@/types/calendar";
 import { formatDate } from "@/data/sessionsData";
 import { useMiniCalendar, MiniCalendarProps } from "@/hooks/useMiniCalendar";
+import { useCalendarStore } from "@/stores/calendar-store";
 
-interface BookingModalProps {
-  onBook: (session: Omit<Session, "id">) => void;
-  weekDays: DayColumn[];
-  modalState: {
-    setOpenModal: (state: boolean) => void;
-    openModal: boolean;
-  };
-}
-
-export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
+export const BookingModal = () => {
+  const { setOpenModal, openModal, addSession } = useCalendarStore();
   const [selectedTime, setSelectedTime] = useState<string>("");
-  const { setOpenModal, openModal } = modalState;
 
   const {
     selectedDate,
@@ -73,7 +64,7 @@ export const BookingModal = ({ onBook, modalState }: BookingModalProps) => {
 
     const endTime = `${hour}:${endMinute}`;
 
-    onBook({
+    addSession({
       startTime: selectedTime,
       endTime,
       date: formatDate(selectedDate),

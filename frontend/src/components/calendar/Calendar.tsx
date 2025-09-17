@@ -181,9 +181,9 @@ export const Calendar = () => {
       <div className="flex-1 overflow-hidden">{renderMainContent()}</div>
 
       <BookingModal
-        onBook={handleSessionBook}
-        weekDays={daysToShow}
-        modalState={{ openModal, setOpenModal }}
+      // onBook={handleSessionBook}
+      // weekDays={daysToShow}
+      // modalState={{ openModal, setOpenModal }}
       />
     </div>
   );

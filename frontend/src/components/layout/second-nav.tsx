@@ -17,7 +17,13 @@ interface NavItemProps {
 }
 export const SecondNav = () => {
   const pathName = usePathname();
-  const { toggleSidebar } = useCalendarStore();
+  const { setUserSetSidebarCollapsed, setIsSidebarCollapsed, isSidebarCollapsed } =
+    useCalendarStore();
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+    setUserSetSidebarCollapsed(true);
+  };
 
   const getCurrentView = () => {
     if (pathName.includes("/calendar")) return "calendar";

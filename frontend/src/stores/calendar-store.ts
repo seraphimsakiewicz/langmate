@@ -12,13 +12,16 @@ import { create } from "zustand";
 interface CalendarStore {
   // SideBar state
   isSidebarCollapsed: boolean;
+  setIsSidebarCollapsed: (newState: boolean) => void;
+  // todo rename to userSetSidebar
   userSetSidebarCollapsed: boolean;
-  toggleSidebar: () => void;
+  setUserSetSidebarCollapsed: (newState: boolean) => void;
 
   // Calendar mode
   calendarMode: "day" | "week";
-  userSetViewMode: boolean;
   setCalendarMode: (mode: "day" | "week") => void;
+  userSetViewMode: boolean;
+  setUserSetViewMode: (newState: boolean) => void;
 
   // Sessions
   sessions: Session[];
@@ -28,17 +31,23 @@ interface CalendarStore {
 
   // BookingModal
   openModal: boolean;
-  setOpenModal: () => void;
+  setOpenModal: (newModalState: boolean) => void;
 }
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
   isSidebarCollapsed: false,
   userSetSidebarCollapsed: false,
-  toggleSidebar: () =>
-    set((state) => ({
-      isSidebarCollapsed: !state.isSidebarCollapsed,
-      // todo rename to userSetSidebar
-      userSetSidebarCollapsed: true,
+  setIsSidebarCollapsed: (newState: boolean) =>
+    set(() => ({
+      isSidebarCollapsed: newState,
+    })),
+  setUserSetSidebarCollapsed: (newState: boolean) =>
+    set(() => ({
+      userSetSidebarCollapsed: newState,
+    })),
+  setUserSetViewMode: (newState: boolean) =>
+    set(() => ({
+      userSetViewMode: newState,
     })),
   calendarMode: "day",
   userSetViewMode: false,
@@ -68,9 +77,9 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
     set((state) => ({
       sessions: state.sessions.filter((session) => session.id !== sessionId),
     })),
-  setOpenModal: () =>
-    set((state) => ({
-      openModal: !state.openModal,
+  setOpenModal: (newModalState: boolean) =>
+    set(() => ({
+      openModal: newModalState,
     })),
   openModal: false,
 }));
