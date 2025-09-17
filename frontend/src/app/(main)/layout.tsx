@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { Session, DayColumn } from "@/types/calendar";
 import { dummySessions } from "@/data/sessionsData";
@@ -108,31 +110,13 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     setSessions((prev) => [...prev, session]);
   };
 
-  const handleSessionUpdate = (sessionId: string, updates: Partial<Session>) => {
-    setSessions((prev) =>
-      prev.map((session) => (session.id === sessionId ? { ...session, ...updates } : session))
-    );
-  };
-
-  const handleSessionDelete = (sessionId: string) => {
-    setSessions((prev) => prev.filter((session) => session.id !== sessionId));
-  };
-
   return (
     <div className="h-full flex flex-col">
       <Header />
       <div className="flex-1 overflow-hidden">
         <main className="h-full overflow-hidden">
           <div className="flex flex-col h-screen bg-background">
-            <SecondNav
-              currentView={currentView}
-              onViewChange={setCurrentView}
-              isSidebarCollapsed={isSidebarCollapsed}
-              onToggleCollapse={() => {
-                setIsSidebarCollapsed(!isSidebarCollapsed);
-                setUserSetSidebarCollapsed(true); // Mark that user explicitly toggled sidebar
-              }}
-            />
+            <SecondNav />
 
             <div className="flex-1 overflow-hidden">{children}</div>
 

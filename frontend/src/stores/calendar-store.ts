@@ -22,7 +22,7 @@ interface CalendarStore {
 
   // Sessions
   sessions: Session[];
-  addSession: (session: Session) => void;
+  addSession: (session: Omit<Session, "id">) => void;
   updateSession: (sessionId: string, updates: Partial<Session>) => void;
   deleteSession: (sessionId: string) => void;
 
@@ -44,10 +44,20 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
   userSetViewMode: false,
   setCalendarMode: (mode) => set({ calendarMode: mode, userSetViewMode: true }),
   sessions: [],
-  addSession: (session) =>
-    set((state) => ({
-      sessions: [...state.sessions, session],
-    })),
+  addSession: (newSession: Omit<Session, "id">) =>
+    set((state) => {
+      const slotOccupied = [...state.sessions].some(
+        (item) => newSession.date === item.date && newSession.startTime === item.startTime
+      );
+
+      if (slotOccupied) return state;
+
+      const newSessionObject: Session = {
+        ...newSession,
+        id: `session-${Date.now()}`,
+      };
+      return { sessions: [...state.sessions, newSessionObject] };
+    }),
   updateSession: (sessionId, updates) =>
     set((state) => ({
       sessions: state.sessions.map((session) =>

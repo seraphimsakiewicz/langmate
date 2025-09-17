@@ -169,13 +169,13 @@ export const Calendar = () => {
   return (
     <div className="flex flex-col h-screen bg-background">
       <SecondNav
-        currentView={currentView}
-        onViewChange={setCurrentView}
-        isSidebarCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => {
-          setIsSidebarCollapsed(!isSidebarCollapsed);
-          setUserSetSidebarCollapsed(true); // Mark that user explicitly toggled sidebar
-        }}
+      // currentView={currentView}
+      // onViewChange={setCurrentView}
+      // isSidebarCollapsed={isSidebarCollapsed}
+      // onToggleCollapse={() => {
+      //   setIsSidebarCollapsed(!isSidebarCollapsed);
+      //   setUserSetSidebarCollapsed(true); // Mark that user explicitly toggled sidebar
+      // }}
       />
 
       <div className="flex-1 overflow-hidden">{renderMainContent()}</div>
