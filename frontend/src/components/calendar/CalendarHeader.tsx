@@ -1,3 +1,5 @@
+"use client"
+
 import { ChevronLeft, ChevronRight, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MiniCalendar } from "@/components/ui/mini-calendar";

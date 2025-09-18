@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Session, DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";

@@ -1,3 +1,5 @@
+"use client"
+
 import {
   Calendar as CalendarIcon,
   Users as UsersIcon,
@@ -9,6 +11,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useCalendarStore } from "@/stores/calendar-store";
 import { MiniCalendarProps, useMiniCalendar } from "@/hooks/useMiniCalendar";
+import { useEffect } from "react";
 
 interface NavItemProps {
   isActive: boolean;
@@ -18,8 +21,46 @@ interface NavItemProps {
 }
 export const SecondNav = () => {
   const pathName = usePathname();
-  const { setUserSetSidebarCollapsed, setIsSidebarCollapsed, isSidebarCollapsed } =
-    useCalendarStore();
+  const {
+    setCalendarMode,
+    calendarMode,
+    setUserSetViewMode,
+    setUserSetSidebarCollapsed,
+    setIsSidebarCollapsed,
+    isSidebarCollapsed,
+    userSetViewMode,
+    userSetSidebarCollapsed,
+  } = useCalendarStore();
+  // Auto-switch view mode and sidebar based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      const screenWidth = window.innerWidth;
+
+      // Handle view mode switching
+      if (screenWidth < 951 && calendarMode === "week") {
+        setCalendarMode("day");
+        setUserSetViewMode(false); // Reset user preference on mobile
+      } else if (screenWidth >= 951 && calendarMode === "day" && !userSetViewMode) {
+        // Only auto-switch to week if user hasn't explicitly chosen day mode
+        setCalendarMode("week");
+      }
+
+      // Handle sidebar collapse/expand
+      if (screenWidth <= 950) {
+        // Always collapse sidebar on small screens
+        setIsSidebarCollapsed(true);
+      } else if (screenWidth >= 951 && !userSetSidebarCollapsed) {
+        // Auto-expand sidebar on larger screens unless user manually collapsed it
+        setIsSidebarCollapsed(false);
+      }
+    };
+
+    // Set initial view mode based on screen size
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [calendarMode, userSetViewMode, userSetSidebarCollapsed]);
 
   const toggleSidebar = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
@@ -37,14 +78,11 @@ export const SecondNav = () => {
     <div className="border-b border-calendar-border bg-white">
       <div className="py-3">
         <div className="flex items-center space-x-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleSidebar}
-            className={`p-2 mr-2 ${currentView !== "calendar" && "invisible"}`}
-          >
-            <MenuIcon className="size-[1.5rem]" />
-          </Button>
+          {currentView === "calendar" && (
+            <Button variant="ghost" size="sm" onClick={toggleSidebar} className="p-2 mr-2">
+              <MenuIcon className="size-[1.5rem]" />
+            </Button>
+          )}
 
           <NavItem href="/calendar" isActive={currentView === "calendar"}>
             <CalendarIcon className="mr-2 h-4 w-4" />

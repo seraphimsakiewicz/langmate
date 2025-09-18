@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useCallback, memo } from "react";
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
