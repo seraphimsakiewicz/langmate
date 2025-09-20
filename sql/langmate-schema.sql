@@ -4,11 +4,11 @@
 CREATE TABLE "profiles" (
   "id" uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   "email" varchar(255) UNIQUE NOT NULL,
-  "first_name" varchar(50),
-  "last_name" varchar(50),
-  "avatar_url" text,
-  "timezone" varchar(50),
-  "bio" text,
+  "first_name" varchar(50) NOT NULL,
+  "last_name" varchar(50) NOT NULL,
+  -- "avatar_url" text,
+  "timezone" varchar(50) NOT NULL,
+  -- "bio" text,
   "created_at" timestamptz DEFAULT (now()),
   "updated_at" timestamptz DEFAULT (now())
 );
@@ -78,35 +78,35 @@ CREATE TABLE "sessions" (
   "updated_at" timestamptz DEFAULT (now())
 );
 
--- Session attendance tracking (for no-show detection)
-CREATE TABLE "session_attendance" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "session_id" uuid NOT NULL REFERENCES "sessions" ("id") ON DELETE CASCADE,
-  "user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
-  "joined_at" timestamptz,
-  "no_show" boolean DEFAULT false,
-  "left_at" timestamptz,
-  -- this will be an updatable field, everytime someone leaves a session we update this to keep track that people are leaving AFTER the session ends.
-  "created_at" timestamptz DEFAULT (now()),
-  "updated_at" timestamptz DEFAULT (now()),
-  UNIQUE("session_id", "user_id") -- means one user can only one attendance record per session, prevents duplicates.
-);
+-- -- Session attendance tracking (for no-show detection)
+-- CREATE TABLE "session_attendance" (
+--   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+--   "session_id" uuid NOT NULL REFERENCES "sessions" ("id") ON DELETE CASCADE,
+--   "user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+--   "joined_at" timestamptz,
+--   "no_show" boolean DEFAULT false,
+--   "left_at" timestamptz,
+--   -- this will be an updatable field, everytime someone leaves a session we update this to keep track that people are leaving AFTER the session ends.
+--   "created_at" timestamptz DEFAULT (now()),
+--   "updated_at" timestamptz DEFAULT (now()),
+--   UNIQUE("session_id", "user_id") -- means one user can only one attendance record per session, prevents duplicates.
+-- );
 
 -- Keep reports for safety
-CREATE TABLE "user_reports" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "reporter_id" uuid NOT NULL REFERENCES "profiles" ("id"),
-  "reported_user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
-  "session_id" uuid REFERENCES "sessions" ("id"),
-  "reason" varchar(20) NOT NULL,
-  -- fake, offensive, misconduct, other
-  "description" text,
-  "status" varchar(20) DEFAULT 'pending',
-  -- pending, reviewed, resolved
-  "created_at" timestamptz DEFAULT (now()),
-  "updated_at" timestamptz DEFAULT (now()),
-  CHECK (reporter_id != reported_user_id) -- just checks on creation to make sure reported_user_id does not equal reporter_id
-);
+-- CREATE TABLE "user_reports" (
+--   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
+--   "reporter_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+--   "reported_user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+--   "session_id" uuid REFERENCES "sessions" ("id"),
+--   "reason" varchar(20) NOT NULL,
+--   -- fake, offensive, misconduct, other
+--   "description" text,
+--   "status" varchar(20) DEFAULT 'pending',
+--   -- pending, reviewed, resolved
+--   "created_at" timestamptz DEFAULT (now()),
+--   "updated_at" timestamptz DEFAULT (now()),
+--   CHECK (reporter_id != reported_user_id) -- just checks on creation to make sure reported_user_id does not equal reporter_id
+-- );
 
 -- for later... snoozes, favorites.
 
