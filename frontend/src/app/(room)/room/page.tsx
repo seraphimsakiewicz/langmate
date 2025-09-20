@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  ControlBar,
   GridLayout,
   ParticipantTile,
-  RoomAudioRenderer,
   useTracks,
   RoomContext,
   PreJoin,
@@ -17,10 +15,10 @@ import {
   VideoCaptureOptions,
   TrackPublishDefaults,
   VideoPresets,
-  VideoCodec,
 } from "livekit-client";
 import "@livekit/components-styles";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type ConnectionDetails = {
   serverUrl: string;
@@ -38,6 +36,8 @@ export default function Page() {
   const [connectionDetails, setConnectionDetails] = useState<ConnectionDetails | undefined>(
     undefined
   );
+
+  const router = useRouter();
 
   const preJoinDefaults = useMemo(() => {
     return {
@@ -80,6 +80,10 @@ export default function Page() {
 
     roomInstance.connect(process.env.NEXT_PUBLIC_LIVEKIT_URL || "", data.token, {
       autoSubscribe: true,
+    });
+
+    roomInstance.on("disconnected", () => {
+      router.push("/calendar");
     });
 
     if (values.videoEnabled) {
