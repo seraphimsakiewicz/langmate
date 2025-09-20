@@ -30,9 +30,9 @@ export function SignUpForm({ className, ...props }: React.ComponentProps<"div">)
                 <Button type="submit" formAction={signup} className="w-full">
                   Sign up
                 </Button>
-                <Button variant="outline" className="w-full">
+                {/* <Button variant="outline" className="w-full">
                   Sign up with Google
-                </Button>
+                </Button> */}
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
