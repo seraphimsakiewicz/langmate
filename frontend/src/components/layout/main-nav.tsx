@@ -35,21 +35,10 @@ export const MainNav = () => {
   };
 
   return (
-    <div className="hidden md:flex">
-      {/* <nav className="flex items-center gap-3 ml-8 lg:gap-4">
-                <Link href="/project">Project</Link>
-                <Link href="/about">About</Link>
-                <Link href="/contact">Contact</Link>
-            </nav> */}
-      {/* Desktop & mobile */}
+    <div className="flex">
       <div className="flex items-center justify-end flex-1 gap-4">
         {loggedIn ? (
-          <Button
-            onClick={logOut}
-            // className="text-sm font-medium text-gray-600 hover:text-gray-900"
-          >
-            Sign Out
-          </Button>
+          <Button onClick={logOut}>Sign Out</Button>
         ) : (
           <Fragment>
             <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">

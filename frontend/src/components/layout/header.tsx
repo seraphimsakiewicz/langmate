@@ -3,7 +3,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { MainNav } from "./main-nav";
-import { MobileNav } from "./mobile-nav";
 
 export function Header() {
   return (
@@ -17,8 +16,6 @@ export function Header() {
 
         {/* desktop nav */}
         <MainNav />
-        {/* mobile */}
-        <MobileNav />
       </div>
     </header>
   );
