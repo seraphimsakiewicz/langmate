@@ -7,6 +7,7 @@ ws-server/node_modules
 testing_supabase/node_modules
 testing_supabase/.next
 ws-server/.claude
+.vscode/
 # dependencies
 /node_modules
 /.pnp
