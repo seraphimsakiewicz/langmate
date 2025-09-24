@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ProfileForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -11,24 +17,42 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
       <Card>
         <CardHeader>
           <CardTitle>Complete Your Profile</CardTitle>
-          <CardDescription>Tell us a bit about yourself to personalize your Langmate experience</CardDescription>
+          <CardDescription>
+            Tell us a bit about yourself to personalize your Langmate experience
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form>
             <div className="flex flex-col gap-6">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="firstName">First Name *</Label>
-                  <Input id="firstName" name="firstName" placeholder="Enter your first name" required />
+                  <Label htmlFor="firstName">
+                    First Name<span className="text-red-600">*</span>
+                  </Label>
+                  <Input
+                    id="firstName"
+                    name="firstName"
+                    placeholder="Enter your first name"
+                    required
+                  />
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="lastName">Last Name *</Label>
-                  <Input id="lastName" name="lastName" placeholder="Enter your last name" required />
+                  <Label htmlFor="lastName">
+                    Last Name<span className="text-red-600">*</span>
+                  </Label>
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    placeholder="Enter your last name"
+                    required
+                  />
                 </div>
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="timezone">Time Zone *</Label>
+                <Label htmlFor="timezone">
+                  Time Zone<span className="text-red-600">*</span>
+                </Label>
                 <Select name="timezone" required>
                   <SelectTrigger>
                     <SelectValue placeholder="Select your time zone" />
@@ -54,9 +78,11 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                 </Select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="nativeLanguage">Native/Fluent Language *</Label>
+                  <Label htmlFor="nativeLanguage">
+                    Native/Fluent Language<span className="text-red-600">*</span>
+                  </Label>
                   <Select name="nativeLanguage" required>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your native language" />
@@ -68,7 +94,9 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                   </Select>
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="targetLanguage">Target Language *</Label>
+                  <Label htmlFor="targetLanguage">
+                    Target Language<span className="text-red-600">*</span>
+                  </Label>
                   <Select name="targetLanguage" required>
                     <SelectTrigger>
                       <SelectValue placeholder="Language you want to learn" />
