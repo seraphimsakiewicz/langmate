@@ -1,6 +1,9 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTimezoneSelect, allTimezones } from "react-timezone-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -12,6 +15,16 @@ import {
 } from "@/components/ui/select";
 
 export function ProfileForm({ className, ...props }: React.ComponentProps<"div">) {
+  const { options, parseTimezone } = useTimezoneSelect({
+    labelStyle: "original", // or "altName", "abbrev", etc.
+    timezones: allTimezones,
+  });
+
+  console.log("options", options);
+  const timeOptions = [...options, Intl.DateTimeFormat().resolvedOptions().timeZone];
+
+  console.log("timeOptions", timeOptions);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -53,27 +66,24 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                 <Label htmlFor="timezone">
                   Time Zone<span className="text-red-600">*</span>
                 </Label>
-                <Select name="timezone" required>
+                <Select
+                  name="timezone"
+                  required
+                  onValueChange={(value) => {
+                    console.log("value", value);
+                    console.log("parseTimezone(value)", parseTimezone(value));
+                    // parseTimezone(e.currentTarget.value);
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select your time zone" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="UTC-12">UTC-12:00 (Baker Island)</SelectItem>
-                    <SelectItem value="UTC-11">UTC-11:00 (Hawaii)</SelectItem>
-                    <SelectItem value="UTC-10">UTC-10:00 (Alaska)</SelectItem>
-                    <SelectItem value="UTC-9">UTC-09:00 (Pacific)</SelectItem>
-                    <SelectItem value="UTC-8">UTC-08:00 (Mountain)</SelectItem>
-                    <SelectItem value="UTC-7">UTC-07:00 (Central)</SelectItem>
-                    <SelectItem value="UTC-6">UTC-06:00 (Eastern)</SelectItem>
-                    <SelectItem value="UTC-5">UTC-05:00 (Atlantic)</SelectItem>
-                    <SelectItem value="UTC+0">UTC+00:00 (London)</SelectItem>
-                    <SelectItem value="UTC+1">UTC+01:00 (Paris)</SelectItem>
-                    <SelectItem value="UTC+2">UTC+02:00 (Cairo)</SelectItem>
-                    <SelectItem value="UTC+3">UTC+03:00 (Moscow)</SelectItem>
-                    <SelectItem value="UTC+5">UTC+05:00 (Delhi)</SelectItem>
-                    <SelectItem value="UTC+8">UTC+08:00 (Singapore)</SelectItem>
-                    <SelectItem value="UTC+9">UTC+09:00 (Tokyo)</SelectItem>
-                    <SelectItem value="UTC+12">UTC+12:00 (Auckland)</SelectItem>
+                    {options.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
