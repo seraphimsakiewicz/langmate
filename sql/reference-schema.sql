@@ -37,41 +37,21 @@ CREATE TABLE "user_languages" (
   UNIQUE("user_id", "language_id")
 );
 
--- Simplified match requests (removed availability windows for MVP)
-CREATE TABLE "match_requests" (
-  "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
-  "native_language_id" uuid NOT NULL REFERENCES "languages" ("id"),
-  "learning_language_id" uuid NOT NULL REFERENCES "languages" ("id"),
-  "requested_start_time" timestamptz NOT NULL,
-  -- When they want to start
-  "duration" integer NOT NULL DEFAULT 25,
-  -- status expires if its still searching at requested_start_time.
-  "status" varchar(20) DEFAULT 'searching',
-  -- searching, matched, expired, cancelled
-  "session_id" uuid,
-  -- Links to session when matched
-  "priority" integer DEFAULT 0,
-  "created_at" timestamptz DEFAULT (now()),
-  "updated_at" timestamptz DEFAULT (now()),
-  "matched_at" timestamptz
-);
-
 -- Sessions table (simplified for 25 min sessions)
-CREATE TABLE "sessions" (
+CREATE TABLE "sessions" ( -- take from here the fields only the ones you need
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "participant_one_id" uuid NOT NULL REFERENCES "profiles" ("id"),
-  "participant_two_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "participant_two_id" uuid NOT NULL REFERENCES "profiles" ("id"), -- make nullable, and then fill after it gets filled
   "language_one_id" uuid NOT NULL REFERENCES "languages" ("id"),
   -- P1's native language
   "language_two_id" uuid NOT NULL REFERENCES "languages" ("id"),
   -- P2's native language
   "start_time" timestamptz NOT NULL,
-  "duration" integer DEFAULT 25,
-  "status" varchar(20) DEFAULT 'scheduled',
+  "duration" integer DEFAULT 30,
+  -- "status" varchar(20) DEFAULT 'scheduled',
   -- scheduled, active, completed, cancelled
   "room_url" text,
-  "cancelled_by_user_id" uuid,
+  "cancelled_by_user_id" uuid, -- add this to the table once you do 
   -- Track who cancelled
   "cancellation_time" timestamptz,
   "created_at" timestamptz DEFAULT (now()),
