@@ -25,9 +25,17 @@ type FormVals = {
 };
 
 export function ProfileForm({ className, ...props }: React.ComponentProps<"div">) {
-  const { options, parseTimezone } = useTimezoneSelect({
+  const { options } = useTimezoneSelect({
     labelStyle: "original",
-    timezones: allTimezones,
+    timezones: {
+      ...allTimezones,
+      // Eastern Time (NYC, Miami, Atlanta)
+      "America/New_York": "New York, Miami, Atlanta",
+      // Central Time (Chicago, Austin)
+      "America/Chicago": "Chicago, Austin, Minneapolis",
+      // Pacific Time (LA, Seattle)
+      "America/Los_Angeles": "Los Angeles, Seattle, Portland",
+    },
   });
 
   const { handleSubmit, control, register, watch, formState } = useForm<FormVals>({
@@ -48,7 +56,6 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
       window.alert("cant select same language");
       return;
     } else {
-      console.log("parseTimezone(data.timezone)", parseTimezone(data.timezone));
       // post data to DB
     }
   };
