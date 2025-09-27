@@ -44,5 +44,5 @@ export async function signup(formData: FormData) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/signup/profile");
+  redirect("/signup/confirm");
 }
