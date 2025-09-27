@@ -13,17 +13,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useForm, Controller } from "react-hook-form";
+
+type FormVals = {
+  firstName: string;
+  lastName: string;
+  timezone: string;
+  nativeLanguage: "" | "english" | "spanish";
+  targetLanguage: "" | "english" | "spanish";
+  targetLevel: "" | "beginner" | "intermediate" | "advanced";
+};
 
 export function ProfileForm({ className, ...props }: React.ComponentProps<"div">) {
   const { options, parseTimezone } = useTimezoneSelect({
-    labelStyle: "original", // or "altName", "abbrev", etc.
+    labelStyle: "original",
     timezones: allTimezones,
   });
 
-  console.log("options", options);
-  const timeOptions = [...options, Intl.DateTimeFormat().resolvedOptions().timeZone];
+  const { handleSubmit, control, register, watch, formState } = useForm<FormVals>({
+    defaultValues: {
+      // populate defaults here if you have user profile data
+      nativeLanguage: "",
+      targetLanguage: "",
+      targetLevel: "",
+      timezone: "",
+      firstName: "",
+      lastName: "",
+    },
+  });
 
-  console.log("timeOptions", timeOptions);
+  const onSubmit = (data: FormVals) => {
+    console.log("data", data);
+    if (data.nativeLanguage === data.targetLanguage) {
+      window.alert("cant select same language");
+      return;
+    } else {
+      console.log("parseTimezone(data.timezone)", parseTimezone(data.timezone));
+      // post data to DB
+    }
+  };
+
+  const targetLevel = watch("targetLevel");
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -35,7 +65,7 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-3">
@@ -44,9 +74,9 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                   </Label>
                   <Input
                     id="firstName"
-                    name="firstName"
                     placeholder="Enter your first name"
-                    required
+                    // required
+                    {...register("firstName", { required: true })}
                   />
                 </div>
                 <div className="grid gap-3">
@@ -55,75 +85,119 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                   </Label>
                   <Input
                     id="lastName"
-                    name="lastName"
                     placeholder="Enter your last name"
                     required
+                    {...register("firstName", { required: true })}
                   />
                 </div>
               </div>
 
+              {/* Timezone */}
               <div className="grid gap-3">
                 <Label htmlFor="timezone">
                   Time Zone<span className="text-red-600">*</span>
                 </Label>
-                <Select
+                <Controller
                   name="timezone"
-                  required
-                  onValueChange={(value) => {
-                    console.log("value", value);
-                    console.log("parseTimezone(value)", parseTimezone(value));
-                    // parseTimezone(e.currentTarget.value);
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select your time zone" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {options.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Your time zone" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {options.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
 
+              {/* Native language */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-3">
-                  <Label htmlFor="nativeLanguage">
-                    Native/Fluent Language<span className="text-red-600">*</span>
+                  <Label>
+                    Native Language<span className="text-red-600">*</span>
                   </Label>
-                  <Select name="nativeLanguage" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select your native language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="english">English</SelectItem>
-                      <SelectItem value="spanish">Spanish</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    name="nativeLanguage"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Your native language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {/* {nativeLanguage === "english"} */}
+                          <SelectItem value="english">English</SelectItem>
+                          <SelectItem value="spanish">Spanish</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
+
+                {/* Target language */}
                 <div className="grid gap-3">
-                  <Label htmlFor="targetLanguage">
+                  <Label>
                     Target Language<span className="text-red-600">*</span>
                   </Label>
-                  <Select name="targetLanguage" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Language you want to learn" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="english">English</SelectItem>
-                      <SelectItem value="spanish">Spanish</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    name="targetLanguage"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Language you want to learn" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="english">English</SelectItem>
+                          <SelectItem value="spanish">Spanish</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Complete Sign Up
-                </Button>
+              {/* Level */}
+              <div className="grid gap-3">
+                <Label htmlFor="targetLevel"> What’s your level in your target language?</Label>
+                {targetLevel === "beginner" && (
+                  <p className="text-sm text-amber-600 mt-1/2">
+                    We focus on intermediate+ conversations. You can sign up, but we recommend
+                    building basic skills first before booking sessions.
+                  </p>
+                )}
+                <Controller
+                  name="targetLevel"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="What's your level?" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="beginner">Beginner (A1-A2)</SelectItem>
+                        <SelectItem value="intermediate">Intermediate (B1-B2)</SelectItem>
+                        <SelectItem value="advanced">Advanced (C1-C2)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
               </div>
+
+              <Button type="submit" className="w-full" disabled={!formState.isValid}>
+                Complete Sign Up
+              </Button>
             </div>
           </form>
         </CardContent>
