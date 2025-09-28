@@ -18,6 +18,7 @@ ws-server/.claude
 !.yarn/releases
 !.yarn/versions
 .claude
+supabase/.temp
 
 # testing
 /coverage
