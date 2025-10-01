@@ -2,7 +2,7 @@ CREATE TABLE public.languages (
   "id" uuid PRIMARY KEY DEFAULT (gen_random_uuid()),
   "code" varchar(10) UNIQUE NOT NULL,
   -- e.g., en, es, fr
-  "name" varchar(100) NOT NULL,
+  "name" varchar(30) NOT NULL,
   -- e.g., English, Spanish
   "created_at" timestamptz DEFAULT (now()),
   "updated" timestamptz DEFAULT (now())
