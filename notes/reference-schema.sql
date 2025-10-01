@@ -13,7 +13,6 @@ CREATE TABLE "profiles" (
   "updated_at" timestamptz DEFAULT (now())
 );
 
--- Language reference table (keep for scalability)
 CREATE TABLE "languages" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "code" varchar(10) UNIQUE NOT NULL,
@@ -24,7 +23,6 @@ CREATE TABLE "languages" (
   "updated" timestamptz DEFAULT (now())
 );
 
--- User language skills (simplified)
 CREATE TABLE "user_languages" (
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
   "user_id" uuid NOT NULL REFERENCES "profiles" ("id") ON DELETE CASCADE,
