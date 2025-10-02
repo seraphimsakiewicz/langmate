@@ -15,16 +15,25 @@ import {
 } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
 
+type Language = {
+  id: string;
+  name: string;
+};
+
 type FormVals = {
   firstName: string;
   lastName: string;
   timezone: string;
-  nativeLanguage: "" | "english" | "spanish";
-  targetLanguage: "" | "english" | "spanish";
+  nativeLanguage: "" | "English" | "Spanish";
+  targetLanguage: "" | "English" | "Spanish";
   targetLevel: "" | "beginner" | "intermediate" | "advanced";
 };
 
-export function ProfileForm({ className, ...props }: React.ComponentProps<"div">) {
+export function ProfileForm({
+  className,
+  languages,
+  ...props
+}: React.ComponentProps<"div"> & { languages: Language[] }) {
   const { options } = useTimezoneSelect({
     labelStyle: "original",
     timezones: {
@@ -141,9 +150,9 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                           <SelectValue placeholder="Your native language" />
                         </SelectTrigger>
                         <SelectContent>
-                          {/* {nativeLanguage === "english"} */}
-                          <SelectItem value="english">English</SelectItem>
-                          <SelectItem value="spanish">Spanish</SelectItem>
+                          {languages.map((language) => (
+                            <SelectItem value={language.id}>{language.name}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
@@ -165,8 +174,9 @@ export function ProfileForm({ className, ...props }: React.ComponentProps<"div">
                           <SelectValue placeholder="Language you want to learn" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="english">English</SelectItem>
-                          <SelectItem value="spanish">Spanish</SelectItem>
+                          {languages.map((language) => (
+                            <SelectItem value={language.id}>{language.name}</SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     )}
