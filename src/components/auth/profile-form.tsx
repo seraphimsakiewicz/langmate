@@ -103,7 +103,7 @@ export function ProfileForm({
                     id="lastName"
                     placeholder="Enter your last name"
                     required
-                    {...register("firstName", { required: true })}
+                    {...register("lastName", { required: true })}
                   />
                 </div>
               </div>
