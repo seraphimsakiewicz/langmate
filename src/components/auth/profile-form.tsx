@@ -14,13 +14,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
+import { createProfile } from "@/app/(auth)/signup/profile/actions";
 
 type Language = {
   id: string;
   name: string;
 };
 
-type FormVals = {
+export type FormVals = {
   firstName: string;
   lastName: string;
   timezone: string;
@@ -59,12 +60,15 @@ export function ProfileForm({
     },
   });
 
-  const onSubmit = (data: FormVals) => {
+  const onSubmit = async (data: FormVals) => {
     console.log("data", data);
     if (data.nativeLanguage === data.targetLanguage) {
       window.alert("cant select same language");
       return;
     } else {
+      await createProfile(data);
+      window.alert("profile made!!");
+      // supabase.console.log("data", data);
       // post data to DB
     }
   };
