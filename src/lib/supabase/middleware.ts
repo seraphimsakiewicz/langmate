@@ -2,6 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  console.log("🚀 MIDDLEWARE RUNNING - Path:", request.nextUrl.pathname);
+
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -28,7 +30,8 @@ export async function updateSession(request: NextRequest) {
   );
 
   // refreshing the auth token
-  await supabase.auth.getUser();
+  const user = await supabase.auth.getUser();
+  console.log("useruseruseruseruser", user)
 
   return supabaseResponse;
 }

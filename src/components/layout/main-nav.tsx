@@ -21,7 +21,7 @@ export const MainNav = () => {
       } = await supabase.auth.getUser();
       if (user) {
         console.log("Setting logged in true");
-        // setLoggedIn(true);
+        setLoggedIn(true);
       }
     };
     fetchUser();
