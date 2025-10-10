@@ -2,8 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
-  console.log("🚀 MIDDLEWARE RUNNING - Path:", request.nextUrl.pathname);
-
+  const protectedRoutes = ["/calendar", "/people", "/room", "/account", "/sessions"]
+  const authRoutes = ["/login", "/signup", "/"]
   let supabaseResponse = NextResponse.next({
     request,
   });
@@ -30,8 +30,13 @@ export async function updateSession(request: NextRequest) {
   );
 
   // refreshing the auth token
-  const user = await supabase.auth.getUser();
-  console.log("useruseruseruseruser", user)
-
-  return supabaseResponse;
+  const { data } = await supabase.auth.getUser();
+  // check if data.user is null
+  if (!data.user && protectedRoutes.includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  } else if (data.user && authRoutes.includes(request.nextUrl.pathname)) {
+    return NextResponse.redirect(new URL('/calendar', request.url))
+  } else {
+    return supabaseResponse;
+  }
 }
