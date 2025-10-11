@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
 import { TailwindIndicator } from "@/components/ui/tailwind-indicator";
 import { Providers } from "./providers";
+import { Header } from "@/components/layout/header";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full">
       <body className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden`}>
+        <Header />
         <Providers>{children}</Providers>
         <TailwindIndicator />
       </body>

@@ -1,20 +1,14 @@
-import { Header } from "@/components/layout/header";
-
-export default async function AppHome() {
+export default async function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <main className="container mx-auto flex flex-col items-center justify-center py-24">
-        <div className="max-w-xl text-center">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Practice languages with real people.
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground">
-            Swap roles, run timed sessions, and build fluency together. Log in or sign up to reserve
-            your next conversation.
-          </p>
-        </div>
-      </main>
-    </div>
+           <main className="container mx-auto flex flex-col items-center justify-center py-24">
+       <div className="max-w-xl text-center">
+         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
+           Practice languages with real people.
+         </h1>
+         <p className="mt-6 text-lg text-muted-foreground">
+           Build fluency together. Log in or sign up to start your next conversation.
+         </p>
+       </div>
+     </main>
   );
 }
