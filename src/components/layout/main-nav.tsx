@@ -41,15 +41,12 @@ export const MainNav = () => {
           <Button onClick={logOut}>Sign Out</Button>
         ) : (
           <Fragment>
-            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-gray-800"
-            >
-              Signup
-            </Link>
+            <Button variant="ghost" asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/signup">Sign up</Link>
+            </Button>
           </Fragment>
         )}
       </div>
