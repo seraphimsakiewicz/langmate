@@ -77,7 +77,7 @@ const SessionBlockComponent = ({
   );
 
   // Memoize expensive calculations
-  const sessionStartingSoon = session ? isSessionStartingSoon(session) : false;
+  const sessionStartingSoon = true;
 
   const renderEmpty = () => null;
 

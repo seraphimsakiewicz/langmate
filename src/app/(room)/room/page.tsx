@@ -1,24 +1,11 @@
 "use client";
 
-import {
-  GridLayout,
-  ParticipantTile,
-  useTracks,
-  RoomContext,
-  PreJoin,
-  LocalUserChoices,
-  VideoConference,
-} from "@livekit/components-react";
-import {
-  Room,
-  Track,
-  VideoCaptureOptions,
-  TrackPublishDefaults,
-  VideoPresets,
-} from "livekit-client";
+import { RoomContext, PreJoin, LocalUserChoices, VideoConference } from "@livekit/components-react";
+import { Room, VideoCaptureOptions, TrackPublishDefaults, VideoPresets } from "livekit-client";
 import "@livekit/components-styles";
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { usePostHog } from "posthog-js/react";
 
 type ConnectionDetails = {
   serverUrl: string;
@@ -28,6 +15,8 @@ type ConnectionDetails = {
 };
 
 export default function Page() {
+  const posthog = usePostHog();
+
   // TODO: get user input for room and name
   const room = "quickstart-room";
   const name = "quickstart-user";
@@ -82,6 +71,10 @@ export default function Page() {
       autoSubscribe: true,
     });
 
+    roomInstance.on("connected", () => {
+      posthog.capture("joined_call");
+    });
+
     roomInstance.on("disconnected", () => {
       router.push("/calendar");
     });
@@ -114,34 +107,9 @@ export default function Page() {
         <div data-lk-theme="default" style={{ height: "100dvh" }}>
           <RoomContext.Provider value={roomInstance}>
             <VideoConference />
-            {/* Your custom component with basic video conferencing functionality. */}
-            {/* <MyVideoConference /> */}
-            {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
-            {/* <RoomAudioRenderer /> */}
-            {/* Controls for the user to start/stop audio, video, and screen share tracks */}
-            {/* <ControlBar /> */}
           </RoomContext.Provider>
         </div>
       )}
     </main>
-  );
-}
-
-function MyVideoConference() {
-  // `useTracks` returns all camera and screen share tracks. If a user joins without a published
-  // camera track, a placeholder track is returned.
-  const tracks = useTracks(
-    [
-      { source: Track.Source.Camera, withPlaceholder: true },
-      { source: Track.Source.ScreenShare, withPlaceholder: true },
-    ],
-    { onlySubscribed: false }
-  );
-  return (
-    <GridLayout tracks={tracks} style={{ height: "calc(100vh - var(--lk-control-bar-height))" }}>
-      {/* The GridLayout accepts zero or one child. The child is used
-      as a template to render all passed in tracks. */}
-      <ParticipantTile />
-    </GridLayout>
   );
 }

@@ -1,7 +1,17 @@
+"use client";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
+import { useEffect } from "react";
 
 export default function Page() {
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    posthog.capture("signed_up");
+  }, []);
+
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
@@ -22,7 +32,10 @@ export default function Page() {
             </div>
             <div className="text-center text-xs text-muted-foreground">
               Need help?{" "}
-              <a href="mailto:hello@langmate.io" className="underline underline-offset-4 hover:text-primary">
+              <a
+                href="mailto:hello@langmate.io"
+                className="underline underline-offset-4 hover:text-primary"
+              >
                 Contact us
               </a>
             </div>
