@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signup } from "../../app/(landing)/(auth)/login/actions";
+import { signup } from "../../app/(public)/(auth)/login/actions";
 
 export function SignUpForm({ className, ...props }: React.ComponentProps<"div">) {
   return (
