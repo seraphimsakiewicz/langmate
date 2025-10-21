@@ -72,7 +72,7 @@ export default function Page() {
     });
 
     roomInstance.on("connected", () => {
-      posthog.capture("joined_call");
+      // posthog.capture("joined_call");
     });
 
     roomInstance.on("disconnected", () => {
@@ -97,6 +97,7 @@ export default function Page() {
     <main data-lk-theme="default" style={{ height: "100%" }}>
       {connectionDetails === undefined || preJoinChoices === undefined ? (
         <div style={{ display: "grid", placeItems: "center", height: "100%" }}>
+          <h2 className="text-black">Langmate</h2>
           <PreJoin
             defaults={preJoinDefaults}
             onSubmit={handlePreJoinSubmit}
@@ -104,7 +105,7 @@ export default function Page() {
           />
         </div>
       ) : (
-        <div data-lk-theme="default" style={{ height: "100dvh" }}>
+        <div data-lk-theme="default" style={{ height: "100%" }}>
           <RoomContext.Provider value={roomInstance}>
             <VideoConference />
           </RoomContext.Provider>
