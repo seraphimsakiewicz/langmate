@@ -5,7 +5,6 @@ import { Room, VideoCaptureOptions, TrackPublishDefaults, VideoPresets } from "l
 import "@livekit/components-styles";
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { usePostHog } from "posthog-js/react";
 
 type ConnectionDetails = {
   serverUrl: string;
@@ -15,8 +14,6 @@ type ConnectionDetails = {
 };
 
 export default function Page() {
-  const posthog = usePostHog();
-
   // TODO: get user input for room and name
   const room = "quickstart-room";
   const name = "quickstart-user";
@@ -72,7 +69,6 @@ export default function Page() {
     });
 
     roomInstance.on("connected", () => {
-      // posthog.capture("joined_call");
     });
 
     roomInstance.on("disconnected", () => {

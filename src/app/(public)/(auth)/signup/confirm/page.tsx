@@ -2,15 +2,8 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Mail } from "lucide-react";
-import { usePostHog } from "posthog-js/react";
-import { useEffect } from "react";
 
 export default function Page() {
-  const posthog = usePostHog();
-
-  // useEffect(() => {
-  //   posthog.capture("signed_up");
-  // }, []);
 
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
