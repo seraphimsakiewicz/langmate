@@ -1,5 +1,4 @@
--- Simplified Langmate MVP Schema
--- Focus: 1-on-1 matching, 25 min sessions (12.5 min each language)
+-- Simplified Langmate MVP Schema Focus: 1-on-1 matching, 25 min sessions (12.5 min each language)
 -- Core user profiles
 CREATE TABLE "profiles" (
   "id" uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -38,53 +37,39 @@ CREATE TABLE "user_languages" (
 -- Sessions table (simplified for 25 min sessions)
 CREATE TABLE "sessions" ( -- take from here the fields only the ones you need
   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
-  "participant_one_id" uuid NOT NULL REFERENCES "profiles" ("id"),
-  "participant_two_id" uuid NOT NULL REFERENCES "profiles" ("id"), -- make nullable, and then fill after it gets filled
+  "user_one_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+  "user_two_id" uuid REFERENCES "profiles" ("id"), -- make nullable, and then fill after it gets filled
   "language_one_id" uuid NOT NULL REFERENCES "languages" ("id"),
   -- P1's native language
   "language_two_id" uuid NOT NULL REFERENCES "languages" ("id"),
   -- P2's native language
   "start_time" timestamptz NOT NULL,
-  "duration" integer DEFAULT 30,
-  -- "status" varchar(20) DEFAULT 'scheduled',
-  -- scheduled, active, completed, cancelled
-  "room_url" text,
-  "cancelled_by_user_id" uuid, -- add this to the table once you do 
-  -- Track who cancelled
-  "cancellation_time" timestamptz,
+  -- "duration" integer DEFAULT 30,
+  "status" varchar(20) DEFAULT 'scheduled',
+  -- scheduled, active, finished (enum potentially here) "room_url" text, (could be used later)
+  -- "cancelled_by_user_id" uuid, -- add this to the table once you do, track who cancelled
+  -- "cancellation_time" timestamptz,
   "created_at" timestamptz DEFAULT (now()),
   "updated_at" timestamptz DEFAULT (now())
 );
 
--- -- Session attendance tracking (for no-show detection)
--- CREATE TABLE "session_attendance" (
---   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
---   "session_id" uuid NOT NULL REFERENCES "sessions" ("id") ON DELETE CASCADE,
---   "user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
---   "joined_at" timestamptz,
---   "no_show" boolean DEFAULT false,
---   "left_at" timestamptz,
---   -- this will be an updatable field, everytime someone leaves a session we update this to keep track that people are leaving AFTER the session ends.
---   "created_at" timestamptz DEFAULT (now()),
---   "updated_at" timestamptz DEFAULT (now()),
---   UNIQUE("session_id", "user_id") -- means one user can only one attendance record per session, prevents duplicates.
--- );
+-- -- Session attendance tracking (for no-show detection) CREATE TABLE "session_attendance" ( "id"
+-- uuid PRIMARY KEY DEFAULT (uuid_generate_v4()), "session_id" uuid NOT NULL REFERENCES "sessions"
+--   ("id") ON DELETE CASCADE, "user_id" uuid NOT NULL REFERENCES "profiles" ("id"), "joined_at"
+--   timestamptz, "no_show" boolean DEFAULT false, "left_at" timestamptz, -- this will be an
+--   updatable field, everytime someone leaves a session we update this to keep track that people
+--   are leaving AFTER the session ends. "created_at" timestamptz DEFAULT (now()), "updated_at"
+--   timestamptz DEFAULT (now()), UNIQUE("session_id", "user_id") -- means one user can only one
+--   attendance record per session, prevents duplicates. );
 
--- Keep reports for safety
--- CREATE TABLE "user_reports" (
---   "id" uuid PRIMARY KEY DEFAULT (uuid_generate_v4()),
---   "reporter_id" uuid NOT NULL REFERENCES "profiles" ("id"),
---   "reported_user_id" uuid NOT NULL REFERENCES "profiles" ("id"),
---   "session_id" uuid REFERENCES "sessions" ("id"),
---   "reason" varchar(20) NOT NULL,
---   -- fake, offensive, misconduct, other
---   "description" text,
---   "status" varchar(20) DEFAULT 'pending',
---   -- pending, reviewed, resolved
---   "created_at" timestamptz DEFAULT (now()),
---   "updated_at" timestamptz DEFAULT (now()),
---   CHECK (reporter_id != reported_user_id) -- just checks on creation to make sure reported_user_id does not equal reporter_id
--- );
+-- Keep reports for safety CREATE TABLE "user_reports" ( "id" uuid PRIMARY KEY DEFAULT
+-- (uuid_generate_v4()), "reporter_id" uuid NOT NULL REFERENCES "profiles" ("id"),
+--   "reported_user_id" uuid NOT NULL REFERENCES "profiles" ("id"), "session_id" uuid REFERENCES
+--   "sessions" ("id"), "reason" varchar(20) NOT NULL, -- fake, offensive, misconduct, other
+--   "description" text, "status" varchar(20) DEFAULT 'pending', -- pending, reviewed, resolved
+--   "created_at" timestamptz DEFAULT (now()), "updated_at" timestamptz DEFAULT (now()), CHECK
+--   (reporter_id != reported_user_id) -- just checks on creation to make sure reported_user_id does
+--   not equal reporter_id );
 
 -- for later... snoozes, favorites.
 

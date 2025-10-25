@@ -15,8 +15,11 @@ type ConnectionDetails = {
 
 export default function Page() {
   // TODO: get user input for room and name
-  const room = "quickstart-room";
-  const name = "quickstart-user";
+  const room = "quickstart-room"; // define based on the room/session id from supabase.
+  const name = "quickstart-user"; // define based on the current user from supabase.
+  /*    const {
+    data: { user },
+  } = await supabase.auth.getUser(); */
   const [roomInstance, setRoomInstance] = useState<Room | undefined>(undefined);
   const [preJoinChoices, setPreJoinChoices] = useState<LocalUserChoices | undefined>(undefined);
   const [connectionDetails, setConnectionDetails] = useState<ConnectionDetails | undefined>(
@@ -35,7 +38,7 @@ export default function Page() {
 
   const handlePreJoinSubmit = useCallback(async (values: LocalUserChoices) => {
     setPreJoinChoices(values);
-    const resp = await fetch(`/api/livekit-token?room=${room}&username=${name}`);
+    const resp = await fetch(`/api/livekit-token?room=${room}&username=${name}`); // call database and get correct room url
     const data = await resp.json();
     setConnectionDetails(data);
 
