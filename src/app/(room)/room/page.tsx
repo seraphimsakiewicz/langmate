@@ -68,8 +68,7 @@ export default function Page() {
       autoSubscribe: true,
     });
 
-    roomInstance.on("connected", () => {
-    });
+    roomInstance.on("connected", () => {});
 
     roomInstance.on("disconnected", () => {
       router.push("/calendar");
