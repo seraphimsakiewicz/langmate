@@ -15,7 +15,7 @@ type ConnectionDetails = {
 
 export default function Page() {
   // TODO: get user input for room and name
-  const room = "quickstart-room"; // define based on the room/session id from supabase.
+  const room = "quickstart-room"; // define based on the session id from supabase.
   const name = "quickstart-user"; // define based on the current user from supabase.
   /*    const {
     data: { user },
