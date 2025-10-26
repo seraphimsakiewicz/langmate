@@ -155,7 +155,7 @@ export function ProfileForm({
                         </SelectTrigger>
                         <SelectContent>
                           {languages.map((language) => (
-                            <SelectItem value={language.id}>{language.name}</SelectItem>
+                            <SelectItem value={language.id} key={language.id}>{language.name}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
