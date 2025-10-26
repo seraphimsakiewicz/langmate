@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
-import { createProfile } from "@/app/(public)/(auth)/signup/profile/actions";
+import { createProfile } from "@/app/(public)/(auth)/signup/profile/action";
 
 type Language = {
   id: string;
