@@ -1,19 +1,10 @@
 import { Session } from "@/types/calendar";
 import { create } from "zustand";
 
-//   const [openModal, setOpenModal] = useState<boolean>(false);
-//   const [sessions, setSessions] = useState<Session[]>(dummySessions);
-//   const [calendarMode, setCalendarMode] = useState<"day" | "week">("day");
-//   const [currentView, setCurrentView] = useState<"calendar" | "sessions" | "people">("calendar");
-//   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-//   const [userSetViewMode, setUserSetViewMode] = useState(false);
-//   const [userSetSidebarCollapsed, setUserSetSidebarCollapsed] = useState(false);
-
 interface CalendarStore {
   // SideBar state
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: (newState: boolean) => void;
-  // todo rename to userSetSidebar
   userSetSidebarCollapsed: boolean;
   setUserSetSidebarCollapsed: (newState: boolean) => void;
 
