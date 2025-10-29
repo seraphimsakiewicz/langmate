@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
   const utcStartTime = zonedStart.toUTC().toISO(); // persist this
 
-  const { data: newData, error: insertError } = await supabase
+  const insertResponse = await supabase
     .from("sessions")
     .insert({
       user_one_id: user.id,
@@ -42,12 +42,15 @@ export async function POST(req: NextRequest) {
       language_one_id: profile.native_language_id,
       language_two_id: profile.target_language_id,
     })
-    .single();
+    .select();
+
+  console.log("Insert response:", insertResponse);
+  const { data: newData, error: insertError } = insertResponse || {};
 
   if (insertError) {
     console.error("Error creating session:", insertError);
     return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
   }
 
-  return NextResponse.json({ session: newData }, { status: 201 });
+  return NextResponse.json({ session: newData[0] }, { status: insertResponse.status });
 }
