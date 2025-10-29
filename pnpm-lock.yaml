@@ -117,6 +117,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.15
+      '@types/luxon':
+        specifier: ^3.7.1
+        version: 3.7.1
       '@types/node':
         specifier: ^20
         version: 20.19.23
@@ -970,6 +973,9 @@ packages:
 
   '@types/dom-mediacapture-record@1.0.22':
     resolution: {integrity: sha512-mUMZLK3NvwRLcAAT9qmcK+9p7tpU2FHdDsntR3YI4+GY88XrgG4XiE7u1Q2LAN2/FZOz/tdMDC3GQCR4T8nFuw==}
+
+  '@types/luxon@3.7.1':
+    resolution: {integrity: sha512-H3iskjFIAn5SlJU7OuxUmTEpebK6TKB8rxZShDslBMZJ5u9S//KM1sbdAisiSrqwLQncVjnpi2OK2J51h+4lsg==}
 
   '@types/node@20.19.23':
     resolution: {integrity: sha512-yIdlVVVHXpmqRhtyovZAcSy0MiPcYWGkoO4CGe/+jpP0hmNuihm4XhHbADpK++MsiLHP5MVlv+bcgdF99kSiFQ==}
@@ -2433,6 +2439,8 @@ snapshots:
   '@types/date-arithmetic@4.1.4': {}
 
   '@types/dom-mediacapture-record@1.0.22': {}
+
+  '@types/luxon@3.7.1': {}
 
   '@types/node@20.19.23':
     dependencies:
