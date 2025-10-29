@@ -8,7 +8,7 @@ import { generateTimeSlots, getHourLabel } from "@/utils/timeUtils";
 interface TimeGridProps {
   daysToShow: DayColumn[];
   sessions: Session[];
-  onSessionBook: (session: Omit<Session, "id">) => void;
+  onSessionBook: (startTime: string) => void;
   onSessionUpdate: (sessionId: string, updates: Partial<Session>) => void;
   onSessionDelete?: (sessionId: string) => void;
   calendarMode: "day" | "week";
@@ -79,18 +79,10 @@ export const TimeGrid = ({
         const startTime = `${hour.toString().padStart(2, "0")}:${minute
           .toString()
           .padStart(2, "0")}`;
-        const endTime = `${hour.toString().padStart(2, "0")}:${(minute + 25)
-          .toString()
-          .padStart(2, "0")}`;
 
-        onSessionBook({
-          // title: "New Session",
-          startTime,
-          endTime,
-          date: day,
-          participant: "New Participant",
-          // status: "booked",
-        });
+        const localStartTime = `${day}T${startTime}:00`
+
+        onSessionBook(localStartTime);
 
         setPendingConfirmation(null);
         setClickCooldown(true);

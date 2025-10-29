@@ -16,7 +16,7 @@ interface CalendarStore {
 
   // Sessions
   sessions: Session[];
-  addSession: (session: Omit<Session, "id">) => void;
+  addSession: (startTime: string) => void;
   updateSession: (sessionId: string, updates: Partial<Session>) => void;
   deleteSession: (sessionId: string) => void;
 
@@ -44,20 +44,28 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
   userSetViewMode: false,
   setCalendarMode: (mode) => set({ calendarMode: mode, userSetViewMode: true }),
   sessions: [],
-  addSession: (newSession: Omit<Session, "id">) =>
-    set((state) => {
-      const slotOccupied = [...state.sessions].some(
-        (item) => newSession.date === item.date && newSession.startTime === item.startTime
-      );
-
-      if (slotOccupied) return state;
-
-      const newSessionObject: Session = {
-        ...newSession,
-        id: `session-${Date.now()}`,
-      };
-      return { sessions: [...state.sessions, newSessionObject] };
-    }),
+  addSession: async (localStartTime: string) => {
+    try {
+      console.log("in addsession with localStartTime:", localStartTime);
+      const res = await fetch("/api/sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ localStartTime }),
+      });
+      if (!res.ok) throw new Error("Failed to create session");
+      const { session } = await res.json(); // session.start_time is ISO string
+      console.log("Created session:", session);
+      set((state) => ({
+        sessions: [...state.sessions],
+      }));
+      return session;
+    } catch (error) {
+      console.error("Error in addSession:", error);
+      set((state) => ({
+        sessions: [...state.sessions],
+      }));
+    }
+  },
   updateSession: (sessionId, updates) =>
     set((state) => ({
       sessions: state.sessions.map((session) =>

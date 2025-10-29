@@ -1,11 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server";
-
+import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server"; // instantiate the Supabase server client
 
 export async function POST(req: NextRequest) {
-  const { startTime } = await req.json();
-  if (!startTime) {
-    return NextResponse.json({ error: "timeZone and startTime is required" }, { status: 400 });
+  const { localStartTime } = await req.json();
+  if (!localStartTime) {
+    return NextResponse.json({ error: "localStartTime is required" }, { status: 400 });
   }
   const supabase = await createClient();
   /* need to get user, check they are a valid user */
@@ -28,8 +28,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to fetch user profile" }, { status: 500 });
   }
 
-  // BLOCKER, need to convert startTime to UTC based on user's timezone.
-  const utcStartTime = startTime;
+  const zonedStart = DateTime.fromISO(localStartTime, { zone: profile.timezone });
+  if (!zonedStart.isValid) {
+    return NextResponse.json({ error: "Invalid start time" }, { status: 400 });
+  }
+  const utcStartTime = zonedStart.toUTC().toISO(); // persist this
 
   const { data: newData, error: insertError } = await supabase
     .from("sessions")
