@@ -80,8 +80,12 @@ export const TimeGrid = ({
           .toString()
           .padStart(2, "0")}`;
 
-        const localStartTime = `${day}T${startTime}:00`
+        console.log("day", day);
+        console.log("hour", hour);
+        console.log("min", minute);
 
+        const localStartTime = `${day}T${startTime}:00`;
+        console.log("localStartTime", localStartTime);
         onSessionBook(localStartTime);
 
         setPendingConfirmation(null);

@@ -56,7 +56,7 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
       const { session } = await res.json(); // session.start_time is ISO string
       console.log("Created session:", session);
       set((state) => ({
-        sessions: [...state.sessions],
+        sessions: [...state.sessions, session],
       }));
       return session;
     } catch (error) {

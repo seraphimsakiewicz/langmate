@@ -2,6 +2,21 @@ import { type NextRequest, NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server"; // instantiate the Supabase server client
 
+// todo fix any type
+const sessionsCleaner = (session: any, timeZone: string) => {
+  const newSession = { ...session };
+  delete newSession.created_at;
+  delete newSession.updated_at;
+  const start = DateTime.fromISO(session.start_time, { zone: 'utc' }).setZone(timeZone)
+  const end = start.plus({ minutes: 30 });
+  delete newSession.start_time;
+  newSession.startTime = start.toFormat("HH:mm");
+  newSession.endTime = end.toFormat("HH:mm");
+  newSession.date = start.toISODate();
+  newSession.participant = session.user_two_id ? "Partner" : "Pending partner";
+  return newSession;
+};
+
 export async function POST(req: NextRequest) {
   const { localStartTime } = await req.json();
   if (!localStartTime) {
@@ -47,10 +62,21 @@ export async function POST(req: NextRequest) {
   console.log("Insert response:", insertResponse);
   const { data: newData, error: insertError } = insertResponse || {};
 
+  if (!newData || newData.length === 0) {
+    console.error("No session data returned after insert.");
+    return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
+  }
+
+  const cleanedSessions = newData?.map((session) => sessionsCleaner(session, profile.timezone));
+  console.log("Cleaned sessions to return:", cleanedSessions);
+
   if (insertError) {
     console.error("Error creating session:", insertError);
     return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
   }
 
-  return NextResponse.json({ session: newData[0] }, { status: insertResponse.status });
+  return NextResponse.json(
+    { session: { ...cleanedSessions[0] } },
+    { status: insertResponse.status }
+  );
 }
