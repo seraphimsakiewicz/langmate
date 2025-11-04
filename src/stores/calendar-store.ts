@@ -10,6 +10,8 @@ interface CalendarStore {
 
   // Calendar mode
   calendarMode: "day" | "week";
+  calendarDate: Date;
+  setCalendarDate: (date: Date) => void;
   setCalendarMode: (mode: "day" | "week") => void;
   userSetViewMode: boolean;
   setUserSetViewMode: (newState: boolean) => void;
@@ -41,6 +43,8 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
       userSetViewMode: newState,
     })),
   calendarMode: "day",
+  calendarDate: new Date(),
+  setCalendarDate: (date: Date) => set({ calendarDate: date }),
   userSetViewMode: false,
   setCalendarMode: (mode) => set({ calendarMode: mode, userSetViewMode: true }),
   sessions: [],

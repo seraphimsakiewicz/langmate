@@ -14,8 +14,13 @@ export type MiniCalendarProps = {
   endMonth: Date;
 };
 
-export const useMiniCalendar = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+type MiniCalendarOptions = {
+  initialDate?: Date;
+  onDateChange?: (date: Date) => void;
+};
+
+export const useMiniCalendar = (options?: MiniCalendarOptions) => {
+  const [selectedDate, setSelectedDate] = useState<Date>(options?.initialDate ?? new Date());
   const [displayMonth, setDisplayMonth] = useState<Date>(new Date());
   const [openPopper, setOpenPopper] = useState<boolean>(false);
 
@@ -27,7 +32,11 @@ export const useMiniCalendar = () => {
 
   const handleDateSelect = (selectedDate: Date | undefined): void => {
     if (!selectedDate) return;
-    setSelectedDate(selectedDate);
+    if (options?.onDateChange) {
+      options?.onDateChange?.(selectedDate);
+    } else {
+      setSelectedDate(selectedDate);
+    }
   };
 
   const handleDisplayMonth = (displayMonth: Date): void => {

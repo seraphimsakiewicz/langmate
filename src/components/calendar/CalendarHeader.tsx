@@ -4,34 +4,26 @@ import { ChevronLeft, ChevronRight, CalendarIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MiniCalendar } from "@/components/ui/mini-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useCalendarStore } from "@/stores/calendar-store";
+import { useMiniCalendar } from "@/hooks/useMiniCalendar";
 
-interface CalendarHeaderProps {
-  calendarMode: "day" | "week";
-  onCalendarModeChange: (mode: "day" | "week") => void;
-  calendarDate: Date;
-  displayMonth: Date;
-  openPopper: boolean;
-  handleDateSelect: (selectedDate: Date | undefined) => void;
-  handleDisplayMonth: (displayMonth: Date) => void;
-  handlePopper: (open: boolean) => void;
-  currentDate: Date;
-  startMonth: Date;
-  endMonth: Date;
-}
+export const CalendarHeader = () => {
+  const { calendarDate, setCalendarDate, calendarMode, setCalendarMode } = useCalendarStore();
 
-export const CalendarHeader = ({
-  calendarMode,
-  onCalendarModeChange,
-  calendarDate,
-  displayMonth,
-  handleDateSelect,
-  handleDisplayMonth,
-  handlePopper,
-  currentDate,
-  startMonth,
-  endMonth,
-  openPopper,
-}: CalendarHeaderProps) => {
+  const {
+    displayMonth,
+    handleDateSelect,
+    handleDisplayMonth,
+    handlePopper,
+    currentDate,
+    startMonth,
+    endMonth,
+    openPopper,
+  } = useMiniCalendar({
+    initialDate: calendarDate,
+    onDateChange: setCalendarDate,
+  });
+
   const monthYear = calendarDate.toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
@@ -106,7 +98,7 @@ export const CalendarHeader = ({
           <Button
             size="sm"
             variant={calendarMode === "day" ? "default" : "ghost"}
-            onClick={() => onCalendarModeChange("day")}
+            onClick={() => setCalendarMode("day")}
             className={`${calendarMode === "day" && "pointer-events-none"}`}
           >
             Day
@@ -114,7 +106,7 @@ export const CalendarHeader = ({
           <Button
             size="sm"
             variant={calendarMode === "week" ? "default" : "ghost"}
-            onClick={() => onCalendarModeChange("week")}
+            onClick={() => setCalendarMode("week")}
             className={`${calendarMode === "week" && "pointer-events-none"} hidden md:inline-flex`}
           >
             Week

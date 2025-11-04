@@ -4,24 +4,44 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Session, DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";
 import { generateTimeSlots, getHourLabel } from "@/utils/timeUtils";
+import { useCalendarStore } from "@/stores/calendar-store";
 
-interface TimeGridProps {
-  daysToShow: DayColumn[];
-  sessions: Session[];
-  onSessionBook: (startTime: string) => void;
-  onSessionUpdate: (sessionId: string, updates: Partial<Session>) => void;
-  onSessionDelete?: (sessionId: string) => void;
-  calendarMode: "day" | "week";
-}
+// Generate days based on current date and view mode
+const getDaysToShow = (date: Date, mode: "day" | "week"): DayColumn[] => {
+  if (mode === "day") {
+    // Show only the current day
+    return [
+      {
+        date: date.toISOString().split("T")[0],
+        dayName: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
+        dayNumber: date.getDate(),
+        isToday: date.toDateString() === new Date().toDateString(),
+      },
+    ];
+  } else {
+    // Show the full week
+    const startOfWeek = new Date(date);
+    const day = startOfWeek.getDay();
+    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Start from Monday
+    startOfWeek.setDate(diff);
 
-export const TimeGrid = ({
-  daysToShow,
-  sessions,
-  onSessionBook,
-  onSessionUpdate,
-  onSessionDelete,
-  calendarMode,
-}: TimeGridProps) => {
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const currentDay = new Date(startOfWeek);
+      currentDay.setDate(startOfWeek.getDate() + i);
+
+      weekDays.push({
+        date: currentDay.toISOString().split("T")[0],
+        dayName: currentDay.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
+        dayNumber: currentDay.getDate(),
+        isToday: currentDay.toDateString() === new Date().toDateString(),
+      });
+    }
+    return weekDays;
+  }
+};
+
+export const TimeGrid = () => {
   const [hoveredSlot, setHoveredSlot] = useState<{
     day: string;
     hour: number;
@@ -32,6 +52,12 @@ export const TimeGrid = ({
     hour: number;
     minute: number;
   } | null>(null);
+
+  const { calendarDate, calendarMode, sessions, addSession, updateSession, deleteSession } =
+    useCalendarStore();
+
+  const daysToShow = getDaysToShow(calendarDate, calendarMode);
+
   const [clickCooldown, setClickCooldown] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -98,7 +124,7 @@ export const TimeGrid = ({
         setTimeout(() => setClickCooldown(false), 100); // Brief cooldown
       }
     },
-    [pendingConfirmation, onSessionBook]
+    [pendingConfirmation, addSession]
   );
 
   const isSlotPending = useCallback(
@@ -229,8 +255,8 @@ export const TimeGrid = ({
                             key={sessionInSlot.id}
                             mode="booked"
                             session={sessionInSlot}
-                            onUpdate={(updates) => onSessionUpdate(sessionInSlot.id, updates)}
-                            onDelete={onSessionDelete}
+                            onUpdate={(updates) => updateSession(sessionInSlot.id, updates)}
+                            onDelete={deleteSession}
                             calendarMode={calendarMode}
                           />
                         ) : (
