@@ -112,7 +112,7 @@ export const TimeGrid = () => {
 
         const localStartTime = `${day}T${startTime}:00`;
         console.log("localStartTime", localStartTime);
-        onSessionBook(localStartTime);
+        addSession(localStartTime);
 
         setPendingConfirmation(null);
         setClickCooldown(true);
