@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 interface CalendarStore {
   // Timezone
-  timezone: string | null;
+  timezone: string;
   setTimezone: (zone: string) => void;
 
   // SideBar state
@@ -22,7 +22,7 @@ interface CalendarStore {
 
   // Sessions
   sessions: Session[];
-  addSession: (startTime: string) => void;
+  addSession: (localStartTime: string) => Promise<Session | undefined>;
   updateSession: (sessionId: string, updates: Partial<Session>) => void;
   deleteSession: (sessionId: string) => void;
 
@@ -32,7 +32,7 @@ interface CalendarStore {
 }
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
-  timezone: null,
+  timezone: "UTC",
   setTimezone: (zone: string) =>
     set(() => ({
       timezone: zone,

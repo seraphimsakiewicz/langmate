@@ -5,36 +5,40 @@ import { Session, DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";
 import { generateTimeSlots, getHourLabel } from "@/utils/timeUtils";
 import { useCalendarStore } from "@/stores/calendar-store";
+import { DateTime } from "luxon";
 
 // Generate days based on current date and view mode
-const getDaysToShow = (date: Date, mode: "day" | "week"): DayColumn[] => {
+const getDaysToShow = (date: Date, mode: "day" | "week", timezone: string): DayColumn[] => {
+  const baseDate = DateTime.fromJSDate(date)
+    .setZone(timezone, { keepLocalTime: true })
+    .startOf("day");
+  const today = DateTime.now().setZone(timezone).startOf("day");
+
   if (mode === "day") {
     // Show only the current day
     return [
       {
-        date: date.toISOString().split("T")[0],
-        dayName: date.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
-        dayNumber: date.getDate(),
-        isToday: date.toDateString() === new Date().toDateString(),
+        date: baseDate.toFormat("yyyy-LL-dd"),
+        dayName: baseDate.toFormat("ccc").toUpperCase(),
+        dayNumber: baseDate.day,
+        isToday: baseDate.hasSame(today, "day"),
       },
     ];
   } else {
-    // Show the full week
-    const startOfWeek = new Date(date);
-    const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Start from Monday
-    startOfWeek.setDate(diff);
+    // Show the full week, starting Monday
+    const weekday = baseDate.weekday; // 1 (Mon) - 7 (Sun)
+    const startOfWeek =
+      weekday === 1 ? baseDate : baseDate.minus({ days: weekday - 1 });
 
     const weekDays = [];
     for (let i = 0; i < 7; i++) {
-      const currentDay = new Date(startOfWeek);
-      currentDay.setDate(startOfWeek.getDate() + i);
+      const currentDay = startOfWeek.plus({ days: i });
 
       weekDays.push({
-        date: currentDay.toISOString().split("T")[0],
-        dayName: currentDay.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase(),
-        dayNumber: currentDay.getDate(),
-        isToday: currentDay.toDateString() === new Date().toDateString(),
+        date: currentDay.toFormat("yyyy-LL-dd"),
+        dayName: currentDay.toFormat("ccc").toUpperCase(),
+        dayNumber: currentDay.day,
+        isToday: currentDay.hasSame(today, "day"),
       });
     }
     return weekDays;
@@ -53,27 +57,28 @@ export const TimeGrid = () => {
     minute: number;
   } | null>(null);
 
-  const { calendarDate, calendarMode, sessions, addSession, updateSession, deleteSession } =
+  const { calendarDate, calendarMode, sessions, addSession, updateSession, deleteSession, timezone } =
     useCalendarStore();
 
-  const daysToShow = getDaysToShow(calendarDate, calendarMode);
+  const safeTimezone = timezone ?? "UTC";
+  const daysToShow = getDaysToShow(calendarDate, calendarMode, safeTimezone);
 
   const [clickCooldown, setClickCooldown] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Memoize expensive time slot generation
-  const timeSlots = useMemo(() => generateTimeSlots(), []);
+  const timeSlots = useMemo(() => generateTimeSlots(safeTimezone), [safeTimezone]);
 
   // Auto-scroll to current time on mount
   useEffect(() => {
-    const now = new Date();
-    const currentHour = now.getHours();
+    const now = DateTime.now().setZone(safeTimezone);
+    const currentHour = now.hour;
     const slotIndex = timeSlots.findIndex((slot) => slot.hour === currentHour);
     if (slotIndex !== -1 && scrollRef.current) {
       const slotHeight = 68;
       scrollRef.current.scrollTop = slotIndex * slotHeight - 100;
     }
-  }, [timeSlots]);
+  }, [timeSlots, safeTimezone]);
 
   const getSessionForSlot = (day: string, hour: number, minute: number) => {
     // const lastIndex = sessions.length - 1; const randomIndex = Math.floor(Math.random() *
@@ -174,7 +179,9 @@ export const TimeGrid = () => {
                   alignItems: "flex-end",
                 }}
               >
-                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">EDT</div>
+                <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">
+                  {DateTime.now().setZone(safeTimezone).toFormat("ZZZ")}
+                </div>
               </div>
               {/* day.isToday */}
               {/* Header day columns */}

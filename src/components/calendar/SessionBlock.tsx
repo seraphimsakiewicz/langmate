@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import Link from "next/link";
 import { formatTime, isSessionStartingSoon } from "@/utils/timeUtils";
 import { Button } from "../ui/button";
+import { useCalendarStore } from "@/stores/calendar-store";
 
 type SessionMode = "empty" | "hover" | "pending" | "booked" | "cancel-confirmation";
 
@@ -38,6 +39,7 @@ const SessionBlockComponent = ({
   onRemovePending,
 }: SessionBlockProps) => {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
+  const timezone = useCalendarStore((state) => state.timezone ?? "UTC");
 
   // Memoize callback functions to prevent unnecessary re-renders
   const handleBookClick = useCallback(
@@ -77,7 +79,7 @@ const SessionBlockComponent = ({
   );
 
   // Memoize expensive calculations
-  const sessionStartingSoon = true;
+  const sessionStartingSoon = session ? isSessionStartingSoon(session, timezone) : false;
 
   const renderEmpty = () => null;
 
@@ -147,11 +149,12 @@ const SessionBlockComponent = ({
                   {/* need to figure out how to always show on day view */}
                   <span className={`${calendarMode === "day" ? "block" : "md:hidden xl:block"}`}>
                     {/* this will need to be dynamic later */}
-                    {formatTime(session.startTime, true)} - {formatTime(session.endTime, true)}
+                    {formatTime(session.startTime, true, timezone)} -{" "}
+                    {formatTime(session.endTime, true, timezone)}
                   </span>
                   {calendarMode === "week" && (
                     <span className="md:block xl:hidden">
-                      {formatTime(session.startTime, true)}
+                      {formatTime(session.startTime, true, timezone)}
                     </span>
                   )}
                 </div>

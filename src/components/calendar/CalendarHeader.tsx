@@ -6,50 +6,47 @@ import { MiniCalendar } from "@/components/ui/mini-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useCalendarStore } from "@/stores/calendar-store";
 import { useMiniCalendar } from "@/hooks/useMiniCalendar";
+import { DateTime } from "luxon";
 
 export const CalendarHeader = () => {
-  const { calendarDate, setCalendarDate, calendarMode, setCalendarMode } = useCalendarStore();
+  const { calendarDate, setCalendarDate, calendarMode, setCalendarMode, timezone } =
+    useCalendarStore();
+  const safeTimezone = timezone ?? "UTC";
 
   const {
     displayMonth,
     handleDateSelect,
     handleDisplayMonth,
     handlePopper,
-    currentDate,
     startMonth,
     endMonth,
     openPopper,
   } = useMiniCalendar({
     initialDate: calendarDate,
     onDateChange: setCalendarDate,
+    timezone: safeTimezone,
   });
 
-  const monthYear = calendarDate.toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-  });
+  const calendarDateTime = DateTime.fromJSDate(calendarDate)
+    .setZone(safeTimezone, { keepLocalTime: true })
+    .startOf("day");
+  const currentZonedDate = DateTime.now().setZone(safeTimezone).startOf("day");
+
+  const monthYear = calendarDateTime.toFormat("LLLL yyyy");
 
   const handleTodayClick = () => {
-    handleDateSelect(currentDate);
+    handleDateSelect(currentZonedDate.toJSDate());
   };
 
   const handlePrevPeriod = () => {
-    const newDate = new Date(calendarDate);
-    if (calendarMode === "day") {
-      newDate.setDate(calendarDate.getDate() - 1);
-    } else {
-      newDate.setDate(calendarDate.getDate() - 7);
-    }
+    const offset = calendarMode === "day" ? { days: 1 } : { days: 7 };
+    const newDate = calendarDateTime.minus(offset).toJSDate();
     handleDateSelect(newDate);
   };
 
   const handleNextPeriod = () => {
-    const newDate = new Date(calendarDate);
-    if (calendarMode === "day") {
-      newDate.setDate(calendarDate.getDate() + 1);
-    } else {
-      newDate.setDate(calendarDate.getDate() + 7);
-    }
+    const offset = calendarMode === "day" ? { days: 1 } : { days: 7 };
+    const newDate = calendarDateTime.plus(offset).toJSDate();
     handleDateSelect(newDate);
   };
 
@@ -77,7 +74,7 @@ export const CalendarHeader = () => {
                 <MiniCalendar
                   mode="single"
                   selected={calendarDate}
-                  disabled={{ before: currentDate }}
+                  disabled={{ before: currentZonedDate.toJSDate() }}
                   startMonth={startMonth}
                   endMonth={endMonth}
                   onMonthChange={handleDisplayMonth}

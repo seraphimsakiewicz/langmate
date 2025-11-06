@@ -3,34 +3,37 @@
  * performance and reusability
  */
 
+import { DateTime } from "luxon";
 import { Session } from "@/types/calendar";
 
-export const formatTime = (time: string, hour12 = true): string => {
-  const [hour, minute] = time.split(":").map(Number);
-  const date = new Date();
-  date.setHours(hour, minute);
-  return date.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: hour12,
-  });
+const defaultTimezone = "UTC";
+
+export const formatTime = (
+  time: string,
+  hour12 = true,
+  timezone: string = defaultTimezone
+): string => {
+  const dt = DateTime.fromFormat(time, "HH:mm", { zone: timezone });
+  return dt.toFormat(hour12 ? "h:mm a" : "HH:mm");
 };
 
-export const isSessionStartingSoon = (session: Session): boolean => {
-  const now = new Date();
-  const today = now.toISOString().split("T")[0];
+export const isSessionStartingSoon = (
+  session: Session,
+  timezone: string = defaultTimezone
+): boolean => {
+  const now = DateTime.now().setZone(timezone);
+  const today = now.toISODate();
 
   // Only check sessions for today
   if (session.date !== today) return false;
 
-  const [startHour, startMinute] = session.startTime.split(":").map(Number);
-  const sessionStart = new Date();
-  sessionStart.setHours(startHour, startMinute, 0, 0);
+  const sessionStart = DateTime.fromISO(`${session.date}T${session.startTime}`, {
+    zone: timezone,
+  });
 
-  // Session starts within 60 minutes and hasn't started yet
-
-  // TODO need to fix this to actually check upcoming in 10 min lol
-  return true;
+  if (!sessionStart.isValid) return false;
+  const diff = sessionStart.diff(now, "minutes").minutes;
+  return diff >= 0 && diff <= 60;
 };
 
 export const getHourLabel = (hour: number): string => {
@@ -44,17 +47,13 @@ export const getHourLabel = (hour: number): string => {
  * Generate time slots from 12 AM to 11 PM with 30-minute intervals Memoized to prevent recreation
  * on every render
  */
-export const generateTimeSlots = () => {
+export const generateTimeSlots = (timezone: string = defaultTimezone) => {
   return Array.from({ length: 24 }, (_, hour) => {
     const slots = [];
     for (let minute = 0; minute < 60; minute += 30) {
-      const time = new Date();
-      time.setHours(hour, minute);
-      const formatted = time.toLocaleTimeString("en-US", {
-        hour: "numeric",
-        minute: "2-digit",
-        hour12: true,
-      });
+      const formatted = DateTime.fromObject({ hour, minute }, { zone: timezone }).toFormat(
+        "h:mm a"
+      );
       slots.push({ hour, minute, formatted });
     }
     return slots;
