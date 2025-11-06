@@ -2,6 +2,10 @@ import { Session } from "@/types/calendar";
 import { create } from "zustand";
 
 interface CalendarStore {
+  // Timezone
+  timezone: string | null;
+  setTimezone: (zone: string) => void;
+
   // SideBar state
   isSidebarCollapsed: boolean;
   setIsSidebarCollapsed: (newState: boolean) => void;
@@ -28,6 +32,11 @@ interface CalendarStore {
 }
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
+  timezone: null,
+  setTimezone: (zone: string) =>
+    set(() => ({
+      timezone: zone,
+    })),
   isSidebarCollapsed: false,
   userSetSidebarCollapsed: false,
   setIsSidebarCollapsed: (newState: boolean) =>
