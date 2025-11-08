@@ -9,7 +9,7 @@ CREATE TABLE "sessions" ( -- take from here the fields only the ones you need
   "start_time" timestamptz NOT NULL,
   -- "duration" integer DEFAULT 30,
   "status" varchar(20) DEFAULT 'scheduled',
-  -- scheduled, active, finished (enum potentially here) "room_url" text, (could be used later)
+  -- scheduled, active, finished, cancelled (enum potentially here) "room_url" text, (could be used later)
   -- "cancelled_by_user_id" uuid, -- add this to the table once you do, track who cancelled
   -- "cancellation_time" timestamptz,
   "created_at" timestamptz DEFAULT (now()),
