@@ -70,7 +70,7 @@ export const SecondNav = () => {
   const getCurrentView = () => {
     if (pathName.includes("/calendar")) return "calendar";
     if (pathName.includes("/sessions")) return "sessions";
-    if (pathName.includes("/people")) return "people";
+    // if (pathName.includes("/people")) return "people";
   };
 
   const currentView = getCurrentView();
@@ -97,10 +97,10 @@ export const SecondNav = () => {
             <UsersIcon className="mr-2 h-4 w-4" />
             Sessions
           </NavItem>
-          <NavItem href="/people" isActive={currentView === "people"}>
+          {/* <NavItem href="/people" isActive={currentView === "people"}>
             <UserIcon className="mr-2 h-4 w-4" />
             People
-          </NavItem>
+          </NavItem> */}
         </div>
       </div>
     </div>
