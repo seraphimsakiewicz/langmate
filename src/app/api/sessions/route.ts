@@ -7,7 +7,7 @@ const sessionsCleaner = (session: any, timeZone: string) => {
   const newSession = { ...session };
   delete newSession.created_at;
   delete newSession.updated_at;
-  const start = DateTime.fromISO(session.start_time, { zone: 'utc' }).setZone(timeZone)
+  const start = DateTime.fromISO(session.start_time, { zone: "utc" }).setZone(timeZone);
   const end = start.plus({ minutes: 30 });
   delete newSession.start_time;
   newSession.startTime = start.toFormat("HH:mm");
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
   console.log("Insert response:", insertResponse);
   const { data: newData, error: insertError } = insertResponse || {};
 
-  if (!newData || newData.length === 0) {
+  if (!newData || !newData.length) {
     console.error("No session data returned after insert.");
     return NextResponse.json({ error: "Failed to create session" }, { status: 500 });
   }
