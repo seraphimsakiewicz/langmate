@@ -85,10 +85,20 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
         session.id === sessionId ? { ...session, ...updates } : session
       ),
     })),
-  deleteSession: (sessionId) =>
+  deleteSession: async (sessionId) => {
+    const res = await fetch("/api/sessions", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    });
+    if (!res.ok) {
+      console.error("Failed to delete session with id:", sessionId);
+      return;
+    }
     set((state) => ({
       sessions: state.sessions.filter((session) => session.id !== sessionId),
-    })),
+    }));
+  },
   setOpenModal: (newModalState: boolean) =>
     set(() => ({
       openModal: newModalState,
