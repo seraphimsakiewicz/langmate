@@ -112,5 +112,5 @@ export async function DELETE(req: NextRequest) {
 
   console.log(`Session ${sessionId} deleted successfully. Deleted by user ${user.id}`);
 
-  return NextResponse.json({ success: true }, { status: deleteResponse.status });
+  return NextResponse.json({ status: deleteResponse.status });
 }
