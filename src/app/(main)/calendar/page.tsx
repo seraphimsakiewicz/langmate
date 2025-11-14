@@ -39,10 +39,16 @@ export default async function CalendarPage() {
     if (profile?.timezone) {
       timezone = profile.timezone;
 
+      const filter = [
+        `user_one_id.eq.${user.id}`, // sessions user created
+        `user_two_id.eq.${user.id}`, // sessions user joined
+        `and(user_one_id.not.is.null,user_two_id.is.null)`, // open sessions waiting for someone
+      ].join(",");
+
       const { data: fetchedSessions, error } = await supabase
         .from("sessions")
         .select("*")
-        .or(`user_one_id.eq.${user.id},user_two_id.eq.${user.id}`);
+        .or(filter);
       if (!error) {
         sessions = fetchedSessions?.map((session) => sessionsCleaner(session, profile.timezone));
         console.log(`Sessions for user.id ${user.id}`, sessions);
