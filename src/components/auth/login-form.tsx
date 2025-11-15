@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ const initialState: LoginFormState = {
 };
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
-  const [state, formAction] = useFormState(login, initialState);
+  const [state, formAction] = useActionState(login, initialState);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
