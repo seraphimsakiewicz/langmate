@@ -5,7 +5,12 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 
-export async function login(formData: FormData) {
+export type LoginFormState = {
+  errorCode?: string | null;
+  message?: string | null;
+};
+
+export async function login(_prevState: LoginFormState, formData: FormData) {
   const supabase = await createClient();
 
   // type-casting here for convenience
@@ -19,7 +24,18 @@ export async function login(formData: FormData) {
 
   if (error) {
     console.log("Login error:", error);
-    redirect("/error");
+
+    if (error.code === "invalid_credentials") {
+      return {
+        errorCode: error.code,
+        message: "Account not found.",
+      };
+    }
+
+    return {
+      errorCode: "unknown",
+      message: "Unable to sign in. Please try again.",
+    };
   }
 
   revalidatePath("/", "layout");
