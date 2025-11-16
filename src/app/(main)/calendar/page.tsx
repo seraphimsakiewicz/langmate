@@ -25,7 +25,6 @@ export default async function CalendarPage() {
     newSession.startTime = start.toFormat("HH:mm");
     newSession.endTime = end.toFormat("HH:mm");
     newSession.date = start.toISODate();
-    newSession.participant = session.user_two_id ? "Partner" : "Pending partner";
     return newSession;
   };
 

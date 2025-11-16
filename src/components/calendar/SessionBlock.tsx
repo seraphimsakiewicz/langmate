@@ -158,7 +158,10 @@ const SessionBlockComponent = ({
                     </span>
                   )}
                 </div>
-                <div className="text-[12px] single-line-el">{session.participant}</div>
+                {/* Your partner or Pending Partner */}
+                <div className="text-[12px] single-line-el">
+                  {session.user_two_id === null ? "Pending Partner" : session.user_two_id}
+                </div>
               </div>
             </div>
           </div>
@@ -219,7 +222,6 @@ export const SessionBlock = memo(SessionBlockComponent, (prevProps, nextProps) =
     prevProps.session?.id === nextProps.session?.id &&
     prevProps.session?.startTime === nextProps.session?.startTime &&
     prevProps.session?.endTime === nextProps.session?.endTime &&
-    prevProps.session?.participant === nextProps.session?.participant &&
     prevProps.slotTime === nextProps.slotTime &&
     prevProps.calendarMode === nextProps.calendarMode
   );

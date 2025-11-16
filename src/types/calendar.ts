@@ -4,9 +4,9 @@ export type Session = {
   startTime: string; // Format: "HH:mm"
   endTime: string; // Format: "HH:mm"
   date: string; // Format: "YYYY-MM-DD"
-  participant: string;
+  user_one_id: string;
+  user_two_id: null | string;
   // status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
-  avatar?: string;
 };
 
 export type TimeSlot = {
