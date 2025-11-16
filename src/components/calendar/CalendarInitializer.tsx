@@ -1,22 +1,22 @@
 "use client";
 
-import type { Session } from "@/types/calendar";
+import type { Session, Profile } from "@/types/calendar";
 import { useEffect, type ReactNode } from "react";
 import { useCalendarStore } from "@/stores/calendar-store";
 
 interface CalendarInitializerProps {
-  timezone: string;
+  profile: Profile | null;
   sessions: Session[];
   children: ReactNode;
 }
 
-export const CalendarInitializer = ({ timezone, sessions, children }: CalendarInitializerProps) => {
+export const CalendarInitializer = ({ profile, sessions, children }: CalendarInitializerProps) => {
+  if (!profile) return;
   useEffect(() => {
-    if (!timezone) return;
-    const { timezone: currentTimezone, setTimezone } = useCalendarStore.getState();
-    if (timezone === currentTimezone) return;
-    setTimezone(timezone);
-  }, [timezone]);
+    const { profile: currentProfile, setProfile } = useCalendarStore.getState();
+    if (profile.id === currentProfile.id) return;
+    setProfile(profile);
+  }, [profile?.id]);
 
   useEffect(() => {
     // hydrate sessions into the store

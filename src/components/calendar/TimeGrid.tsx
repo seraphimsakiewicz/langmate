@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Session, DayColumn } from "@/types/calendar";
+import { DayColumn } from "@/types/calendar";
 import { SessionBlock } from "./SessionBlock";
 import { generateTimeSlots, getHourLabel } from "@/utils/timeUtils";
 import { useCalendarStore } from "@/stores/calendar-store";
@@ -27,8 +27,7 @@ const getDaysToShow = (date: Date, mode: "day" | "week", timezone: string): DayC
   } else {
     // Show the full week, starting Monday
     const weekday = baseDate.weekday; // 1 (Mon) - 7 (Sun)
-    const startOfWeek =
-      weekday === 1 ? baseDate : baseDate.minus({ days: weekday - 1 });
+    const startOfWeek = weekday === 1 ? baseDate : baseDate.minus({ days: weekday - 1 });
 
     const weekDays = [];
     for (let i = 0; i < 7; i++) {
@@ -57,10 +56,17 @@ export const TimeGrid = () => {
     minute: number;
   } | null>(null);
 
-  const { calendarDate, calendarMode, sessions, addSession, updateSession, deleteSession, timezone } =
-    useCalendarStore();
+  const {
+    calendarDate,
+    calendarMode,
+    sessions,
+    addSession,
+    updateSession,
+    deleteSession,
+    profile,
+  } = useCalendarStore();
 
-  const safeTimezone = timezone ?? "UTC";
+  const safeTimezone = profile.timezone ?? "UTC";
   const daysToShow = getDaysToShow(calendarDate, calendarMode, safeTimezone);
 
   const [clickCooldown, setClickCooldown] = useState(false);

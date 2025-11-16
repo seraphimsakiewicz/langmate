@@ -3,11 +3,11 @@ import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server"; // instantiate the Supabase server client
 
 // todo fix any type
-const sessionsCleaner = (session: any, timeZone: string) => {
+const sessionsCleaner = (session: any, timezone: string) => {
   const newSession = { ...session };
   delete newSession.created_at;
   delete newSession.updated_at;
-  const start = DateTime.fromISO(session.start_time, { zone: "utc" }).setZone(timeZone);
+  const start = DateTime.fromISO(session.start_time, { zone: "utc" }).setZone(timezone);
   const end = start.plus({ minutes: 30 });
   delete newSession.start_time;
   newSession.startTime = start.toFormat("HH:mm");

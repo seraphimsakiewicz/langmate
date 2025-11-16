@@ -39,7 +39,7 @@ const SessionBlockComponent = ({
   onRemovePending,
 }: SessionBlockProps) => {
   const [isConfirmingCancel, setIsConfirmingCancel] = useState(false);
-  const timezone = useCalendarStore((state) => state.timezone ?? "UTC");
+  const profile = useCalendarStore((state) => state.profile);
 
   // Memoize callback functions to prevent unnecessary re-renders
   const handleBookClick = useCallback(
@@ -79,7 +79,7 @@ const SessionBlockComponent = ({
   );
 
   // Memoize expensive calculations
-  const sessionStartingSoon = session ? isSessionStartingSoon(session, timezone) : false;
+  const sessionStartingSoon = session ? isSessionStartingSoon(session, profile.timezone) : false;
 
   const renderEmpty = () => null;
 
@@ -149,12 +149,12 @@ const SessionBlockComponent = ({
                   {/* need to figure out how to always show on day view */}
                   <span className={`${calendarMode === "day" ? "block" : "md:hidden xl:block"}`}>
                     {/* this will need to be dynamic later */}
-                    {formatTime(session.startTime, true, timezone)} -{" "}
-                    {formatTime(session.endTime, true, timezone)}
+                    {formatTime(session.startTime, true, profile.timezone)} -{" "}
+                    {formatTime(session.endTime, true, profile.timezone)}
                   </span>
                   {calendarMode === "week" && (
                     <span className="md:block xl:hidden">
-                      {formatTime(session.startTime, true, timezone)}
+                      {formatTime(session.startTime, true, profile.timezone)}
                     </span>
                   )}
                 </div>
@@ -180,12 +180,14 @@ const SessionBlockComponent = ({
             )}
 
             {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
-            <Button
-              onClick={handleCancelClick}
-              className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors hover:bg-calendar-primary/20 flex items-center justify-center flex-shrink-0"
-            >
-              <X />
-            </Button>
+            {(profile.id === session.user_one_id || profile.id === session.user_two_id) && (
+              <Button
+                onClick={handleCancelClick}
+                className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors hover:bg-calendar-primary/20 flex items-center justify-center flex-shrink-0"
+              >
+                <X />
+              </Button>
+            )}
           </div>
         </div>
       </SessionContainer>

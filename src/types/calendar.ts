@@ -9,6 +9,11 @@ export type Session = {
   // status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
 };
 
+export type Profile = {
+  id: string;
+  timezone: string;
+};
+
 export type TimeSlot = {
   hour: number;
   minute: number;

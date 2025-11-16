@@ -1,10 +1,10 @@
-import { Session } from "@/types/calendar";
+import { Session, Profile } from "@/types/calendar";
 import { create } from "zustand";
 
-interface CalendarStore {
+export interface CalendarStore {
   // Timezone
-  timezone: string;
-  setTimezone: (zone: string) => void;
+  profile: Profile;
+  setProfile: (newProfile: Profile) => void;
 
   // SideBar state
   isSidebarCollapsed: boolean;
@@ -32,10 +32,10 @@ interface CalendarStore {
 }
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
-  timezone: "UTC",
-  setTimezone: (zone: string) =>
+  profile: { id: "", timezone: "UTC" },
+  setProfile: (newProfile: Profile) =>
     set(() => ({
-      timezone: zone,
+      profile: newProfile,
     })),
   isSidebarCollapsed: false,
   userSetSidebarCollapsed: false,
