@@ -19,8 +19,8 @@ import { useCalendarStore } from "@/stores/calendar-store";
 import { DateTime } from "luxon";
 
 export const BookingModal = () => {
-  const { setOpenModal, openModal, addSession, timezone } = useCalendarStore();
-  const safeTimezone = timezone || "UTC";
+  const { setOpenModal, openModal, addSession, profile } = useCalendarStore();
+  const safeTimezone = profile.timezone || "UTC";
   const [selectedTime, setSelectedTime] = useState<string>("");
 
   const {

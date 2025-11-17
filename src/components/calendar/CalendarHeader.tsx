@@ -9,9 +9,9 @@ import { useMiniCalendar } from "@/hooks/useMiniCalendar";
 import { DateTime } from "luxon";
 
 export const CalendarHeader = () => {
-  const { calendarDate, setCalendarDate, calendarMode, setCalendarMode, timezone } =
+  const { calendarDate, setCalendarDate, calendarMode, setCalendarMode, profile } =
     useCalendarStore();
-  const safeTimezone = timezone ?? "UTC";
+  const safeTimezone = profile.timezone ?? "UTC";
 
   const {
     displayMonth,
