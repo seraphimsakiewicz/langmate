@@ -179,6 +179,19 @@ const SessionBlockComponent = ({
               </div>
             )}
 
+            {session.user_two_id === null &&
+              session.user_one_id !== profile.id &&
+              session.language_two_id === profile.native_language_id && (
+                <div className="flex justify-start mt-1">
+                  <Link
+                    href={`#`}
+                    className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
+                  >
+                    Match
+                  </Link>
+                </div>
+              )}
+
             {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
             {(profile.id === session.user_one_id || profile.id === session.user_two_id) && (
               <Button

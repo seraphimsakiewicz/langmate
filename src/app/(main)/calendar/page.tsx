@@ -32,7 +32,7 @@ export default async function CalendarPage() {
   if (user) {
     const { data: fetchedProfile, error } = await supabase
       .from("profiles")
-      .select("timezone, id")
+      .select("timezone, id, native_language_id")
       .eq("id", user.id)
       .single();
     if (!fetchedProfile || error) return;
@@ -40,7 +40,7 @@ export default async function CalendarPage() {
     const filter = [
       `user_one_id.eq.${fetchedProfile.id}`, // sessions user created
       `user_two_id.eq.${fetchedProfile.id}`, // sessions user joined
-      `and(user_one_id.not.is.null,user_two_id.is.null)`, // open sessions waiting for someone
+      `and(user_one_id.not.is.null,user_two_id.is.null,language_two_id.eq.${fetchedProfile.native_language_id})`, // open sessions waiting for someone
     ].join(",");
 
     const { data: fetchedSessions, error: sessionsError } = await supabase

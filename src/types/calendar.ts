@@ -6,12 +6,15 @@ export type Session = {
   date: string; // Format: "YYYY-MM-DD"
   user_one_id: string;
   user_two_id: null | string;
+  language_one_id: string;
+  language_two_id: string;
   // status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
 };
 
 export type Profile = {
   id: string;
   timezone: string;
+  native_language_id: string;
 };
 
 export type TimeSlot = {

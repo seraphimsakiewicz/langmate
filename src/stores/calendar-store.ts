@@ -32,7 +32,7 @@ export interface CalendarStore {
 }
 
 export const useCalendarStore = create<CalendarStore>((set) => ({
-  profile: { id: "", timezone: "UTC" },
+  profile: { id: "", timezone: "UTC", native_language_id: "" },
   setProfile: (newProfile: Profile) =>
     set(() => ({
       profile: newProfile,
