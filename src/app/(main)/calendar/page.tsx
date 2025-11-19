@@ -43,11 +43,18 @@ export default async function CalendarPage() {
       `and(user_one_id.not.is.null,user_two_id.is.null,language_two_id.eq.${fetchedProfile.native_language_id})`, // open sessions waiting for someone
     ].join(",");
 
+    // need to figure out why join is only poplating user's own name, and not name of different
+    // user's id.
     const { data: fetchedSessions, error: sessionsError } = await supabase
       .from("sessions")
-      .select("*")
+      .select(
+        `*, 
+        user_one_name:profiles!sessions_user_one_id_fkey(first_name), 
+        user_two_name:profiles!sessions_user_two_id_fkey(first_name)`
+      )
       .or(filter);
     if (sessionsError || !fetchedProfile) return;
+    console.log("fetchedSessions", fetchedSessions);
     sessions = fetchedSessions?.map((session) => sessionsCleaner(session, fetchedProfile.timezone));
     profile = fetchedProfile;
   }
