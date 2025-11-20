@@ -49,8 +49,8 @@ export default async function CalendarPage() {
       .from("sessions")
       .select(
         `*, 
-        user_one_name:profiles!sessions_user_one_id_fkey(first_name), 
-        user_two_name:profiles!sessions_user_two_id_fkey(first_name)`
+        user_one_name:public_profiles!sessions_user_one_id_fkey(first_name), 
+        user_two_name:public_profiles!sessions_user_two_id_fkey(first_name)`
       )
       .or(filter);
     if (sessionsError || !fetchedProfile) return;
