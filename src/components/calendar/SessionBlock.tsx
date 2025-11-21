@@ -132,6 +132,13 @@ const SessionBlockComponent = ({
   const renderBooked = (calendarMode: "day" | "week") => {
     if (!session) return null;
 
+    /* if session_user_one_id === (our profile id), then return name of user_two, otherwise return
+     name of user_one */
+    const bookedPartnerName =
+      session.user_one_id === profile.id
+        ? session.user_two_name.first_name || ""
+        : session.user_one_name.first_name || "";
+
     return (
       <SessionContainer className="border-2 border-session-booked text-session-booked">
         <div className="flex flex-col justify-between h-full">
@@ -160,7 +167,7 @@ const SessionBlockComponent = ({
                 </div>
                 {/* Your partner or Pending Partner */}
                 <div className="text-[12px] single-line-el">
-                  {session.user_two_id === null ? "Pending Partner" : session.user_two_id}
+                  {session.user_two_id === null ? "Pending Partner" : bookedPartnerName}
                 </div>
               </div>
             </div>

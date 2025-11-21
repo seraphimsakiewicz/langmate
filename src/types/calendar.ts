@@ -8,6 +8,14 @@ export type Session = {
   user_two_id: null | string;
   language_one_id: string;
   language_two_id: string;
+  user_one_name: {
+    first_name: string | null;
+    last_name: string | null;
+  };
+  user_two_name: {
+    first_name: string | null;
+    last_name: string | null;
+  };
   // status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
 };
 
