@@ -167,7 +167,11 @@ const SessionBlockComponent = ({
                 </div>
                 {/* Your partner or Pending Partner */}
                 <div className="text-[12px] single-line-el">
-                  {session.user_two_id === null ? "Pending Partner" : bookedPartnerName}
+                  {session.user_two_id === null && session.user_one_id === profile.id
+                    ? "Pending Partner"
+                    : session.user_two_id === null && session.user_one_id !== profile.id
+                      ? session.user_one_name.first_name
+                      : bookedPartnerName}
                 </div>
               </div>
             </div>
