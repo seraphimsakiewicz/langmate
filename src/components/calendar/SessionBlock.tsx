@@ -136,8 +136,8 @@ const SessionBlockComponent = ({
      name of user_one */
     const bookedPartnerName =
       session.user_one_id === profile.id
-        ? session.user_two_name.first_name || ""
-        : session.user_one_name.first_name || "";
+        ? session.user_two_name?.first_name || ""
+        : session.user_one_name?.first_name || "";
 
     return (
       <SessionContainer className="border-2 border-session-booked text-session-booked">
@@ -170,7 +170,7 @@ const SessionBlockComponent = ({
                   {session.user_two_id === null && session.user_one_id === profile.id
                     ? "Pending Partner"
                     : session.user_two_id === null && session.user_one_id !== profile.id
-                      ? session.user_one_name.first_name
+                      ? session.user_one_name?.first_name
                       : bookedPartnerName}
                 </div>
               </div>

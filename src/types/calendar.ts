@@ -11,11 +11,11 @@ export type Session = {
   user_one_name: {
     first_name: string | null;
     last_name: string | null;
-  };
+  } | null;
   user_two_name: {
     first_name: string | null;
     last_name: string | null;
-  };
+  } | null;
   // status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
 };
 
