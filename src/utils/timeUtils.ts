@@ -36,6 +36,19 @@ export const isSessionStartingSoon = (
   return diff >= 0 && diff <= 60;
 };
 
+export const isBeforeSessionStart = (
+  session: Session,
+  timezone: string = defaultTimezone
+): boolean => {
+  const now = DateTime.now().setZone(timezone);
+  const sessionStart = DateTime.fromISO(`${session.date}T${session.startTime}`, {
+    zone: timezone,
+  });
+
+  if (!sessionStart.isValid) return false;
+  return now < sessionStart;
+};
+
 export const getHourLabel = (hour: number): string => {
   if (hour === 0) return "12A";
   if (hour === 12) return "12P";

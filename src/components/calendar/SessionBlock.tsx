@@ -4,7 +4,7 @@ import React, { useState, useCallback, memo } from "react";
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { formatTime, isSessionStartingSoon } from "@/utils/timeUtils";
+import { formatTime, isBeforeSessionStart, isSessionStartingSoon } from "@/utils/timeUtils";
 import { Button } from "../ui/button";
 import { useCalendarStore } from "@/stores/calendar-store";
 
@@ -78,8 +78,8 @@ const SessionBlockComponent = ({
     [onDelete, session]
   );
 
-  // Memoize expensive calculations
   const sessionStartingSoon = session ? isSessionStartingSoon(session, profile.timezone) : false;
+  const sessionBeforeStart = session ? isBeforeSessionStart(session, profile.timezone) : false;
 
   const renderEmpty = () => null;
 
@@ -192,7 +192,8 @@ const SessionBlockComponent = ({
 
             {session.user_two_id === null &&
               session.user_one_id !== profile.id &&
-              session.language_two_id === profile.native_language_id && (
+              session.language_two_id === profile.native_language_id &&
+              sessionBeforeStart && (
                 <div className="flex justify-start mt-1">
                   <Link
                     href={`#`}
