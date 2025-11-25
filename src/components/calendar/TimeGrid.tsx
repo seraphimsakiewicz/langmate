@@ -87,19 +87,44 @@ export const TimeGrid = () => {
   }, [timeSlots, safeTimezone]);
 
   const getSessionForSlot = (day: string, hour: number, minute: number) => {
-    // const lastIndex = sessions.length - 1; const randomIndex = Math.floor(Math.random() *
-    // (lastIndex + 1) + 0); return sessions[randomIndex];
-    return sessions.find((session) => {
+    const getCreatedAtMillis = (value?: string) => {
+      const parsed = DateTime.fromISO(value ?? "");
+      return parsed.isValid ? parsed.toMillis() : Number.MAX_SAFE_INTEGER;
+    };
+
+    const slotMinutes = hour * 60 + minute;
+    const sessionsInBlock = sessions.filter((session) => {
       if (session.date !== day) return false;
       const [startHour, startMinute] = session.startTime.split(":").map(Number);
       const [endHour, endMinute] = session.endTime.split(":").map(Number);
 
       const sessionStartMinutes = startHour * 60 + startMinute;
       const sessionEndMinutes = endHour * 60 + endMinute;
-      const slotMinutes = hour * 60 + minute;
 
       return slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes;
     });
+
+    if (!sessionsInBlock.length) return undefined;
+
+    // Prefer sessions the user created or booked.
+    const mySessions = sessionsInBlock.filter(
+      (session) => session.user_one_id === profile.id || session.user_two_id === profile.id
+    );
+    if (mySessions.length) {
+      return [...mySessions].sort(
+        (a, b) => getCreatedAtMillis(a.createdAt) - getCreatedAtMillis(b.createdAt)
+      )[0];
+    }
+
+    // Otherwise show the oldest matching-language open session.
+    const languageMatched = sessionsInBlock.filter(
+      (session) => session.language_two_id === profile.native_language_id
+    );
+    if (!languageMatched.length) return undefined;
+
+    return [...languageMatched].sort(
+      (a, b) => getCreatedAtMillis(a.createdAt) - getCreatedAtMillis(b.createdAt)
+    )[0];
   };
 
   const handleSlotClick = useCallback(

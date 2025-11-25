@@ -4,6 +4,7 @@ export type Session = {
   startTime: string; // Format: "HH:mm"
   endTime: string; // Format: "HH:mm"
   date: string; // Format: "YYYY-MM-DD"
+  createdAt?: string; // ISO string of creation time
   user_one_id: string;
   user_two_id: null | string;
   language_one_id: string;

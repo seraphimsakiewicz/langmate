@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server"; // instantiate the Supabas
 // todo fix any type
 const sessionsCleaner = (session: any, timezone: string) => {
   const newSession = { ...session };
+  newSession.createdAt = session.created_at;
   delete newSession.created_at;
   delete newSession.updated_at;
   const start = DateTime.fromISO(session.start_time, { zone: "utc" }).setZone(timezone);
