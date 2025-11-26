@@ -4,7 +4,7 @@ import React, { useState, useCallback, memo } from "react";
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { formatTime, isBeforeSessionStart, isSessionStartingSoon } from "@/utils/timeUtils";
+import { formatTime, isBeforeSessionStart, isInJoinWindow } from "@/utils/timeUtils";
 import { Button } from "../ui/button";
 import { useCalendarStore } from "@/stores/calendar-store";
 
@@ -78,8 +78,17 @@ const SessionBlockComponent = ({
     [onDelete, session]
   );
 
-  const sessionStartingSoon = session ? isSessionStartingSoon(session, profile.timezone) : false;
+  const inJoinWindow = session ? isInJoinWindow(session, profile.timezone) : false;
   const sessionBeforeStart = session ? isBeforeSessionStart(session, profile.timezone) : false;
+  const sessionIsBooked = !!session && session.user_one_id !== null && session.user_two_id !== null;
+  const sessionHasOpenSeat = !!session && session.user_two_id === null;
+  const viewerIsHost = !!session && session.user_one_id === profile.id;
+  const viewerIsParticipant =
+    !!session && (session.user_one_id === profile.id || session.user_two_id === profile.id);
+  const languageMatches = !!session && session.language_two_id === profile.native_language_id;
+
+  const canJoin = sessionIsBooked && inJoinWindow;
+  const canMatch = sessionHasOpenSeat && !viewerIsHost && languageMatches && sessionBeforeStart;
 
   const renderEmpty = () => null;
 
@@ -134,10 +143,9 @@ const SessionBlockComponent = ({
 
     /* if session_user_one_id === (our profile id), then return name of user_two, otherwise return
      name of user_one */
-    const bookedPartnerName =
-      session.user_one_id === profile.id
-        ? session.user_two_name?.first_name || ""
-        : session.user_one_name?.first_name || "";
+    const bookedPartnerName = viewerIsHost
+      ? session.user_two_name?.first_name || ""
+      : session.user_one_name?.first_name || "";
 
     return (
       <SessionContainer className="border-2 border-session-booked text-session-booked">
@@ -167,9 +175,9 @@ const SessionBlockComponent = ({
                 </div>
                 {/* Your partner or Pending Partner */}
                 <div className="text-[12px] single-line-el">
-                  {session.user_two_id === null && session.user_one_id === profile.id
+                  {sessionHasOpenSeat && viewerIsHost
                     ? "Pending Partner"
-                    : session.user_two_id === null && session.user_one_id !== profile.id
+                    : sessionHasOpenSeat && !viewerIsHost
                       ? session.user_one_name?.first_name
                       : bookedPartnerName}
                 </div>
@@ -179,7 +187,7 @@ const SessionBlockComponent = ({
 
           <div className="flex flex-row justify-between items-end">
             {/* Bottom row: Join Button on left */}
-            {sessionStartingSoon && (
+            {canJoin && (
               <div className="flex justify-start mt-1">
                 <Link
                   href={`#`}
@@ -190,22 +198,19 @@ const SessionBlockComponent = ({
               </div>
             )}
 
-            {session.user_two_id === null &&
-              session.user_one_id !== profile.id &&
-              session.language_two_id === profile.native_language_id &&
-              sessionBeforeStart && (
-                <div className="flex justify-start mt-1">
-                  <Link
-                    href={`#`}
-                    className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
-                  >
-                    Match
-                  </Link>
-                </div>
-              )}
+            {canMatch && (
+              <div className="flex justify-start mt-1">
+                <Link
+                  href={`#`}
+                  className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
+                >
+                  Match
+                </Link>
+              </div>
+            )}
 
             {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
-            {(profile.id === session.user_one_id || profile.id === session.user_two_id) && (
+            {viewerIsParticipant && (
               <Button
                 onClick={handleCancelClick}
                 className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors hover:bg-calendar-primary/20 flex items-center justify-center flex-shrink-0"

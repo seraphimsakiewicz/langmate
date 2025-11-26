@@ -49,6 +49,20 @@ export const isBeforeSessionStart = (
   return now < sessionStart;
 };
 
+export const isInJoinWindow = (
+  session: Session,
+  timezone: string = defaultTimezone
+): boolean => {
+  const now = DateTime.now().setZone(timezone);
+  const sessionStart = DateTime.fromISO(`${session.date}T${session.startTime}`, {
+    zone: timezone,
+  });
+
+  if (!sessionStart.isValid) return false;
+  const diffMinutes = now.diff(sessionStart, "minutes").minutes;
+  return diffMinutes >= -10 && diffMinutes <= 5;
+};
+
 export const getHourLabel = (hour: number): string => {
   if (hour === 0) return "12A";
   if (hour === 12) return "12P";
