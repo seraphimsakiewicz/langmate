@@ -210,7 +210,7 @@ const SessionBlockComponent = ({
             )}
 
             {/* Close button - hidden 951px-1059px and on mobile (<950px) */}
-            {viewerIsParticipant && (
+            {viewerIsParticipant && sessionBeforeStart && (
               <Button
                 onClick={handleCancelClick}
                 className="text-session-booked w-[24px] h-[24px] p-[4px] ml-auto rounded-sm bg-calendar-primary/12 hover:text-session-booked/80 transition-colors hover:bg-calendar-primary/20 flex items-center justify-center flex-shrink-0"
