@@ -6,8 +6,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 const getURL = () => {
-  let url =
-    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? "http://localhost:3000/"; // Automatically set by Vercel.
+  let url = process?.env?.NEXT_PUBLIC_VERCEL_URL ?? "http://localhost:3000/"; // Automatically set by Vercel.
   // Make sure to include `https://` when not localhost.
   url = url.startsWith("http") ? url : `https://${url}`;
   // Make sure to include a trailing `/`.

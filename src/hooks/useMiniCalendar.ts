@@ -24,10 +24,7 @@ type MiniCalendarOptions = {
 export const useMiniCalendar = (options?: MiniCalendarOptions) => {
   const timezone = options?.timezone ?? "UTC";
 
-  const today = useMemo(
-    () => DateTime.now().setZone(timezone).startOf("day"),
-    [timezone]
-  );
+  const today = useMemo(() => DateTime.now().setZone(timezone).startOf("day"), [timezone]);
 
   const initialZonedDate = useMemo(() => {
     if (options?.initialDate) {

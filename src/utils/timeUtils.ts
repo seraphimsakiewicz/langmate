@@ -49,10 +49,7 @@ export const isBeforeSessionStart = (
   return now < sessionStart;
 };
 
-export const isInJoinWindow = (
-  session: Session,
-  timezone: string = defaultTimezone
-): boolean => {
+export const isInJoinWindow = (session: Session, timezone: string = defaultTimezone): boolean => {
   const now = DateTime.now().setZone(timezone);
   const sessionStart = DateTime.fromISO(`${session.date}T${session.startTime}`, {
     zone: timezone,
@@ -60,7 +57,9 @@ export const isInJoinWindow = (
 
   if (!sessionStart.isValid) return false;
   const diffMinutes = now.diff(sessionStart, "minutes").minutes;
-  return diffMinutes >= -10 && diffMinutes <= 5;
+  /* people can join from 10 minutes before session starts or up to 35 minutes after it starts (5
+   min grace period) */
+  return diffMinutes >= -10 && diffMinutes <= 35;
 };
 
 export const getHourLabel = (hour: number): string => {
