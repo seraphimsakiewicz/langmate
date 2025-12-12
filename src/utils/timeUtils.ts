@@ -85,3 +85,12 @@ export const generateTimeSlots = (timezone: string = defaultTimezone) => {
     return slots;
   }).flat();
 };
+
+// Takes "HH:mm" format, returns "HH:mm" format
+export const calculateEndTime = (startTime: string, durationMinutes: number) => {
+  const [hour, minute] = startTime.split(":").map(Number);
+  const totalMinutes = hour * 60 + minute + durationMinutes;
+  const endHour = Math.floor(totalMinutes / 60) % 24; // Handle midnight wrap
+  const endMinute = totalMinutes % 60;
+  return `${endHour.toString().padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}`;
+};

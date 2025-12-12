@@ -4,7 +4,7 @@ import React, { useState, useCallback, memo } from "react";
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { formatTime, isBeforeSessionStart, isInJoinWindow } from "@/utils/timeUtils";
+import { calculateEndTime, formatTime, isBeforeSessionStart, isInJoinWindow } from "@/utils/timeUtils";
 import { Button } from "../ui/button";
 import { useCalendarStore } from "@/stores/calendar-store";
 
@@ -163,9 +163,9 @@ const SessionBlockComponent = ({
                 <div className="text-session-time single-line-el">
                   {/* need to figure out how to always show on day view */}
                   <span className={`${calendarMode === "day" ? "block" : "md:hidden xl:block"}`}>
-                    {/* this will need to be dynamic later */}
                     {formatTime(session.startTime, true, profile.timezone)} -{" "}
-                    {formatTime(session.endTime, true, profile.timezone)}
+                    {/* later: 30 will need to be dynamic using a new duration property on sessions */}
+                    {formatTime(calculateEndTime(session.startTime, 30), true, profile.timezone)}
                   </span>
                   {calendarMode === "week" && (
                     <span className="md:block xl:hidden">
@@ -253,7 +253,6 @@ export const SessionBlock = memo(SessionBlockComponent, (prevProps, nextProps) =
     prevProps.mode === nextProps.mode &&
     prevProps.session?.id === nextProps.session?.id &&
     prevProps.session?.startTime === nextProps.session?.startTime &&
-    prevProps.session?.endTime === nextProps.session?.endTime &&
     prevProps.slotTime === nextProps.slotTime &&
     prevProps.calendarMode === nextProps.calendarMode
   );

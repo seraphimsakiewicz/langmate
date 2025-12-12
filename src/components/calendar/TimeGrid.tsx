@@ -92,16 +92,10 @@ export const TimeGrid = () => {
       return parsed.isValid ? parsed.toMillis() : Number.MAX_SAFE_INTEGER;
     };
 
-    const slotMinutes = hour * 60 + minute;
     const sessionsInBlock = sessions.filter((session) => {
       if (session.date !== day) return false;
       const [startHour, startMinute] = session.startTime.split(":").map(Number);
-      const [endHour, endMinute] = session.endTime.split(":").map(Number);
-
-      const sessionStartMinutes = startHour * 60 + startMinute;
-      const sessionEndMinutes = endHour * 60 + endMinute;
-
-      return slotMinutes >= sessionStartMinutes && slotMinutes < sessionEndMinutes;
+      return hour === startHour && minute === startMinute;
     });
 
     if (!sessionsInBlock.length) return undefined;

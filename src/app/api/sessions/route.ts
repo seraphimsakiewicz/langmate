@@ -12,7 +12,6 @@ const sessionsCleaner = (session: any, timezone: string) => {
   const end = start.plus({ minutes: 30 });
   delete newSession.start_time;
   newSession.startTime = start.toFormat("HH:mm");
-  newSession.endTime = end.toFormat("HH:mm");
   newSession.date = start.toISODate();
   return newSession;
 };

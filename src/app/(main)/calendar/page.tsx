@@ -22,10 +22,8 @@ export default async function CalendarPage() {
     delete newSession.created_at;
     delete newSession.updated_at;
     const start = DateTime.fromISO(session.start_time, { zone: "utc" }).setZone(timezone);
-    const end = start.plus({ minutes: 30 });
     delete newSession.start_time;
     newSession.startTime = start.toFormat("HH:mm");
-    newSession.endTime = end.toFormat("HH:mm");
     newSession.date = start.toISODate();
     return newSession;
   };
