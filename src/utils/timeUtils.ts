@@ -49,6 +49,20 @@ export const isBeforeSessionStart = (
   return now < sessionStart;
 };
 
+export const isSlotInPast = (
+  date: string,
+  hour: number,
+  minute: number,
+  timezone: string = defaultTimezone
+): boolean => {
+  const now = DateTime.now().setZone(timezone);
+  const startTime = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+  const sessionStart = DateTime.fromISO(`${date}T${startTime}`, { zone: timezone });
+
+  if (!sessionStart.isValid) return false;
+  return now > sessionStart;
+};
+
 export const isInJoinWindow = (session: Session, timezone: string = defaultTimezone): boolean => {
   const now = DateTime.now().setZone(timezone);
   const sessionStart = DateTime.fromISO(`${session.date}T${session.startTime}`, {
