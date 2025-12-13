@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
   }
   const supabase = await createClient();
-  // 1. Fetch session from Supabase
+  // Fetch session from Supabase
   const sessionRes = await supabase.from("sessions").select("start_time").eq("id", id).single();
 
   if (sessionRes.error || !sessionRes.data) {
@@ -24,10 +24,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Session has expired" }, { status: 400 });
   }
 
-  // 2. Calculate expiration (40 min after start)
+  // Calculate expiration (40 min after start)
   const exp = Math.floor(new Date(session.start_time).getTime() / 1000) + 40 * 60;
 
-  // 3. Call Daily API
+  // Call Daily API
   const roomRes = await fetch("https://api.daily.co/v1/rooms", {
     method: "POST",
     headers: {
@@ -36,18 +36,20 @@ export async function GET(req: NextRequest) {
     },
     body: JSON.stringify({
       name: `langmate-${id}`,
+      // TODO add NBF(not before) property to prevent too early joining, would be -10 minutes from start
       properties: { exp, enable_prejoin_ui: true },
     }),
   });
   const data = await roomRes.json();
-  if (data && data?.info.includes("which is in the past")) {
+  if (roomRes.status !== 200 && data && data?.info.includes("which is in the past")) {
     console.error("Session has expired", data);
     return NextResponse.json({ error: "Session has expired" }, { status: 400 });
   }
 
-  // 4. Handle response (ignore "already exists")
-  // 5. Return room URL
-  return NextResponse.json({
-    roomUrl: `https://englishchats.daily.co/langmate-${id}`,
-  });
+  return NextResponse.json(
+    {
+      roomUrl: `https://englishchats.daily.co/langmate-${id}`,
+    },
+    { status: 200 }
+  );
 }
