@@ -17,7 +17,6 @@ export type Session = {
     first_name: string | null;
     last_name: string | null;
   } | null;
-  // status: 'ongoing' | 'upcoming' | 'booked' | 'pending';
 };
 
 export type Profile = {

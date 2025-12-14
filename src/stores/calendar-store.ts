@@ -85,7 +85,29 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
         session.id === sessionId ? { ...session, ...updates } : session
       ),
     })),
-  deleteSession: async (sessionId) => {
+  matchSession: async (sessionId: string) => {
+    try {
+      console.log(`updating sessionId: ${sessionId} in matchSession fxn`);
+      const res = await fetch("/api/sessions", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId }),
+      });
+      if (!res.ok) throw new Error("Failed to update session");
+      const { session: updatedSession } = await res.json(); // session.start_time is ISO string
+      console.log("Matched session:", updatedSession);
+      set((state) => ({
+        sessions: state.sessions.map((session) =>
+          session.id === sessionId
+            ? { ...session, user_two_id: updatedSession.user_two_id }
+            : session
+        ),
+      }));
+    } catch (error) {
+      console.error("Error in match session:", error);
+    }
+  },
+  deleteSession: async (sessionId: string) => {
     const res = await fetch("/api/sessions", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
