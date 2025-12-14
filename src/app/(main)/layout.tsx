@@ -1,4 +1,4 @@
-import { SecondNav } from "@/components/layout/second-nav";
+// import { SecondNav } from "@/components/layout/second-nav";
 import { Header } from "@/components/layout/header";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
@@ -8,7 +8,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
       <div className="flex-1 overflow-hidden">
         <main className="h-full overflow-hidden">
           <div className="flex flex-col h-screen bg-background">
-            <SecondNav />
+            {/* <SecondNav /> */}
             <div className="flex-1 overflow-hidden">{children}</div>
           </div>
         </main>

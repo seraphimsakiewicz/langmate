@@ -93,10 +93,10 @@ export const SecondNav = () => {
             <CalendarIcon className="mr-2 h-4 w-4" />
             Calendar
           </NavItem>
-          <NavItem href="/sessions" isActive={currentView === "sessions"}>
+          {/* <NavItem href="/sessions" isActive={currentView === "sessions"}>
             <UsersIcon className="mr-2 h-4 w-4" />
             Sessions
-          </NavItem>
+          </NavItem> */}
           {/* <NavItem href="/people" isActive={currentView === "people"}>
             <UserIcon className="mr-2 h-4 w-4" />
             People
