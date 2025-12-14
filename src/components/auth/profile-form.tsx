@@ -81,9 +81,7 @@ export function ProfileForm({
       <Card>
         <CardHeader>
           <CardTitle>Complete Your Profile</CardTitle>
-          <CardDescription>
-            Tell us a bit about yourself to personalize your Langmate experience
-          </CardDescription>
+          <CardDescription>Thanks for signing up! Before you start, please tell us a bit about yourself</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -177,7 +175,9 @@ export function ProfileForm({
                         </SelectTrigger>
                         <SelectContent>
                           {languages.map((language) => (
-                            <SelectItem key={`${language.id}_target`} value={language.id}>{language.name}</SelectItem>
+                            <SelectItem key={`${language.id}_target`} value={language.id}>
+                              {language.name}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>

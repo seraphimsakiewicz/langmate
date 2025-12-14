@@ -1,7 +1,24 @@
 // import { SecondNav } from "@/components/layout/second-nav";
 import { Header } from "@/components/layout/header";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function MainLayout({ children }: { children: React.ReactNode }) {
+export default async function MainLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile) redirect("/signup/profile");
+  }
+
   return (
     <div className="h-full flex flex-col">
       <Header />
