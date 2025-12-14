@@ -92,8 +92,6 @@ export const CalendarHeader = () => {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* TO REMOVE BEFORE GOLIVE */}
-          {profile.id}
           <Button
             size="sm"
             variant={calendarMode === "day" ? "default" : "ghost"}
