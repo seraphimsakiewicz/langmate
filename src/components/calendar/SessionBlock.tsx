@@ -4,7 +4,12 @@ import React, { useState, useCallback, memo } from "react";
 import { Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
-import { calculateEndTime, formatTime, isBeforeSessionStart, isInJoinWindow } from "@/utils/timeUtils";
+import {
+  calculateEndTime,
+  formatTime,
+  isBeforeSessionStart,
+  isInJoinWindow,
+} from "@/utils/timeUtils";
 import { Button } from "../ui/button";
 import { useCalendarStore } from "@/stores/calendar-store";
 
@@ -14,7 +19,7 @@ interface SessionBlockProps {
   mode: SessionMode;
   session?: Session;
   slotTime?: string;
-  onUpdate?: (updates: Partial<Session>) => void;
+  matchSession: (sessionId: Session["id"]) => void;
   onDelete?: (sessionId: string) => void;
   onBook?: () => void;
   onRemovePending?: () => void;
@@ -35,6 +40,7 @@ const SessionBlockComponent = ({
   session,
   onDelete,
   onBook,
+  matchSession,
   calendarMode,
   onRemovePending,
 }: SessionBlockProps) => {
@@ -200,12 +206,15 @@ const SessionBlockComponent = ({
 
             {canMatch && (
               <div className="flex justify-start mt-1">
-                <Link
-                  href={`#`}
-                  className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
+                <button
+                  type="button"
+                  onClick={() => {
+                    matchSession(session.id);
+                  }}
+                  className="bg-calendar-primary hover:cursor-pointer hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
                 >
                   Match
-                </Link>
+                </button>
               </div>
             )}
 
@@ -253,6 +262,7 @@ export const SessionBlock = memo(SessionBlockComponent, (prevProps, nextProps) =
     prevProps.mode === nextProps.mode &&
     prevProps.session?.id === nextProps.session?.id &&
     prevProps.session?.startTime === nextProps.session?.startTime &&
+    prevProps.session?.user_two_id === nextProps.session?.user_two_id && // ← ADD THIS
     prevProps.slotTime === nextProps.slotTime &&
     prevProps.calendarMode === nextProps.calendarMode
   );

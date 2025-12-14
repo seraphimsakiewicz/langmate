@@ -23,7 +23,7 @@ export interface CalendarStore {
   // Sessions
   sessions: Session[];
   addSession: (localStartTime: string) => Promise<Session | undefined>;
-  updateSession: (sessionId: string, updates: Partial<Session>) => void;
+  matchSession: (sessionId: string) => void;
   deleteSession: (sessionId: string) => void;
 
   // BookingModal
@@ -79,12 +79,6 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
       }));
     }
   },
-  updateSession: (sessionId, updates) =>
-    set((state) => ({
-      sessions: state.sessions.map((session) =>
-        session.id === sessionId ? { ...session, ...updates } : session
-      ),
-    })),
   matchSession: async (sessionId: string) => {
     try {
       console.log(`updating sessionId: ${sessionId} in matchSession fxn`);

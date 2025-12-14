@@ -117,7 +117,7 @@ export async function DELETE(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   const { sessionId } = await req.json();
   if (!sessionId) {
-    return NextResponse.json({ error: "sessionId is required", status: 400 });
+    return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
   }
   // get user
   const supabase = await createClient();
@@ -127,7 +127,7 @@ export async function PATCH(req: NextRequest) {
 
   if (!user) {
     console.error("No user found:");
-    return NextResponse.json({ error: "Unauthorized", status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const updateResponse = await supabase
@@ -140,16 +140,19 @@ export async function PATCH(req: NextRequest) {
 
   const { data: updatedData, error: updateError } = updateResponse || {};
 
+  console.log("updateResponse data:", updateResponse);
+
   if (updateError) {
     console.error("Error updating session:", updateError);
-    return NextResponse.json({ error: "Failed to update session", status: 500 });
+    return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
   }
+  console.log("Updated session data:", updatedData);
 
   if (!updatedData || !updatedData.length) {
     console.error("No session data returned after update.");
-    return NextResponse.json({ error: "Failed to update session", status: 500 });
+    return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
   }
 
   console.log("Update response data:", updatedData);
-  return NextResponse.json({ status: updateResponse.status });
+  return NextResponse.json({ session: updatedData[0] }, { status: 200 });
 }

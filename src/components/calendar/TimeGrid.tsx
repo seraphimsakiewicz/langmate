@@ -56,15 +56,8 @@ export const TimeGrid = () => {
     minute: number;
   } | null>(null);
 
-  const {
-    calendarDate,
-    calendarMode,
-    sessions,
-    addSession,
-    updateSession,
-    deleteSession,
-    profile,
-  } = useCalendarStore();
+  const { calendarDate, calendarMode, sessions, addSession, matchSession, deleteSession, profile } =
+    useCalendarStore();
 
   const safeTimezone = profile.timezone ?? "UTC";
   const daysToShow = getDaysToShow(calendarDate, calendarMode, safeTimezone);
@@ -283,7 +276,7 @@ export const TimeGrid = () => {
                             key={sessionInSlot.id}
                             mode="booked"
                             session={sessionInSlot}
-                            onUpdate={(updates) => updateSession(sessionInSlot.id, updates)}
+                            matchSession={matchSession}
                             onDelete={deleteSession}
                             calendarMode={calendarMode}
                           />
@@ -295,6 +288,7 @@ export const TimeGrid = () => {
                             calendarMode={calendarMode}
                             mode={isPending ? "pending" : isHovered ? "hover" : "empty"}
                             slotTime={slot.formatted}
+                            matchSession={matchSession}
                             onBook={() => handleSlotClick(day.date, slot.hour, slot.minute)}
                             onRemovePending={() => setPendingConfirmation(null)}
                           />
