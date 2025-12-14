@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
 import { createProfile } from "@/app/(public)/(auth)/signup/profile/action";
+import { Combobox } from "@/components/ui/combobox";
 
 type Language = {
   id: string;
@@ -35,7 +36,7 @@ export function ProfileForm({
   languages,
   ...props
 }: React.ComponentProps<"div"> & { languages: Language[] }) {
-  const { options } = useTimezoneSelect({
+  const { options: timezoneOptions } = useTimezoneSelect({
     labelStyle: "original",
     timezones: {
       ...allTimezones,
@@ -122,18 +123,13 @@ export function ProfileForm({
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Your time zone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {options.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Combobox
+                      options={timezoneOptions}
+                      value={field.value || undefined}
+                      onChange={field.onChange}
+                      placeholder="Search your time zone"
+                      searchPlaceholder="Search your time zone"
+                    />
                   )}
                 />
               </div>
