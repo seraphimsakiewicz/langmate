@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { DailyProvider, useCallFrame } from "@daily-co/daily-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 
 export default function Page() {
@@ -40,14 +41,22 @@ export default function Page() {
   }, [call, roomUrl]);
 
   return (
-    <div className="fixed inset-0 bg-gray-900">
-      {!roomUrl ? (
-        <p>Loading...</p>
-      ) : (
-        <DailyProvider callObject={call}>
-          <div ref={callContainerRef} className="w-full h-full" />
-        </DailyProvider>
-      )}
+    <div className="fixed inset-0 flex flex-col bg-gray-900 text-white">
+      <header className="flex h-14 items-center justify-center border-b border-white/10 bg-black/60 px-4 backdrop-blur">
+        <div className="flex items-center gap-2">
+          <span className="text-3xl font-semibold tracking-tight">Langmate</span>
+        </div>
+      </header>
+
+      <main className="relative flex-1">
+        {!roomUrl ? (
+          <div className="flex h-full items-center justify-center text-sm text-white/70">Loading...</div>
+        ) : (
+          <DailyProvider callObject={call}>
+            <div ref={callContainerRef} className="absolute inset-0" />
+          </DailyProvider>
+        )}
+      </main>
     </div>
   );
 }
