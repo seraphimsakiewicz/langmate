@@ -10,7 +10,7 @@ export function Header() {
       <div className="h-16 container flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <h1 className="text-xl font-bold text-primary">
-            Lang<span className="font-normal">mate</span>
+            Lang<span className="font-normal">swap</span>
           </h1>
         </Link>
 
