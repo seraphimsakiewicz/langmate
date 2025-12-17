@@ -52,7 +52,7 @@ export default function Page() {
   // Join when ready
   useEffect(() => {
     if (call && roomUrl) {
-      // TODO: auto add username from profile 
+      // TODO: auto add username from profile
       call.join({ url: roomUrl });
     }
   }, [call, roomUrl]);
@@ -77,10 +77,17 @@ export default function Page() {
 
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-900 text-white">
-      <header className="relative flex h-20 items-center border-b border-white/10 bg-black/60 px-4 backdrop-blur">
-        <span className="absolute left-1/2 -translate-x-1/2 text-3xl font-semibold tracking-tight">Langmate</span>
+      <header className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-white/10 bg-black/60 px-4 py-3 backdrop-blur">
+        <div />
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex flex-col items-center gap-1 text-center">
+          <span className="text-3xl font-semibold tracking-tight">Langmate</span>
+          <p className="text-xs text-white/70 sm:text-sm">
+            Decide who starts. Set a timer for half the time that's left, then switch!
+          </p>
+        </div>
+
+        <div className="flex items-center justify-end gap-3">
           <div className="flex flex-col items-center rounded-lg bg-white/10 px-3 py-2 text-sm shadow">
             <span className="text-xs uppercase text-white/70">Ends in</span>
             <span className="text-lg font-semibold tabular-nums">{formatTimeLeft(timeLeft)}</span>
@@ -96,7 +103,9 @@ export default function Page() {
 
       <main className="relative flex-1">
         {!roomUrl ? (
-          <div className="flex h-full items-center justify-center text-sm text-white/70">Loading...</div>
+          <div className="flex h-full items-center justify-center text-sm text-white/70">
+            Loading...
+          </div>
         ) : (
           <DailyProvider callObject={call}>
             <div ref={callContainerRef} className="absolute inset-0" />
