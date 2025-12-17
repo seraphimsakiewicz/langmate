@@ -20,14 +20,14 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col bg-background">
       <Header />
-      <div className="flex-1 overflow-hidden">
-        <main className="h-full overflow-hidden">
-          <div className="flex flex-col h-screen bg-background">
-            <SecondNav />
-            <div className="flex-1 overflow-hidden">{children}</div>
-          </div>
+      <div className="flex-1 flex flex-col overflow-auto min-h-0">
+        <div className="sticky top-0 z-20 bg-white">
+          <SecondNav />
+        </div>
+        <main className="flex-1 min-h-0">
+          <div className="h-full">{children}</div>
         </main>
       </div>
     </div>

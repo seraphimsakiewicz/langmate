@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Calendar as CalendarIcon,
-  Users as UsersIcon,
-  User as UserIcon,
-  Menu as MenuIcon,
-} from "lucide-react";
+import { Calendar as CalendarIcon, Users as UsersIcon, Menu as MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -75,19 +70,17 @@ export const SecondNav = () => {
 
   const currentView = getCurrentView();
   return (
-    <div className="border-b border-calendar-border bg-white">
+    <div className="border-b border-calendar-border bg-white sticky top-0 z-20">
       <div className="py-3">
         <div className="flex items-center space-x-1">
-          {currentView === "calendar" && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleSidebar}
-              className={`p-2 mr-2 ${currentView === "calendar" ? "flex" : "invisible"}`}
-            >
-              <MenuIcon className="size-[1.5rem]" />
-            </Button>
-          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleSidebar}
+            className={`p-2 mr-2 ${currentView === "calendar" ? "flex" : "invisible"}`}
+          >
+            <MenuIcon className="size-[1.5rem]" />
+          </Button>
 
           <NavItem href="/calendar" isActive={currentView === "calendar"}>
             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -97,10 +90,6 @@ export const SecondNav = () => {
             <UsersIcon className="mr-2 h-4 w-4" />
             Sessions
           </NavItem>
-          {/* <NavItem href="/people" isActive={currentView === "people"}>
-            <UserIcon className="mr-2 h-4 w-4" />
-            People
-          </NavItem> */}
         </div>
       </div>
     </div>

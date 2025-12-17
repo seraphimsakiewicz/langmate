@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { DateTime } from "luxon";
 import { useSessionsQuery } from "@/hooks/useSessionsQuery";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Users, UserRound } from "lucide-react";
+import { Clock, Users } from "lucide-react";
 
 export default function SessionsPage() {
   const { data, isLoading, isError, error, refetch } = useSessionsQuery();
@@ -119,8 +119,8 @@ export default function SessionsPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-white">
-      <div className="mx-auto flex h-full max-w-5xl flex-col gap-6 px-4 py-8 sm:px-8">
+    <div className="bg-white min-h-full">
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 pb-16 sm:px-8">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold text-foreground">Sessions</h1>
           <p className="text-sm text-muted-foreground">
