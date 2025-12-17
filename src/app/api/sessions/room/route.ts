@@ -65,6 +65,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(
     {
       roomUrl: `https://englishchats.daily.co/langmate-${id}`,
+      startTime: session.start_time,
     },
     { status: 200 }
   );
