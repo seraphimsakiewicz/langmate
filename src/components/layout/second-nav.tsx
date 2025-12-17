@@ -78,25 +78,25 @@ export const SecondNav = () => {
     <div className="border-b border-calendar-border bg-white">
       <div className="py-3">
         <div className="flex items-center space-x-1">
-          {/* {currentView === "calendar" && ( */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleSidebar}
-            className={`p-2 mr-2 ${currentView === "calendar" ? "flex" : "invisible"}`}
-          >
-            <MenuIcon className="size-[1.5rem]" />
-          </Button>
-          {/* )} */}
+          {currentView === "calendar" && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleSidebar}
+              className={`p-2 mr-2 ${currentView === "calendar" ? "flex" : "invisible"}`}
+            >
+              <MenuIcon className="size-[1.5rem]" />
+            </Button>
+          )}
 
           <NavItem href="/calendar" isActive={currentView === "calendar"}>
             <CalendarIcon className="mr-2 h-4 w-4" />
             Calendar
           </NavItem>
-          {/* <NavItem href="/sessions" isActive={currentView === "sessions"}>
+          <NavItem href="/sessions" isActive={currentView === "sessions"}>
             <UsersIcon className="mr-2 h-4 w-4" />
             Sessions
-          </NavItem> */}
+          </NavItem>
           {/* <NavItem href="/people" isActive={currentView === "people"}>
             <UserIcon className="mr-2 h-4 w-4" />
             People
