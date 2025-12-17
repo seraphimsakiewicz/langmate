@@ -1,20 +1,18 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server"; // instantiate the Supabase server client
+import { cleanSession, getProfileAndSessions } from "@/lib/sessions";
 
-// todo fix any type
-const sessionsCleaner = (session: any, timezone: string) => {
-  const newSession = { ...session };
-  newSession.createdAt = session.created_at;
-  delete newSession.created_at;
-  delete newSession.updated_at;
-  const start = DateTime.fromISO(session.start_time, { zone: "utc" }).setZone(timezone);
-  const end = start.plus({ minutes: 30 });
-  delete newSession.start_time;
-  newSession.startTime = start.toFormat("HH:mm");
-  newSession.date = start.toISODate();
-  return newSession;
-};
+export async function GET() {
+  const supabase = await createClient();
+  const { sessions, profile, error, status } = await getProfileAndSessions(supabase);
+
+  if (!profile) {
+    return NextResponse.json({ error: error ?? "Unauthorized" }, { status: status ?? 401 });
+  }
+
+  return NextResponse.json({ sessions, profile }, { status: status ?? 200 });
+}
 
 export async function POST(req: NextRequest) {
   const { localStartTime } = await req.json();
@@ -66,7 +64,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to create session", status: 500 });
   }
 
-  const cleanedSessions = newData?.map((session) => sessionsCleaner(session, profile.timezone));
+  const cleanedSessions = newData?.map((session) => cleanSession(session, profile.timezone));
   console.log("Cleaned sessions to return:", cleanedSessions);
 
   if (insertError) {

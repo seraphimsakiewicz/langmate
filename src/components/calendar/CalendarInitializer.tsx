@@ -11,7 +11,7 @@ interface CalendarInitializerProps {
 }
 
 export const CalendarInitializer = ({ profile, sessions, children }: CalendarInitializerProps) => {
-  if (!profile) return;
+  if (!profile) return null;
   useEffect(() => {
     const { profile: currentProfile, setProfile } = useCalendarStore.getState();
     if (profile.id === currentProfile.id) return;
