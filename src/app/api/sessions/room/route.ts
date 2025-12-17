@@ -37,13 +37,29 @@ export async function GET(req: NextRequest) {
     body: JSON.stringify({
       name: `langmate-${id}`,
       // TODO add NBF(not before) property to prevent too early joining, would be -10 minutes from start
-      properties: { exp, enable_prejoin_ui: true },
+      properties: {
+        exp,
+        enable_prejoin_ui: true,
+        enable_people_ui: true,
+        enable_pip_ui: true,
+        enable_emoji_reactions: true,
+        enable_network_ui: true,
+        enable_noise_cancellation_ui: true,
+        enable_chat: true,
+        enable_advanced_chat: true,
+      },
     }),
   });
   const data = await roomRes.json();
+  console.log("data", data);
   if (roomRes.status !== 200 && data && data?.info.includes("which is in the past")) {
     console.error("Session has expired", data);
     return NextResponse.json({ error: "Session has expired" }, { status: 400 });
+  }
+
+  if (data.error && !data.info.includes("already exists")) {
+    console.error("Error creating Daily room:", data);
+    return NextResponse.json({ error: "Failed to create video room" }, { status: 500 });
   }
 
   return NextResponse.json(
