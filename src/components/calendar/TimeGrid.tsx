@@ -194,7 +194,7 @@ export const TimeGrid = () => {
                 }}
               >
                 <div className="absolute bottom-2 right-1 text-xs text-calendar-time-text">
-                  {DateTime.now().setZone(safeTimezone).toFormat("ZZZ")}
+                  {DateTime.now().setZone(safeTimezone).toFormat("ZZZZ")}
                 </div>
               </div>
               {/* day.isToday */}
