@@ -9,7 +9,8 @@ export function Header() {
     <header className="sticky top-0 w-full border-b pl-5 pr-5">
       <div className="h-16 container flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-primary">
+          <img src="/langmate-logo.svg" alt="Swaptalk logo" className="h-8 w-8" />
+          <h1 className="text-2xl font-bold text-primary">
             Swaptalk
           </h1>
         </Link>

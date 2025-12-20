@@ -42,10 +42,10 @@ export const MainNav = () => {
         ) : (
           <Fragment>
             <Button variant="ghost" asChild>
-              <Link href="/login">Login</Link>
+              <Link href="/login">Sign in</Link>
             </Button>
             <Button asChild>
-              <Link href="/signup">Sign up</Link>
+              <Link href="/signup">Join for free</Link>
             </Button>
           </Fragment>
         )}

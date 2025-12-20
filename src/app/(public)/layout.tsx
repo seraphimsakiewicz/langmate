@@ -1,10 +1,12 @@
 import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="h-full flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <Header />
-      {children}
+      <div className="flex-1 flex flex-col">{children}</div>
+      <Footer />
     </div>
   );
 }
