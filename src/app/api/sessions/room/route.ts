@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
 
   // Calculate expiration (40 min after start)
   const exp = Math.floor(new Date(session.start_time).getTime() / 1000) + 40 * 60;
+  const nbf = Math.floor(new Date(session.start_time).getTime() / 1000) - 10 * 60;
 
   // Call Daily API
   const roomRes = await fetch("https://api.daily.co/v1/rooms", {
@@ -35,9 +36,9 @@ export async function GET(req: NextRequest) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: `langmate-${id}`,
-      // TODO add NBF(not before) property to prevent too early joining, would be -10 minutes from start
+      name: `swaptalk-${id}`,
       properties: {
+        nbf,
         exp,
         enable_prejoin_ui: true,
         enable_people_ui: true,
@@ -64,7 +65,7 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json(
     {
-      roomUrl: `https://englishchats.daily.co/langmate-${id}`,
+      roomUrl: `https://englishchats.daily.co/swaptalk-${id}`,
       startTime: session.start_time,
     },
     { status: 200 }

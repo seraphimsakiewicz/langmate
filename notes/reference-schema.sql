@@ -1,4 +1,4 @@
--- Simplified Langmate MVP Schema Focus: 1-on-1 matching, 25 min sessions (12.5 min each language)
+-- Simplified Swaptalk MVP Schema Focus: 1-on-1 matching, 25 min sessions (12.5 min each language)
 -- Core user profiles
 CREATE TABLE "profiles" (
   "id" uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,

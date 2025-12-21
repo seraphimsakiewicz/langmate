@@ -81,7 +81,7 @@ export default function Page() {
         <div />
 
         <div className="flex flex-col items-center gap-1 text-center">
-          <span className="text-3xl font-semibold tracking-tight">Langmate</span>
+          <span className="text-3xl font-semibold tracking-tight">Swaptalk</span>
           <p className="text-xs text-white/70 sm:text-sm">
             Decide who starts. Set a timer for half the time that's left, then switch!
           </p>
