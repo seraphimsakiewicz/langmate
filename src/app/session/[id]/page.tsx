@@ -23,7 +23,7 @@ export default function Page() {
 
   useEffect(() => {
     const getRoom = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sessions/room?id=${id}`);
+      const res = await fetch(`/api/sessions/room?id=${id}`);
       const data = await res.json();
       if (res.status === 200) {
         setRoomUrl(data.roomUrl);
