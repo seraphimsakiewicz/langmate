@@ -8,6 +8,7 @@ export default function Page() {
   const callContainerRef = useRef<HTMLDivElement>(null!);
   const [roomUrl, setRoomUrl] = useState<string | null>(null);
   const [startTime, setStartTime] = useState<string | null>(null);
+  const [names, setNames] = useState<{ userName: string; partnerName: string } | null>(null);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const router = useRouter();
   const { id } = useParams();
@@ -28,6 +29,7 @@ export default function Page() {
       if (res.status === 200) {
         setRoomUrl(data.roomUrl);
         setStartTime(data.startTime);
+        setNames({ userName: data.userName, partnerName: data.partnerName });
       } else {
         console.log("error", data);
       }
@@ -52,8 +54,8 @@ export default function Page() {
   // Join when ready
   useEffect(() => {
     if (call && roomUrl) {
-      // TODO: auto add username from profile
-      call.join({ url: roomUrl });
+      // TODO: auto add userName prop from profile
+      call.join({ url: roomUrl, userName: names?.userName || "Guest" });
     }
   }, [call, roomUrl]);
 

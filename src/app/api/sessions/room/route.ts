@@ -7,15 +7,48 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Session ID is required" }, { status: 400 });
   }
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    console.error("No user found:");
+    return NextResponse.json({ error: "Unauthorized", status: 401 });
+  }
+
   // Fetch session from Supabase
-  const sessionRes = await supabase.from("sessions").select("start_time").eq("id", id).single();
+  const sessionRes = await supabase
+    .from("sessions")
+    .select(
+      `
+  start_time,
+  user_one_id,
+  user_two_id, 
+  user_one_name:public_profiles!sessions_user_one_id_fkey(first_name,last_name), 
+  user_two_name:public_profiles!sessions_user_two_id_fkey(first_name,last_name)
+`
+    )
+    .eq("id", id)
+    .single();
 
   if (sessionRes.error || !sessionRes.data) {
     return NextResponse.json({ error: "Session not found" }, { status: 404 });
   }
 
-  const session = sessionRes.data;
+  type NameObject = {
+    first_name: string;
+    last_name: string;
+  };
 
+  const session = sessionRes.data;
+  const isUserOne = user.id === session.user_one_id;
+  const userName = (isUserOne
+    ? session.user_one_name
+    : session.user_two_name) as unknown as NameObject;
+  const partnerName = (isUserOne
+    ? session.user_two_name
+    : session.user_one_name) as unknown as NameObject;
   // Check if session is in the past (can't create room for expired session)
   const sessionStart = new Date(session.start_time).getTime();
   const now = Date.now();
@@ -67,6 +100,8 @@ export async function GET(req: NextRequest) {
     {
       roomUrl: `https://englishchats.daily.co/swaptalk-${id}`,
       startTime: session.start_time,
+      userName: `${userName.first_name} ${userName.last_name}`,
+      partnerName: `${partnerName.first_name} ${partnerName.last_name}`,
     },
     { status: 200 }
   );
