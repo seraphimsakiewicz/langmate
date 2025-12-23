@@ -80,7 +80,12 @@ export default function Page() {
   return (
     <div className="fixed inset-0 flex flex-col bg-gray-900 text-white">
       <header className="grid grid-cols-[1fr_auto_1fr] items-center border-b border-white/10 bg-black/60 px-4 py-3 backdrop-blur">
-        <div />
+        <div className="flex min-w-0 items-center gap-2 text-sm">
+          <span className="text-xs tracking-wide text-white">Your partner:</span>
+          <span className="max-w-[180px] truncate font-semibold text-white">
+            {names?.partnerName ?? "Partner"}
+          </span>
+        </div>
 
         <div className="flex flex-col items-center gap-1 text-center">
           <span className="text-3xl font-semibold tracking-tight">Swaptalk</span>
