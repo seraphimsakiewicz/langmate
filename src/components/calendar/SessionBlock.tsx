@@ -196,7 +196,7 @@ const SessionBlockComponent = ({
             {canJoin && (
               <div className="flex justify-start mt-1">
                 <Link
-                  href={`#`}
+                  href={`/session/${session.id}`}
                   className="bg-calendar-primary hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
                 >
                   Join
