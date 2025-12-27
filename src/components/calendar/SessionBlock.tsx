@@ -150,8 +150,8 @@ const SessionBlockComponent = ({
     /* if session_user_one_id === (our profile id), then return name of user_two, otherwise return
      name of user_one */
     const bookedPartnerName = viewerIsHost
-      ? session.user_two_name?.first_name || ""
-      : session.user_one_name?.first_name || "";
+      ? `${session.user_two_name?.first_name} ${session.user_two_name?.last_name || ""}` || ""
+      : `${session.user_one_name?.first_name} ${session.user_one_name?.last_name || ""}` || "";
 
     return (
       <SessionContainer className="border-2 border-session-booked text-session-booked">
@@ -181,11 +181,7 @@ const SessionBlockComponent = ({
                 </div>
                 {/* Your partner or Pending Partner */}
                 <div className="text-[12px] single-line-el">
-                  {sessionHasOpenSeat && viewerIsHost
-                    ? "Pending Partner"
-                    : sessionHasOpenSeat && !viewerIsHost
-                      ? session.user_one_name?.first_name
-                      : bookedPartnerName}
+                  {sessionHasOpenSeat && viewerIsHost ? "Pending Partner" : bookedPartnerName}
                 </div>
               </div>
             </div>
