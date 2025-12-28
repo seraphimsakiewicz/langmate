@@ -21,6 +21,9 @@ export default async function LandingPage() {
             <Link href="/signup">Join for free</Link>
           </Button>
         </div>
+        <p className="text-sm text-muted-foreground mt-4">
+          Early access is open to fluent English or Spanish speakers.
+        </p>
       </div>
     </main>
   );
