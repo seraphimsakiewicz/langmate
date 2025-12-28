@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server"; // instantiate the Supabase server client
 import { cleanSession, getProfileAndSessions } from "@/lib/sessions";
 
+// get sessions and profile for the user
 export async function GET() {
   const supabase = await createClient();
   const { sessions, profile, error, status } = await getProfileAndSessions(supabase);
@@ -14,6 +15,7 @@ export async function GET() {
   return NextResponse.json({ sessions, profile }, { status: status ?? 200 });
 }
 
+// create a new session
 export async function POST(req: NextRequest) {
   const { localStartTime } = await req.json();
   if (!localStartTime) {
@@ -78,6 +80,7 @@ export async function POST(req: NextRequest) {
   );
 }
 
+// delete a session
 export async function DELETE(req: NextRequest) {
   const { sessionId } = await req.json();
   if (!sessionId) {
@@ -112,6 +115,7 @@ export async function DELETE(req: NextRequest) {
   return NextResponse.json({ status: deleteResponse.status });
 }
 
+// add user to session
 export async function PATCH(req: NextRequest) {
   const { sessionId } = await req.json();
   if (!sessionId) {
