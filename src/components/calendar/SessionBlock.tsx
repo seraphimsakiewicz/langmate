@@ -20,7 +20,7 @@ interface SessionBlockProps {
   session?: Session;
   slotTime?: string;
   matchSession: (sessionId: Session["id"]) => void;
-  onDelete?: (sessionId: string) => void;
+  onDelete?: (sessionData: Session) => void;
   onBook?: () => void;
   onRemovePending?: () => void;
   calendarMode?: "day" | "week";
@@ -78,7 +78,7 @@ const SessionBlockComponent = ({
     (e: React.MouseEvent) => {
       e.stopPropagation();
       if (onDelete && session) {
-        onDelete(session.id);
+        onDelete(session);
       }
     },
     [onDelete, session]

@@ -94,8 +94,8 @@ export async function POST(req: NextRequest) {
 
 // delete a session
 export async function DELETE(req: NextRequest) {
-  const { sessionId } = await req.json();
-  if (!sessionId) {
+  const { sessionData } = await req.json();
+  if (!sessionData || !sessionData.id) {
     return NextResponse.json({ error: "sessionId is required", status: 400 });
   }
   const supabase = await createClient();
@@ -112,7 +112,7 @@ export async function DELETE(req: NextRequest) {
   const deleteResponse = await supabase
     .from("sessions")
     .delete()
-    .eq("id", sessionId)
+    .eq("id", sessionData.id)
     .or(`user_one_id.eq.${user.id},user_two_id.eq.${user.id}`);
 
   const { error: deleteError } = deleteResponse || {};
@@ -122,7 +122,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Failed to delete session", status: 500 });
   }
 
-  console.log(`Session ${sessionId} deleted successfully. Deleted by user ${user.id}`);
+  console.log(`Session ${sessionData.id} deleted successfully. Deleted by user ${user.id}`);
 
   return NextResponse.json({ status: deleteResponse.status });
 }

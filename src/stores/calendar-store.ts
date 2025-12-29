@@ -24,7 +24,7 @@ export interface CalendarStore {
   sessions: Session[];
   addSession: (localStartTime: string) => Promise<Session | undefined>;
   matchSession: (sessionId: string) => void;
-  deleteSession: (sessionId: string) => void;
+  deleteSession: (sessionData: Session) => void;
 
   // BookingModal
   openModal: boolean;
@@ -101,18 +101,18 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
       console.error("Error in match session:", error);
     }
   },
-  deleteSession: async (sessionId: string) => {
+  deleteSession: async (sessionData: Session) => {
     const res = await fetch("/api/sessions", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sessionId }),
+      body: JSON.stringify({ sessionData }),
     });
     if (!res.ok) {
-      console.error("Failed to delete session with id:", sessionId);
+      console.error("Failed to delete session with id:", sessionData.id);
       return;
     }
     set((state) => ({
-      sessions: state.sessions.filter((session) => session.id !== sessionId),
+      sessions: state.sessions.filter((session) => session.id !== sessionData.id),
     }));
   },
   setOpenModal: (newModalState: boolean) =>
