@@ -6,25 +6,30 @@ import { SendMailClient } from "zeptomail";
 const url = "https://api.zeptomail.com/v1.1/email";
 const token = process.env.ZEPTOMAIL_API_KEY || "";
 
-export const sendEmail = async () => {
+export const sendEmail = async (
+  emailTo: string,
+  nameTo: string,
+  emailSubject: string,
+  emailBody: string
+) => {
   let client = new SendMailClient({ url, token });
 
-  const res = await client.sendMail({
+ await client.sendMail({
     from: {
       address: "hello@swaptalk.io",
-      name: "noreply",
+      name: "Swaptalk Team",
     },
     to: [
       {
         email_address: {
           // this needs to be dynamic
-          /* address: "hello@swaptalk.io",
-          name: "Hello", */
+          address: emailTo,
+          name: nameTo,
         },
       },
     ],
     // will leave this for now.
-    subject: "Test Email",
-    htmlbody: "<div><b> Test email sent successfully.</b></div>",
+    subject: emailSubject,
+    htmlbody: emailBody,
   });
 };

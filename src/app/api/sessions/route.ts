@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { DateTime } from "luxon";
 import { createClient } from "@/lib/supabase/server"; // instantiate the Supabase server client
 import { cleanSession, getProfileAndSessions } from "@/lib/sessions";
+import { sendEmail } from "@/utils/emailUtils";
 
 // get sessions and profile for the user
 export async function GET() {
@@ -33,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("timezone, native_language_id, target_language_id")
+    .select("timezone, native_language_id, target_language_id, first_name, last_name")
     .eq("id", user.id)
     .single();
 
@@ -73,6 +74,17 @@ export async function POST(req: NextRequest) {
     console.error("Error creating session:", insertError);
     return NextResponse.json({ error: "Failed to create session", status: 500 });
   }
+
+  sendEmail(
+    user.email!,
+    `${profile.first_name} ${profile.last_name || ""}`,
+    "New Session Created",
+    `<div>Your session scheduled at ${zonedStart.toFormat(
+      "ff"
+    )} has been created successfully.</div>`
+  ).catch((emailError) => {
+    console.error("Error sending email:", emailError);
+  });
 
   return NextResponse.json(
     { session: { ...cleanedSessions[0] } },
