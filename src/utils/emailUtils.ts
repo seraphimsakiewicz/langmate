@@ -22,13 +22,11 @@ export const sendEmail = async (
     to: [
       {
         email_address: {
-          // this needs to be dynamic
           address: emailTo,
           name: nameTo,
         },
       },
     ],
-    // will leave this for now.
     subject: emailSubject,
     htmlbody: emailBody,
   });

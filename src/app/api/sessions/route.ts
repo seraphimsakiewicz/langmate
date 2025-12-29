@@ -149,8 +149,10 @@ export async function PATCH(req: NextRequest) {
     .update({ user_two_id: user.id })
     .eq("id", sessionId)
     .is("user_two_id", null)
-    .neq("user_one_id", user.id)
-    .select();
+    .neq("user_one_id", user.id).select(`*, 
+     user_one_data:profiles!sessions_user_one_id_fkey(first_name,last_name,email,timezone), 
+     user_two_data:profiles!sessions_user_two_id_fkey(first_name,last_name,email,timezone)
+    `);
 
   const { data: updatedData, error: updateError } = updateResponse || {};
 
@@ -166,6 +168,39 @@ export async function PATCH(req: NextRequest) {
     console.error("No session data returned after update.");
     return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
   }
+
+  const getUser = (num: string) => {
+    return updatedData[0][`user_${num}_data`];
+  };
+
+  const getUsersName = (num: string) => {
+    const userData = getUser(num);
+    return `${userData.first_name} ${userData.last_name || ""}`;
+  };
+
+  ["one", "two"].forEach((num) => {
+    const emailTo = getUser(num).email;
+    const nameTo = getUsersName(num);
+    const usersTimezone = getUser(num).timezone;
+
+    const sessionStartTime = DateTime.fromISO(updatedData[0].start_time, {
+      zone: usersTimezone,
+    }).toFormat("ff ZZZZ");
+
+    let matchName = getUsersName("two");
+    let subject = `${matchName} booked a session with you starting at ${sessionStartTime} !`;
+    let emailBody = `<div>You've been matched for your session scheduled at ${sessionStartTime} with ${matchName}.</div>`;
+
+    if (num === "two") {
+      matchName = getUsersName("one");
+      subject = `You've booked a session with ${matchName} starting at ${sessionStartTime} !`;
+      emailBody = `<div>You've booked a session scheduled at ${sessionStartTime} with ${matchName}.</div>`;
+    }
+
+    sendEmail(emailTo, nameTo, subject, emailBody).catch((emailError) => {
+      console.error(`Error sending email to user_${num}:`, emailError);
+    });
+  });
 
   console.log("Update response data:", updatedData);
   return NextResponse.json({ session: updatedData[0] }, { status: 200 });
