@@ -92,12 +92,15 @@ export async function POST(req: NextRequest) {
   );
 }
 
-// delete a session
+// cancel a session
+/* { action: "deleted" | "user_two_removed" | "user_one_removed", session?: UpdatedSession } */
 export async function DELETE(req: NextRequest) {
   const { sessionData } = await req.json();
   if (!sessionData || !sessionData.id) {
     return NextResponse.json({ error: "sessionId is required", status: 400 });
   }
+
+  console.log("sessionData received for deletion:", sessionData);
   const supabase = await createClient();
   /* need to get user, check they are a valid user */
   const {
@@ -109,22 +112,64 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized", status: 401 });
   }
 
-  const deleteResponse = await supabase
-    .from("sessions")
-    .delete()
-    .eq("id", sessionData.id)
-    .or(`user_one_id.eq.${user.id},user_two_id.eq.${user.id}`);
+  if (sessionData.user_one_id === user.id && !sessionData.user_two_id) {
+    const deleteResponse = await supabase.from("sessions").delete().eq("id", sessionData.id);
 
-  const { error: deleteError } = deleteResponse || {};
+    const { error: deleteError } = deleteResponse || {};
 
-  if (deleteError) {
-    console.error("Error deleting session:", deleteError);
-    return NextResponse.json({ error: "Failed to delete session", status: 500 });
+    if (deleteError) {
+      console.error("Error deleting session:", deleteError);
+      return NextResponse.json({ error: "Failed to delete session", status: 500 });
+    }
+
+    console.log(`Session ${sessionData.id} deleted successfully. Deleted by user ${user.id}`);
+
+    return NextResponse.json({ status: deleteResponse.status, action: "deleted" });
+  } else if (sessionData.user_two_id === user.id) {
+    const updateResponse = await supabase
+      .from("sessions")
+      .update({ user_two_id: null })
+      .eq("id", sessionData.id)
+      .select();
+
+    const { data: updatedData, error: updateError } = updateResponse || {};
+
+    console.log("updateResponse data:", updateResponse);
+
+    if (updateError) {
+      console.error("Error updating session:", updateError);
+      return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
+    }
+    console.log("Updated session data:", updatedData);
+
+    if (!updatedData || !updatedData.length) {
+      console.error("No session data returned after update.");
+      return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
+    }
+
+    return NextResponse.json({
+      status: updateResponse.status,
+      action: "user_two_removed",
+      newSession: updatedData[0],
+    });
+  } else {
+    console.log(
+      "deleting user_one_id from session and promoting user_two_id to user_one_id:\n and swappng languages ids",
+      sessionData.id
+    );
+
+    // must do this next, just for testing
+    const newFakeData = {...sessionData};
+    newFakeData.user_one_id = sessionData.user_two_id;
+    newFakeData.user_two_id = null;
+    newFakeData.language_one_id = sessionData.language_two_id;
+    newFakeData.language_two_id = sessionData.language_one_id;
+    return NextResponse.json({
+      status: 200,
+      action: "user_one_removed",
+      newSession: newFakeData,
+    });
   }
-
-  console.log(`Session ${sessionData.id} deleted successfully. Deleted by user ${user.id}`);
-
-  return NextResponse.json({ status: deleteResponse.status });
 }
 
 // add user to session

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, memo } from "react";
-import { Session } from "@/types/calendar";
+import { Profile, Session } from "@/types/calendar";
 import { X } from "lucide-react";
 import Link from "next/link";
 import {
@@ -20,7 +20,7 @@ interface SessionBlockProps {
   session?: Session;
   slotTime?: string;
   matchSession: (sessionId: Session["id"]) => void;
-  onDelete?: (sessionData: Session) => void;
+  onDelete?: (sessionData: Session, profileData: Profile) => void;
   onBook?: () => void;
   onRemovePending?: () => void;
   calendarMode?: "day" | "week";
@@ -77,11 +77,11 @@ const SessionBlockComponent = ({
   const handleCancelConfirmYes = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-      if (onDelete && session) {
-        onDelete(session);
+      if (onDelete && session && profile) {
+        onDelete(session, profile);
       }
     },
-    [onDelete, session]
+    [onDelete, session, profile]
   );
 
   const inJoinWindow = session ? isInJoinWindow(session, profile.timezone) : false;
