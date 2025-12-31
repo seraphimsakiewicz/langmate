@@ -57,7 +57,10 @@ export async function POST(req: NextRequest) {
       language_one_id: profile.native_language_id,
       language_two_id: profile.target_language_id,
     })
-    .select();
+    .select(
+      `*, 
+        user_one_name:public_profiles!sessions_user_one_id_fkey(first_name,last_name)`
+    );
 
   console.log("Insert response:", insertResponse);
   const { data: newData, error: insertError } = insertResponse || {};
@@ -67,8 +70,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to create session", status: 500 });
   }
 
-  const cleanedSessions = newData?.map((session) => cleanSession(session, profile.timezone));
-  console.log("Cleaned sessions to return:", cleanedSessions);
+  const cleanedSession = cleanSession(newData[0], profile.timezone);
+  console.log("Cleaned session to return:", cleanedSession);
 
   if (insertError) {
     console.error("Error creating session:", insertError);
@@ -86,10 +89,7 @@ export async function POST(req: NextRequest) {
     console.error("Error sending email:", emailError);
   });
 
-  return NextResponse.json(
-    { session: { ...cleanedSessions[0] } },
-    { status: insertResponse.status }
-  );
+  return NextResponse.json({ session: { ...cleanedSession } }, { status: insertResponse.status });
 }
 
 // cancel a session
@@ -121,7 +121,7 @@ export async function DELETE(req: NextRequest) {
   if (sessionData.user_one_id === user.id && !sessionData.user_two_id) {
     const deleteResponse = await supabase.from("sessions").delete().eq("id", sessionData.id);
 
-    currentUserData.name = `${profileData.first_name} ${profileData.last_name || ""}`;
+    currentUserData.name = `${sessionData.user_one_name.first_name} ${sessionData.user_one_name.last_name || ""}`;
 
     const { error: deleteError } = deleteResponse || {};
 
