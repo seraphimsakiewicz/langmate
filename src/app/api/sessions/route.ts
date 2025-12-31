@@ -151,8 +151,7 @@ export async function DELETE(req: NextRequest) {
       .eq("id", sessionData.id)
       .select(
         `*, 
-        user_one_name:public_profiles!sessions_user_one_id_fkey(first_name,last_name), 
-        user_two_name:public_profiles!sessions_user_two_id_fkey(first_name,last_name)`
+        user_one_data:profiles!sessions_user_one_id_fkey(email, timezone, first_name, last_name)`
       );
 
     const { data: updatedData, error: updateError } = updateResponse || {};
@@ -163,15 +162,52 @@ export async function DELETE(req: NextRequest) {
       console.error("Error updating session:", updateError);
       return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
     }
+
     if (!updatedData || !updatedData.length) {
       console.error("No session data returned after update.");
       return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
     }
+    currentUserData.name = `${sessionData.user_two_name.first_name} ${sessionData.user_two_name.last_name || ""}`;
+    const start_time = `${sessionData.date}T${sessionData.startTime}`;
+
+    sendEmail(
+      currentUserData.email!,
+      currentUserData.name,
+      "Session Cancelled - We Understand",
+      `<div>
+        <p>We understand plans change. We've removed you from the session scheduled at ${DateTime.fromISO(
+          start_time,
+          {
+            zone: currentUserData.timezone,
+          }
+        ).toFormat("ff ZZZZ")}.</p>
+        <p>Don't worry, your partner has been notified and the session remains available for new matches.</p>
+      </div>`
+    ).catch((emailError) => {
+      console.error("Error sending email:", emailError);
+    });
+
+    const newData = updatedData[0];
+
+    sendEmail(
+      newData.user_one_data.email,
+      `${newData.user_one_data.first_name} ${newData.user_one_data.last_name || ""}`,
+      // TODO: need to add date/time for all of these sendEmail calls, to prevent threading issues.
+      "Your Session Partner Cancelled",
+      `<div>
+        <p>Unfortunately, your match for the session scheduled at ${DateTime.fromISO(start_time, {
+          zone: newData.user_one_data.timezone,
+        }).toFormat("ff ZZZZ")} has cancelled.</p>
+        <p>Don't worry, your session is still active and available for others to book.</p>
+      </div>`
+    ).catch((emailError) => {
+      console.error("Error sending email:", emailError);
+    });
 
     return NextResponse.json({
       status: updateResponse.status,
       action: "user_two_removed",
-      newSession: cleanSession(updatedData[0], profileData.timezone), // timezone will be handled client-side
+      newSession: cleanSession(updatedData[0], profileData.timezone),
     });
   } else {
     /* since user_one cancelling, promoting user_two_id to user_one_id, and swapping the language
