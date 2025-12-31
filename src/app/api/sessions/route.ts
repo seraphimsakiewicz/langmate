@@ -155,21 +155,40 @@ export async function DELETE(req: NextRequest) {
       newSession: cleanSession(updatedData[0], profileData.timezone), // timezone will be handled client-side
     });
   } else {
-    console.log(
-      "deleting user_one_id from session and promoting user_two_id to user_one_id:\n and swappng languages ids",
-      sessionData.id
-    );
+    /* since user_one cancelling, promoting user_two_id to user_one_id, and swapping the language
+    ids. */
+    const updateResponse = await supabase
+      .from("sessions")
+      .update({
+        user_two_id: null,
+        user_one_id: sessionData.user_two_id,
+        language_one_id: sessionData.language_two_id,
+        language_two_id: sessionData.language_one_id,
+      })
+      .eq("id", sessionData.id)
+      .select(
+        `*, 
+        user_one_name:public_profiles!sessions_user_one_id_fkey(first_name,last_name), 
+        user_two_name:public_profiles!sessions_user_two_id_fkey(first_name,last_name)`
+      );
 
-    // must do this next, just for testing
-    const newFakeData = { ...sessionData };
-    newFakeData.user_one_id = sessionData.user_two_id;
-    newFakeData.user_two_id = null;
-    newFakeData.language_one_id = sessionData.language_two_id;
-    newFakeData.language_two_id = sessionData.language_one_id;
+    const { data: updatedData, error: updateError } = updateResponse || {};
+
+    console.log("updateResponse data:", updateResponse);
+
+    if (updateError) {
+      console.error("Error updating session:", updateError);
+      return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
+    }
+    if (!updatedData || !updatedData.length) {
+      console.error("No session data returned after update.");
+      return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
+    }
+
     return NextResponse.json({
-      status: 200,
+      status: updateResponse.status,
       action: "user_one_removed",
-      newSession: cleanSession(newFakeData, profileData.timezone), // timezone will be handled client-side
+      newSession: cleanSession(updatedData[0], profileData.timezone), // timezone will be handled client-side
     });
   }
 }
