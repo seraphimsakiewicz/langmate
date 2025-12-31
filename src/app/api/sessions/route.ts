@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     `${profile.first_name} ${profile.last_name || ""}`,
     "New Session Created",
     `<div>Your session scheduled at ${zonedStart.toFormat(
-      "ff"
+      "ff ZZZZ"
     )} has been created successfully.</div>`
   ).catch((emailError) => {
     console.error("Error sending email:", emailError);
@@ -112,8 +112,16 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized", status: 401 });
   }
 
+  const currentUserData = {
+    email: user.email,
+    timezone: profileData.timezone,
+    name: "",
+  };
+
   if (sessionData.user_one_id === user.id && !sessionData.user_two_id) {
     const deleteResponse = await supabase.from("sessions").delete().eq("id", sessionData.id);
+
+    currentUserData.name = `${profileData.first_name} ${profileData.last_name || ""}`;
 
     const { error: deleteError } = deleteResponse || {};
 
@@ -122,7 +130,18 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: "Failed to delete session", status: 500 });
     }
 
-    console.log(`Session ${sessionData.id} deleted successfully. Deleted by user ${user.id}`);
+    const start_time = `${sessionData.date}T${sessionData.startTime}`;
+
+    sendEmail(
+      currentUserData.email!,
+      currentUserData.name,
+      "Session Cancelled",
+      `<div>Your session scheduled at ${DateTime.fromISO(start_time, {
+        zone: currentUserData.timezone,
+      }).toFormat("ff ZZZZ")} has been cancelled successfully.</div>`
+    ).catch((emailError) => {
+      console.error("Error sending email:", emailError);
+    });
 
     return NextResponse.json({ status: deleteResponse.status, action: "deleted" });
   } else if (sessionData.user_two_id === user.id) {
