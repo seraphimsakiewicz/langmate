@@ -23,7 +23,7 @@ export interface CalendarStore {
   // Sessions
   sessions: Session[];
   addSession: (localStartTime: string) => Promise<Session | undefined>;
-  matchSession: (sessionId: string) => void;
+  matchSession: (sessionId: string, profileData: Profile) => void;
   deleteSession: (sessionData: Session, profileData: Profile) => void;
 
   // BookingModal
@@ -79,22 +79,20 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
       }));
     }
   },
-  matchSession: async (sessionId: string) => {
+  matchSession: async (sessionId: string, profileData: Profile) => {
     try {
       console.log(`updating sessionId: ${sessionId} in matchSession fxn`);
       const res = await fetch("/api/sessions", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId }),
+        body: JSON.stringify({ sessionId, profileData }),
       });
       if (!res.ok) throw new Error("Failed to update session");
       const { session: updatedSession } = await res.json(); // session.start_time is ISO string
       console.log("Matched session:", updatedSession);
       set((state) => ({
         sessions: state.sessions.map((session) =>
-          session.id === sessionId
-            ? { ...session, user_two_id: updatedSession.user_two_id }
-            : session
+          session.id === sessionId ? updatedSession : session
         ),
       }));
     } catch (error) {
@@ -102,6 +100,7 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
     }
   },
   deleteSession: async (sessionData: Session, profileData: Profile) => {
+    console.log(`Deleting session: ${JSON.stringify(sessionData)}`);
     const res = await fetch("/api/sessions", {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
@@ -114,6 +113,7 @@ export const useCalendarStore = create<CalendarStore>((set) => ({
     const { action, newSession } = await res.json();
     console.log(`Session ${sessionData.id} delete action:`, action);
     if ((action === "user_two_removed" || action === "user_one_removed") && newSession) {
+      console.log(`deleted Session: ${JSON.stringify(newSession, null, 2)}`);
       // Update session in store
       set((state) => ({
         sessions: state.sessions.map((session) =>

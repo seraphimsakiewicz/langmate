@@ -23,8 +23,14 @@ export const cleanSession = (session: any, timezone: string): Session => {
     user_two_id: session.user_two_id,
     language_one_id: session.language_one_id,
     language_two_id: session.language_two_id,
-    user_one_name: session.user_one_name,
-    user_two_name: session.user_two_name,
+    user_one_name: session.user_one_data
+      ? // hotfix to cater to user_x_data structure
+        { first_name: session.user_one_data.first_name, last_name: session.user_one_data.last_name }
+      : session.user_one_name,
+    // hotfix to cater to user_x_data structure
+    user_two_name: session.user_two_data
+      ? { first_name: session.user_two_data.first_name, last_name: session.user_two_data.last_name }
+      : session.user_two_name,
   };
 };
 

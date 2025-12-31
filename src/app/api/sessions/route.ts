@@ -95,9 +95,9 @@ export async function POST(req: NextRequest) {
 // cancel a session
 /* { action: "deleted" | "user_two_removed" | "user_one_removed", session?: UpdatedSession } */
 export async function DELETE(req: NextRequest) {
-  const { sessionData } = await req.json();
-  if (!sessionData || !sessionData.id) {
-    return NextResponse.json({ error: "sessionId is required", status: 400 });
+  const { sessionData, profileData } = await req.json();
+  if (!sessionData || !sessionData.id || !profileData || !profileData.id) {
+    return NextResponse.json({ error: "Required data missing", status: 400 });
   }
 
   console.log("sessionData received for deletion:", sessionData);
@@ -130,7 +130,11 @@ export async function DELETE(req: NextRequest) {
       .from("sessions")
       .update({ user_two_id: null })
       .eq("id", sessionData.id)
-      .select();
+      .select(
+        `*, 
+        user_one_name:public_profiles!sessions_user_one_id_fkey(first_name,last_name), 
+        user_two_name:public_profiles!sessions_user_two_id_fkey(first_name,last_name)`
+      );
 
     const { data: updatedData, error: updateError } = updateResponse || {};
 
@@ -140,8 +144,6 @@ export async function DELETE(req: NextRequest) {
       console.error("Error updating session:", updateError);
       return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
     }
-    console.log("Updated session data:", updatedData);
-
     if (!updatedData || !updatedData.length) {
       console.error("No session data returned after update.");
       return NextResponse.json({ error: "Failed to update session" }, { status: 500 });
@@ -150,7 +152,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({
       status: updateResponse.status,
       action: "user_two_removed",
-      newSession: updatedData[0],
+      newSession: cleanSession(updatedData[0], profileData.timezone), // timezone will be handled client-side
     });
   } else {
     console.log(
@@ -159,7 +161,7 @@ export async function DELETE(req: NextRequest) {
     );
 
     // must do this next, just for testing
-    const newFakeData = {...sessionData};
+    const newFakeData = { ...sessionData };
     newFakeData.user_one_id = sessionData.user_two_id;
     newFakeData.user_two_id = null;
     newFakeData.language_one_id = sessionData.language_two_id;
@@ -167,14 +169,14 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({
       status: 200,
       action: "user_one_removed",
-      newSession: newFakeData,
+      newSession: cleanSession(newFakeData, profileData.timezone), // timezone will be handled client-side
     });
   }
 }
 
 // add user to session
 export async function PATCH(req: NextRequest) {
-  const { sessionId } = await req.json();
+  const { sessionId, profileData } = await req.json();
   if (!sessionId) {
     return NextResponse.json({ error: "sessionId is required" }, { status: 400 });
   }
@@ -248,5 +250,8 @@ export async function PATCH(req: NextRequest) {
   });
 
   console.log("Update response data:", updatedData);
-  return NextResponse.json({ session: updatedData[0] }, { status: 200 });
+  return NextResponse.json(
+    { session: cleanSession(updatedData[0], profileData.timezone) },
+    { status: 200 }
+  );
 }

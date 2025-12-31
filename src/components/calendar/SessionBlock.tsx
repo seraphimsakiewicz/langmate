@@ -19,7 +19,7 @@ interface SessionBlockProps {
   mode: SessionMode;
   session?: Session;
   slotTime?: string;
-  matchSession: (sessionId: Session["id"]) => void;
+  matchSession: (sessionId: Session["id"], profileData: Profile) => void;
   onDelete?: (sessionData: Session, profileData: Profile) => void;
   onBook?: () => void;
   onRemovePending?: () => void;
@@ -79,6 +79,7 @@ const SessionBlockComponent = ({
       e.stopPropagation();
       if (onDelete && session && profile) {
         onDelete(session, profile);
+        setIsConfirmingCancel(false);
       }
     },
     [onDelete, session, profile]
@@ -205,7 +206,7 @@ const SessionBlockComponent = ({
                 <button
                   type="button"
                   onClick={() => {
-                    matchSession(session.id);
+                    matchSession(session.id, profile);
                   }}
                   className="bg-calendar-primary hover:cursor-pointer hover:bg-calendar-primary/90 text-white text-[12px] px-2 py-1 rounded-[5px] font-medium transition-colors"
                 >
