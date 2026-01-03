@@ -10,8 +10,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
+const baseUrl = process.env.NODE_ENV === 'production'
+  ? "https://www.swaptalk.io"
   : "http://localhost:3000";
 
 export const metadata: Metadata = {
