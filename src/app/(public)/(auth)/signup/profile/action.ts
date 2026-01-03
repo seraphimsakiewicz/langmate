@@ -25,6 +25,7 @@ export async function createProfile(formData: FormVals) {
     fluent_language_id: formData.fluentLanguage,
     target_language_id: formData.targetLanguage,
     target_level: formData.targetLevel,
+    is_native: formData.isNative,
   });
 
   if (error) {

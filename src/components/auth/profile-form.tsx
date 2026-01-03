@@ -30,6 +30,7 @@ export type FormVals = {
   fluentLanguage: "" | "English" | "Spanish";
   targetLanguage: "" | "English" | "Spanish";
   targetLevel: "" | "beginner" | "intermediate" | "advanced";
+  isNative?: boolean;
 };
 
 export function ProfileForm({
@@ -59,6 +60,7 @@ export function ProfileForm({
       timezone: "",
       firstName: "",
       lastName: "",
+      isNative: true,
     },
   });
 
@@ -188,7 +190,17 @@ export function ProfileForm({
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Checkbox id="fluentLanguageIsNative" />
+                  <Controller
+                    name="isNative"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox
+                        id="fluentLanguageIsNative"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    )}
+                  />
                   <Label htmlFor="fluentLanguageIsNative" className="font-normal">
                     Is this your native language?
                   </Label>
