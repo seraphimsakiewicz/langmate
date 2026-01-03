@@ -26,7 +26,7 @@ export type FormVals = {
   firstName: string;
   lastName: string;
   timezone: string;
-  nativeLanguage: "" | "English" | "Spanish";
+  fluentLanguage: "" | "English" | "Spanish";
   targetLanguage: "" | "English" | "Spanish";
   targetLevel: "" | "beginner" | "intermediate" | "advanced";
 };
@@ -52,7 +52,7 @@ export function ProfileForm({
   const { handleSubmit, control, register, watch, formState } = useForm<FormVals>({
     defaultValues: {
       // populate defaults here if you have user profile data
-      nativeLanguage: "",
+      fluentLanguage: "",
       targetLanguage: "",
       targetLevel: "",
       timezone: "",
@@ -63,7 +63,7 @@ export function ProfileForm({
 
   const onSubmit = async (data: FormVals) => {
     console.log("data", data);
-    if (data.nativeLanguage === data.targetLanguage) {
+    if (data.fluentLanguage === data.targetLanguage) {
       window.alert("cant select same language");
       return;
     } else {
@@ -132,24 +132,24 @@ export function ProfileForm({
                 />
               </div>
 
-              {/* Native language */}
+              {/* Fluent language */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="grid gap-3">
                   <Label>
-                    Native Language<span className="text-red-600">*</span>
+                    Fluent Language<span className="text-red-600">*</span>
                   </Label>
                   <Controller
-                    name="nativeLanguage"
+                    name="fluentLanguage"
                     control={control}
                     rules={{ required: true }}
                     render={({ field }) => (
                       <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Your native language" />
+                          <SelectValue placeholder="Your fluent language" />
                         </SelectTrigger>
                         <SelectContent>
                           {languages.map((language) => (
-                            <SelectItem value={language.id} key={`${language.id}_native`}>
+                            <SelectItem value={language.id} key={`${language.id}_fluent`}>
                               {language.name}
                             </SelectItem>
                           ))}

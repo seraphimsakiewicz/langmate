@@ -18,12 +18,12 @@ export const metadata: Metadata = {
 
   title: "Swaptalk - Schedule based language exchange",
   description:
-    "Practice languages with real people through scheduled video conversations. Build fluency naturally by connecting with native speakers for language exchange.",
+    "Practice languages with real people through scheduled video conversations. Build fluency naturally by connecting with fluent speakers for language exchange.",
 
   openGraph: {
     title: "Swaptalk - Schedule based language exchange",
     description:
-      "Practice languages with real people through scheduled video conversations. Build fluency naturally by connecting with native speakers for language exchange.",
+      "Practice languages with real people through scheduled video conversations. Build fluency naturally by connecting with fluent speakers for language exchange.",
     url: "https://swaptalk.io",
     siteName: "Swaptalk",
     locale: "en_US",
