@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useTimezoneSelect, allTimezones } from "react-timezone-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -67,10 +68,8 @@ export function ProfileForm({
       window.alert("cant select same language");
       return;
     } else {
-      await createProfile(data);
-      window.alert("profile made!!");
-      // supabase.console.log("data", data);
       // post data to DB
+      await createProfile(data);
     }
   };
 
@@ -81,7 +80,9 @@ export function ProfileForm({
       <Card>
         <CardHeader>
           <CardTitle>Complete Your Profile</CardTitle>
-          <CardDescription>Thanks for signing up! Before you start, please tell us a bit about yourself</CardDescription>
+          <CardDescription>
+            Thanks for signing up! Before you start, please tell us a bit about yourself
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -133,56 +134,64 @@ export function ProfileForm({
               </div>
 
               {/* Fluent language */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="grid gap-3">
-                  <Label>
-                    Fluent Language<span className="text-red-600">*</span>
-                  </Label>
-                  <Controller
-                    name="fluentLanguage"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Your fluent language" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {languages.map((language) => (
-                            <SelectItem value={language.id} key={`${language.id}_fluent`}>
-                              {language.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                </div>
+              <div className="grid gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid gap-3">
+                    <Label>
+                      Fluent Language<span className="text-red-600">*</span>
+                    </Label>
+                    <Controller
+                      name="fluentLanguage"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Your fluent language" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {languages.map((language) => (
+                              <SelectItem value={language.id} key={`${language.id}_fluent`}>
+                                {language.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
 
-                {/* Target language */}
-                <div className="grid gap-3">
-                  <Label>
-                    Target Language<span className="text-red-600">*</span>
+                  {/* Target language */}
+                  <div className="grid gap-3">
+                    <Label>
+                      Target Language<span className="text-red-600">*</span>
+                    </Label>
+                    <Controller
+                      name="targetLanguage"
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field }) => (
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Language you want to learn" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {languages.map((language) => (
+                              <SelectItem key={`${language.id}_target`} value={language.id}>
+                                {language.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="fluentLanguageIsNative" />
+                  <Label htmlFor="fluentLanguageIsNative" className="font-normal">
+                    Is this your native language?
                   </Label>
-                  <Controller
-                    name="targetLanguage"
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field }) => (
-                      <Select onValueChange={field.onChange} value={field.value}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Language you want to learn" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {languages.map((language) => (
-                            <SelectItem key={`${language.id}_target`} value={language.id}>
-                              {language.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
                 </div>
               </div>
 
