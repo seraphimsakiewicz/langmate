@@ -22,7 +22,7 @@ export type Session = {
 export type Profile = {
   id: string;
   timezone: string;
-  native_language_id: string;
+  fluent_language_id: string;
 };
 
 export type TimeSlot = {

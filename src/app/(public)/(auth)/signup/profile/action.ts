@@ -22,7 +22,7 @@ export async function createProfile(formData: FormVals) {
     first_name: formData.firstName,
     last_name: formData.lastName,
     timezone: formData.timezone,
-    native_language_id: formData.nativeLanguage,
+    fluent_language_id: formData.fluentLanguage,
     target_language_id: formData.targetLanguage,
     target_level: formData.targetLevel,
   });

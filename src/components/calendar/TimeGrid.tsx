@@ -105,7 +105,7 @@ export const TimeGrid = () => {
 
     // Otherwise show the oldest matching-language open session.
     const languageMatched = sessionsInBlock.filter(
-      (session) => session.language_two_id === profile.native_language_id
+      (session) => session.language_two_id === profile.fluent_language_id
     );
     if (!languageMatched.length) return undefined;
 

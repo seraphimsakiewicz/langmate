@@ -50,7 +50,7 @@ export const getProfileAndSessions = async (supabase: any): Promise<SessionsResu
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("timezone, id, native_language_id")
+    .select("timezone, id, fluent_language_id")
     .eq("id", user.id)
     .single();
 
@@ -61,7 +61,7 @@ export const getProfileAndSessions = async (supabase: any): Promise<SessionsResu
   const filter = [
     `user_one_id.eq.${profile.id}`,
     `user_two_id.eq.${profile.id}`,
-    `and(user_one_id.not.is.null,user_two_id.is.null,language_two_id.eq.${profile.native_language_id})`,
+    `and(user_one_id.not.is.null,user_two_id.is.null,language_two_id.eq.${profile.fluent_language_id})`,
   ].join(",");
 
   const { data: fetchedSessions, error: sessionsError } = await supabase

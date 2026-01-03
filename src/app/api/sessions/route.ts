@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   }
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("timezone, native_language_id, target_language_id, first_name, last_name")
+    .select("timezone, fluent_language_id, target_language_id, first_name, last_name")
     .eq("id", user.id)
     .single();
 
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     .insert({
       user_one_id: user.id,
       start_time: utcStartTime,
-      language_one_id: profile.native_language_id,
+      language_one_id: profile.fluent_language_id,
       language_two_id: profile.target_language_id,
     })
     .select(

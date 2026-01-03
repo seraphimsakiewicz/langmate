@@ -92,7 +92,7 @@ const SessionBlockComponent = ({
   const viewerIsHost = !!session && session.user_one_id === profile.id;
   const viewerIsParticipant =
     !!session && (session.user_one_id === profile.id || session.user_two_id === profile.id);
-  const languageMatches = !!session && session.language_two_id === profile.native_language_id;
+  const languageMatches = !!session && session.language_two_id === profile.fluent_language_id;
 
   const canJoin = sessionIsBooked && inJoinWindow;
   const canMatch = sessionHasOpenSeat && !viewerIsHost && languageMatches && sessionBeforeStart;
