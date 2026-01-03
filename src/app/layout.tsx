@@ -10,19 +10,20 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const baseUrl = process.env.NODE_ENV === 'production'
-  ? "https://www.swaptalk.io"
-  : "http://localhost:3000";
+const baseUrl =
+  process.env.NODE_ENV === "production" ? "https://www.swaptalk.io" : "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
 
   title: "Swaptalk - Schedule based language exchange",
-  description: "Practice languages with real people.",
+  description:
+    "Practice languages with real people through scheduled video conversations. Build fluency naturally by connecting with native speakers for language exchange.",
 
   openGraph: {
     title: "Swaptalk - Schedule based language exchange",
-    description: "Practice languages with real people.",
+    description:
+      "Practice languages with real people through scheduled video conversations. Build fluency naturally by connecting with native speakers for language exchange.",
     url: "https://swaptalk.io",
     siteName: "Swaptalk",
     locale: "en_US",
