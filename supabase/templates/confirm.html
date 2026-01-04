@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Email - Swaptalk</title>
+</head>
+
+<body
+    style="margin:0; padding:0; background-color:#fefefe; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#fefefe; padding:40px 20px;">
+        <tr>
+            <td align="center">
+                <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;">
+
+                    <!-- Header -->
+                    <tr>
+                        <td>
+                            <img src="https://oumlwhkzjifnfseqoasl.supabase.co/storage/v1/object/public/swaptalk-public/swaptalk-logo.png"
+                                alt="Swaptalk logo" style="height:64px; width:64px; vertical-align:middle;
+              padding-left: 20px;">
+                            <span
+                                style="font-size:36px; font-weight:600; color:#0ebbfd; margin-left:8px; vertical-align:middle;">Swaptalk</span>
+                        </td>
+                    </tr>
+
+                    <!-- Content -->
+                    <tr>
+                        <td
+                            style="background-color:#ffffff; border-radius:16px; padding:40px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+
+                            <h1 style="margin:0 0 20px 0; font-size:22px; font-weight:600; color:#0ebbfd;">
+                                You're almost there! 🎉
+                            </h1>
+
+                            <p style="margin:0 0 24px 0; font-size:15px; line-height:1.7; color:#4b5563;">
+                                Thanks for joining Swaptalk. One quick click and you'll be ready to have real
+                                conversations with native
+                                speakers.
+                            </p>
+
+                            <a href="{{ .SiteURL }}/api/auth/confirm?token_hash={{ .TokenHash }}&type=email" style="
+                  display:inline-block;
+                  padding:14px 32px;
+                  background:linear-gradient(135deg, #0ebbfd 0%, #0ea5e9 100%);
+                  color:#ffffff;
+                  text-decoration:none;
+                  border-radius:10px;
+                  font-weight:600;
+                  font-size:15px;
+                ">
+                                Confirm my email →
+                            </a>
+
+                            <p style="margin:28px 0 0 0; font-size:14px; line-height:1.7; color:#6b7280;">
+                                After that, you'll set up your profile so we can match you with the right partners. It
+                                only takes a
+                                minute.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding:32px 0 0 0; text-align:center;">
+                            <p style="margin:0 0 8px 0; font-size:13px; color:#9ca3af;">
+                                This link expires in 24 hours
+                            </p>
+                            <p style="margin:0; font-size:13px; color:#9ca3af;">
+                                Questions? Reply to this email or reach us at <a href="mailto:hello@swaptalk.io"
+                                    style="color:#0ebbfd; text-decoration:none;">hello@swaptalk.io</a>
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
